@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { Check } from "lucide-react-native";
+import Icon from "react-native-vector-icons/Feather";
 
 const CustomCheckbox = ({ label, checked, onPress }) => {
   return (
@@ -8,7 +9,8 @@ const CustomCheckbox = ({ label, checked, onPress }) => {
       <View style={[styles.checkbox, checked && styles.checkboxChecked]}>
         {checked && (
           <View style={styles.innerBox}>
-            <Check color="#blue" size={20} />
+            {/* <Check color="#blue" size={20} /> */}
+            <Icon name="check" size={16} color="white" />
           </View>
         )}
       </View>
