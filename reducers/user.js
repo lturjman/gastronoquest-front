@@ -2,9 +2,13 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   value: {
+    firstConnection: false,
     username: null,
     email: null,
     token: null,
+    level: null,
+    totalSavedCo2: null,
+    favorites: [],
   },
 };
 

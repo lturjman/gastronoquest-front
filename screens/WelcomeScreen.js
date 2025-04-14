@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View, Button } from "react-native";
+import CustomCheckbox from "../components/ui-kit/CustomCheckbox";
 
 export default function WelcomeScreen({ navigation }) {
   return (
