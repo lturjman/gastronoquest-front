@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 10,
     marginVertical: 10,
-    alignItems: "center",
+    alignItems: "left",
   },
   inputContainerDefault: {
     borderColor: "#E0E0E0", // gris
