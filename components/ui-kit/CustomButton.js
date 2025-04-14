@@ -47,12 +47,12 @@ const CustomButton = ({ title, variant = "dark", textSize = 18, onPress }) => {
 const styles = StyleSheet.create({
   baseButton: {
     paddingVertical: 15,
-    paddingHorizontal: 40,
+    paddingHorizontal: 30,
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-    margin: 10,
     elevation: 3,
+    width: '100%'
   },
   baseText: {
     fontFamily: Platform.select({
