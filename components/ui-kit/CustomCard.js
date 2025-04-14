@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 10,
-    elevation: 4,
+    elevation: 3,
     margin: 20,
     gap: 8,
     fontFamily: Platform.select({
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   priceTag: {
     marginTop: 8,
     alignSelf: "flex-start",
-    backgroundColor: "#eee",
+    backgroundColor: "#eee", //gris
     borderRadius: 20,
     paddingHorizontal: 14,
     paddingVertical: 6,

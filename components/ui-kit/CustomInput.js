@@ -20,7 +20,7 @@ const CustomInput = ({ placeholder, value, onChangeText }) => {
         value={value}
         onChangeText={onChangeText}
         onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
+        onBlur={() => setIsFocused(false)} // se défocus lorsqu'on clique ailleurs
       />
     </View>
   );
@@ -37,14 +37,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   inputContainerDefault: {
-    borderColor: "#E0E0E0", // gris clair
+    borderColor: "#E0E0E0", // gris
   },
   inputContainerFocused: {
-    borderColor: "#60B664", // vert
+    borderColor: "#6ac46a", // vert
   },
   input: {
     fontSize: 16,
-    color: "#1A1A1A",
+    color: "#333",
   },
 });
 
