@@ -1,27 +1,30 @@
 import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { Check } from "lucide-react-native";
-import Icon from "react-native-vector-icons/Feather";
 
 const CustomCheckbox = ({ label, checked, onPress }) => {
   return (
-    <Pressable style={styles.container} onPress={onPress}>
-      <View style={[styles.checkbox, checked && styles.checkboxChecked]}>
-        {checked && (
-          <View style={styles.innerBox}>
-            {/* <Check color="#blue" size={20} /> */}
-            <Icon name="check" size={16} color="white" />
-          </View>
-        )}
-      </View>
-      <Text style={[styles.label, checked && styles.labelChecked]}>
-        {label}
-      </Text>
-    </Pressable>
+    <View style={styles.checkboxContainer}>
+      <Pressable style={styles.container} onPress={onPress}>
+        <View style={[styles.checkbox, checked && styles.checkboxChecked]}>
+          {checked && (
+            <View style={styles.innerBox}>
+              <Check color="#fff" size={20} />
+            </View>
+          )}
+        </View>
+        <Text style={[styles.label, checked && styles.labelChecked]}>
+          {label}
+        </Text>
+      </Pressable>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  checkboxContainer: {
+    alignItems: "flex-start",
+  },
   container: {
     flexDirection: "row",
     alignItems: "center",
@@ -30,29 +33,28 @@ const styles = StyleSheet.create({
   checkbox: {
     width: 28,
     height: 28,
-    borderRadius: 6,
+    borderRadius: 3,
     borderWidth: 2,
-    borderColor: "#9CA3AF", // gray-400
+    borderColor: "#E0E0E0", // light grey
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,
   },
   checkboxChecked: {
-    backgroundColor: "#D1FAE5", // green-100
-    borderColor: "#047857", // green-700
+    backgroundColor: "#6ac46a", // light green
+    borderWidth: 0,
   },
   innerBox: {
-    backgroundColor: "#047857", // green-700
-    borderRadius: 4,
+    borderRadius: 3,
     padding: 2,
   },
   label: {
     fontSize: 16,
-    color: "#1F2937", // gray-800
+    color: "#333", // dark grey
   },
   labelChecked: {
     fontWeight: "bold",
-    color: "#065F46", // green-800
+    color: "#173e19", // dark green
   },
 });
 
