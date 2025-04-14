@@ -12,17 +12,20 @@ import { Platform } from "react-native";
 import { Leaf } from "lucide-react-native";
 import { Heart } from "lucide-react-native";
 
+import { useState } from "react";
+
 // import { useNavigation } from "@react-navigation/native";
 
 const CustomCard = () => {
+  const [liked, setLiked] = React.useState(false);
   return (
     <View style={styles.card}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Nom du restaurant</Text>
         <View style={styles.headerRight}>
-          <TouchableOpacity>
-            <Heart color="#173e19" size={30} />
+          <TouchableOpacity onPress={() => setLiked(!liked)}>
+            <Heart color={liked ? "#e53935" : "#173e19"} size={30} />
           </TouchableOpacity>
         </View>
       </View>
