@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, SafeAreaView } from "react-native";
 import CustomButton from "./components/ui-kit/CustomButton";
 import CustomCard from "./components/ui-kit/CustomCard";
 import CustomInput from "./components/ui-kit/CustomInput";
+import CustomCheckbox from "./components/ui-kit/CustomCheckbox";
 
 //imports for tab navigation
 // import { NavigationContainer } from "@react-navigation/native";
@@ -27,6 +28,7 @@ export default function App() {
         <CustomButton title="Container Button" variant="dark" />
         <CustomButton title="Container Button" variant="outline" />
         <CustomCard />
+        <CustomCheckbox />
 
         <CustomInput
           placeholder="Placeholder"
