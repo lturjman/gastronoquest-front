@@ -26,8 +26,35 @@ import { configureStore } from "@reduxjs/toolkit";
 import user from "./reducers/user";
 
 // Configuration de la naviguation
+// Création de "groupes d'écrans" pour garder l'icône active sur des sous-écrans
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const SearchStack = createNativeStackNavigator();
+const QuizStack = createNativeStackNavigator();
+const UserStack = createNativeStackNavigator();
+
+const SearchStackScreens = () => (
+  <SearchStack.Navigator screenOptions={{ headerShown: false }}>
+    <SearchStack.Screen name="SearchScreen" component={SearchScreen} />
+    <SearchStack.Screen name="RestaurantScreen" component={RestaurantScreen} />
+  </SearchStack.Navigator>
+);
+
+const QuizStackScreens = () => (
+  <QuizStack.Navigator screenOptions={{ headerShown: false }}>
+    <QuizStack.Screen name="QuizScreen" component={QuizScreen} />
+    <QuizStack.Screen name="QuestionScreen" component={QuestionScreen} />
+  </QuizStack.Navigator>
+);
+
+const UserStackScreens = () => (
+  <UserStack.Navigator screenOptions={{ headerShown: false }}>
+    <UserStack.Screen name="UserScreen" component={UserScreen} />
+    <UserStack.Screen name="EnterScreen" component={EnterScreen} />
+    <UserStack.Screen name="FavoritesScreen" component={FavoritesScreen} />
+    <UserStack.Screen name="HistoryScreen" component={HistoryScreen} />
+  </UserStack.Navigator>
+);
 
 const TabNavigator = () => {
   const user = useSelector((state) => state.user.value);
@@ -57,8 +84,8 @@ const TabNavigator = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Search" component={SearchScreen} />
-      <Tab.Screen name="Quiz" component={QuizScreen} />
+      <Tab.Screen name="Search" component={SearchStackScreens} />
+      <Tab.Screen name="Quiz" component={QuizStackScreens} />
       {user.token === null ? (
         <Tab.Screen
           name="Enter"
@@ -66,7 +93,7 @@ const TabNavigator = () => {
           options={{ tabBarStyle: { display: "none" } }}
         />
       ) : (
-        <Tab.Screen name="User" component={UserScreen} />
+        <Tab.Screen name="User" component={UserStackScreens} />
       )}
     </Tab.Navigator>
   );
@@ -84,14 +111,9 @@ export default function App() {
         <NavigationContainer>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="Welcome" component={WelcomeScreen} />
-            <Stack.Screen name="TabNavigator" component={TabNavigator} />
-            <Stack.Screen name="Enter" component={EnterScreen} />
-            <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Register" component={RegisterScreen} />
-            <Stack.Screen name="Favorites" component={FavoritesScreen} />
-            <Stack.Screen name="History" component={HistoryScreen} />
-            <Stack.Screen name="Question" component={QuestionScreen} />
-            <Stack.Screen name="Restaurant" component={RestaurantScreen} />
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="TabNavigator" component={TabNavigator} />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaView>
