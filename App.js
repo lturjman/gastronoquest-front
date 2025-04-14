@@ -1,6 +1,8 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, SafeAreaView } from "react-native";
-import Button from "./components/ui-kit/button";
+import CustomButton from "./components/ui-kit/CustomButton";
+import CustomCard from "./components/ui-kit/CustomCard";
+import CustomInput from "./components/ui-kit/CustomInput";
 
 //imports for tab navigation
 // import { NavigationContainer } from "@react-navigation/native";
@@ -21,9 +23,16 @@ export default function App() {
       <SafeAreaView
         style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
       >
-        <Button title="Container Button" variant="light" />
-        <Button title="Container Button" variant="dark" />
-        <Button title="Container Button" variant="outline" />
+        <CustomButton title="Container Button" variant="light" />
+        <CustomButton title="Container Button" variant="dark" />
+        <CustomButton title="Container Button" variant="outline" />
+        <CustomCard />
+
+        <CustomInput
+          placeholder="Placeholder"
+          // value={text}
+          // onChangeText={setText}
+        />
       </SafeAreaView>
     </View>
   );

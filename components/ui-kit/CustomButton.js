@@ -1,5 +1,6 @@
 import React from "react";
 import { Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Platform } from "react-native";
 
 const variantStyles = {
   light: {
@@ -30,7 +31,7 @@ const variantStyles = {
   },
 };
 
-const Button = ({ title, variant = "dark", onPress }) => {
+const CustomButton = ({ title, variant = "dark", onPress }) => {
   const selectedVariant = variantStyles[variant] || variantStyles.dark;
 
   return (
@@ -54,9 +55,14 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   baseText: {
+    fontFamily: Platform.select({
+      ios: "Helvetica Neue",
+      android: "Roboto",
+      default: "System",
+    }),
     fontWeight: "bold",
     fontSize: 18,
   },
 });
 
-export default Button;
+export default CustomButton;
