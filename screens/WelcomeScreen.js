@@ -1,10 +1,13 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Button } from "react-native";
 
-export default function WelcomeScreen() {
+export default function WelcomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text>WelcomeScreen</Text>
-      <StatusBar style="auto" />
+      <Button
+        title="Next page"
+        onPress={() => navigation.navigate("TabNavigator")}
+      />
     </View>
   );
 }

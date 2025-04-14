@@ -4,7 +4,6 @@ export default function EnterScreen() {
   return (
     <View style={styles.container}>
       <Text>EnterScreen</Text>
-      <StatusBar style="auto" />
     </View>
   );
 }

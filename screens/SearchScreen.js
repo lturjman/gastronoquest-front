@@ -4,7 +4,6 @@ export default function SearchScreen() {
   return (
     <View style={styles.container}>
       <Text>SearchScreen</Text>
-      <StatusBar style="auto" />
     </View>
   );
 }

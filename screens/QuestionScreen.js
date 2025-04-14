@@ -4,7 +4,6 @@ export default function QuestionScreen() {
   return (
     <View style={styles.container}>
       <Text>QuestionScreen</Text>
-      <StatusBar style="auto" />
     </View>
   );
 }

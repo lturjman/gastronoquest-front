@@ -4,7 +4,6 @@ export default function RegisterScreen() {
   return (
     <View style={styles.container}>
       <Text>RegisterScreen</Text>
-      <StatusBar style="auto" />
     </View>
   );
 }
