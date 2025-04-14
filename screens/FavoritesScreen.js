@@ -4,7 +4,6 @@ export default function FavoritesScreen() {
   return (
     <View style={styles.container}>
       <Text>FavoritesScreen</Text>
-      <StatusBar style="auto" />
     </View>
   );
 }

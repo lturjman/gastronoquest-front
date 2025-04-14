@@ -4,7 +4,6 @@ export default function RestaurantScreen() {
   return (
     <View style={styles.container}>
       <Text>RestaurantScreen</Text>
-      <StatusBar style="auto" />
     </View>
   );
 }

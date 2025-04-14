@@ -4,7 +4,6 @@ export default function UserScreen() {
   return (
     <View style={styles.container}>
       <Text>UserScreen</Text>
-      <StatusBar style="auto" />
     </View>
   );
 }
