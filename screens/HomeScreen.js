@@ -10,18 +10,17 @@ import {
 } from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 import { Platform } from "react-native";
+import CustomButton from "../components/ui-kit/CustomButton";
 
 const news = [
   {
     title: "Comment épaissir une sauce ?",
-    desc: "Louper sa sauce au poivre ou sa sauce hollandaise, ça arrive même aux meilleurs. Trop liquide, vous dites ? Il suffit de quelques bonnes astuces pour rattraper le coup. Inventaire des ruses à connaître pour épaissir une sauce en un tournemain.",
     url: "https://www.cuisineaz.com/articles/comment-epaissir-une-sauce-10235.aspx",
     imageUrl:
       "https://img.cuisineaz.com/1200x675/2013/12/20/i107529-sauce-roquefort.webp",
   },
   {
     title: "What is Fairtrade?",
-    desc: "Fairtrade is the most recognised and trusted sustainability label working to make trade fairer for the people who grow our food.",
     url: "https://www.fairtrade.net/en/why-fairtrade/what-we-do/what-is-fairtrade.html",
     imageUrl:
       "https://www.fairtrade.net/content/dam/fairtrade/global/what-is-fairtrade/Karen%20Roses%2C%20Ravine%20Roses%20Kenya%202020_edited.jpg/_jcr_content/renditions/21x9_1920w.webp",
@@ -30,7 +29,7 @@ const news = [
 
 const { width } = Dimensions.get("window");
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.carousel}>
@@ -44,22 +43,63 @@ export default function HomeScreen() {
           renderItem={({ item }) => (
             <ImageBackground
               source={{ uri: item.imageUrl }}
-              style={styles.img}
+              style={styles.carouselImg}
+              imageStyle={{ borderRadius: 10 }}
               resizeMode="cover"
             >
-              <View style={styles.overlay} />
+              <View style={styles.carouselOverlay} />
               <TouchableOpacity
-                style={styles.content}
+                style={styles.carouselContent}
                 onPress={() => {
                   Linking.openURL(item.url);
                 }}
               >
-                <Text style={styles.title}>{item.title}</Text>
-                <Text style={styles.desc}>{item.desc}</Text>
+                <Text style={styles.carouselTitle}>{item.title}</Text>
               </TouchableOpacity>
             </ImageBackground>
           )}
         />
+      </View>
+      <View style={styles.btnContainer}>
+        <View style={styles.btn}>
+          <CustomButton
+            title={"Faire ma série quotidienne"}
+            variant={"light"}
+            textSize={13}
+            onPress={() => navigation.navigate("Quiz")}
+          />
+        </View>
+        <View style={styles.btn}>
+          <CustomButton
+            title={"Se mettre en quête d'un restaurant"}
+            textSize={13}
+            onPress={() => navigation.navigate("Search")}
+          />
+        </View>
+      </View>
+      <View style={styles.progressCard}>
+        <View style={styles.co2Container}>
+          <Text style={{ fontSize: 20 }}>🌱</Text>
+          <View style={styles.co2Kpi}>
+            <Text style={{ fontSize: 26, fontWeight: "bold" }}>0.5</Text>
+            <Text style={{ fontSize: 20, fontWeight: "700" }}>kg</Text>
+          </View>
+          <Text
+            style={{
+              color: "#565656",
+              fontSize: 14,
+              width: "80%",
+              textAlign: "center",
+            }}
+          >
+            de CO2 économisés
+          </Text>
+        </View>
+        <View style={styles.levelContainer}>
+          <Text style={{ fontSize: 14, fontWeight: "bold" }}>Mon niveau</Text>
+          <Text>🌱 Jeune pousse</Text>
+          <CustomButton title={"Historique de quêtes"} textSize={13} />
+        </View>
       </View>
     </View>
   );
@@ -68,29 +108,28 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#F9F9F9",
     alignItems: "center",
     justifyContent: "center",
+    gap: 8,
   },
   carousel: { height: 182, width: "80%" },
-  img: {
+  carouselImg: {
     width: width * 0.8,
     height: "100%",
-    justifyContent: "center",
   },
-  overlay: {
+  carouselOverlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.4)",
+    borderRadius: 10,
   },
-
-  // Conteneur du texte
-  content: {
+  carouselContent: {
     position: "absolute",
     padding: 15,
     bottom: 20,
     width: "80%",
   },
-  title: {
+  carouselTitle: {
     fontSize: 16,
     fontWeight: "bold",
     color: "white",
@@ -101,13 +140,48 @@ const styles = StyleSheet.create({
       default: "System",
     }),
   },
-  desc: {
-    color: "white",
-    fontSize: 10,
-    fontFamily: Platform.select({
-      ios: "Helvetica Neue",
-      android: "Roboto",
-      default: "System",
-    }),
+  btnContainer: {
+    flexDirection: "row",
+    width: "80%",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  btn: {
+    width: "48%",
+    height: "100%",
+  },
+  progressCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10,
+    shadowColor: "#000000",
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 7,
+    elevation: 7,
+    backgroundColor: "#fff",
+    height: 350,
+    width: "80%",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 25,
+  },
+  co2Container: {
+    backgroundColor: "rgba(106, 196, 106, 0.5)",
+    borderRadius: 75,
+    width: 150,
+    height: 150,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 2,
+  },
+  co2Kpi: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: 3,
+  },
+  levelContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 13,
   },
 });

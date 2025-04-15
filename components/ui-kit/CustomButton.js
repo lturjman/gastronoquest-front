@@ -39,7 +39,11 @@ const CustomButton = ({ title, variant = "dark", textSize = 18, onPress }) => {
       style={[styles.baseButton, selectedVariant.button]}
       onPress={onPress}
     >
-      <Text style={[styles.baseText, selectedVariant.text, { fontSize: textSize }]}>{title}</Text>
+      <Text
+        style={[styles.baseText, selectedVariant.text, { fontSize: textSize }]}
+      >
+        {title}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -52,7 +56,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     elevation: 3,
-    width: '100%'
+    width: "100%",
   },
   baseText: {
     fontFamily: Platform.select({
@@ -60,7 +64,8 @@ const styles = StyleSheet.create({
       android: "Roboto",
       default: "System",
     }),
-    fontWeight: "bold"
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 
