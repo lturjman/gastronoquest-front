@@ -38,7 +38,7 @@ const CustomCard = () => {
 
       {/* Adresse */}
       <Text style={styles.address}>Adresse - rue</Text>
-      <Text style={styles.address}>ACode postal - Ville</Text>
+      <Text style={styles.address}>Code postal - Ville</Text>
 
       {/* Badges */}
       <View style={styles.badgeContainer}>
