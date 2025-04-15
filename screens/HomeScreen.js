@@ -63,7 +63,7 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.btnContainer}>
         <View style={styles.btn}>
           <CustomButton
-            title={"Faire ma série quotidienne"}
+            title={"Ma série quotidienne"}
             variant={"light"}
             textSize={13}
             onPress={() => navigation.navigate("Quiz")}
@@ -71,7 +71,7 @@ export default function HomeScreen({ navigation }) {
         </View>
         <View style={styles.btn}>
           <CustomButton
-            title={"Se mettre en quête d'un restaurant"}
+            title={"En quête d'un restaurant"}
             textSize={13}
             onPress={() => navigation.navigate("Search")}
           />
@@ -145,10 +145,11 @@ const styles = StyleSheet.create({
     width: "80%",
     justifyContent: "space-between",
     alignItems: "center",
+    gap: 10,
   },
   btn: {
     width: "48%",
-    height: "100%",
+    flex: 1,
   },
   progressCard: {
     backgroundColor: "#FFFFFF",
