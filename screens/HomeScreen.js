@@ -30,6 +30,55 @@ const news = [
 const { width } = Dimensions.get("window");
 
 export default function HomeScreen({ navigation }) {
+  // state de test à remplacer par la suite par le use selector
+  const [isConnected, setIsConnected] = React.useState(false);
+
+  const co2Container = (
+    <>
+      <View style={styles.co2Container}>
+        <Text style={{ fontSize: 20 }}>🌱</Text>
+        <View style={styles.co2Kpi}>
+          <Text style={{ fontSize: 26, fontWeight: "bold" }}>0.5</Text>
+          <Text style={{ fontSize: 20, fontWeight: "700" }}>kg</Text>
+        </View>
+        <Text
+          style={{
+            color: "#565656",
+            fontSize: 14,
+            width: "80%",
+            textAlign: "center",
+          }}
+        >
+          de CO2 économisés
+        </Text>
+      </View>
+      <View style={styles.levelContainer}>
+        <Text style={{ fontSize: 14, fontWeight: "bold" }}>Mon niveau</Text>
+        <Text>🌱 Jeune pousse</Text>
+        <CustomButton
+          title={"Historique de quêtes"}
+          textSize={13}
+          onPress={() =>
+            navigation.navigate("User", { screen: "HistoryScreen" })
+          }
+        />
+      </View>
+    </>
+  );
+
+  const connectionContainer = (
+    <View style={{ width: "90%", gap: 20 }}>
+      <Text style={{ textAlign: "center", fontWeight: "600" }}>
+        Connectez-vous pour consulter votre progression
+      </Text>
+      <CustomButton
+        title={"Se connecter"}
+        textSize={13}
+        onPress={() => navigation.navigate("Enter")}
+      />
+    </View>
+  );
+
   return (
     <View style={styles.container}>
       <View style={styles.carousel}>
@@ -78,28 +127,7 @@ export default function HomeScreen({ navigation }) {
         </View>
       </View>
       <View style={styles.progressCard}>
-        <View style={styles.co2Container}>
-          <Text style={{ fontSize: 20 }}>🌱</Text>
-          <View style={styles.co2Kpi}>
-            <Text style={{ fontSize: 26, fontWeight: "bold" }}>0.5</Text>
-            <Text style={{ fontSize: 20, fontWeight: "700" }}>kg</Text>
-          </View>
-          <Text
-            style={{
-              color: "#565656",
-              fontSize: 14,
-              width: "80%",
-              textAlign: "center",
-            }}
-          >
-            de CO2 économisés
-          </Text>
-        </View>
-        <View style={styles.levelContainer}>
-          <Text style={{ fontSize: 14, fontWeight: "bold" }}>Mon niveau</Text>
-          <Text>🌱 Jeune pousse</Text>
-          <CustomButton title={"Historique de quêtes"} textSize={13} />
-        </View>
+        {isConnected ? co2Container : connectionContainer}
       </View>
     </View>
   );
