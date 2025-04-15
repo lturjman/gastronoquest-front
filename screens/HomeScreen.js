@@ -11,6 +11,7 @@ import {
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 import { Platform } from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
+import { useSelector } from "react-redux";
 
 const news = [
   {
@@ -30,15 +31,16 @@ const news = [
 const { width } = Dimensions.get("window");
 
 export default function HomeScreen({ navigation }) {
-  // state de test à remplacer par la suite par le use selector
-  const [isConnected, setIsConnected] = React.useState(false);
+  const user = useSelector((state) => state.user.value);
 
   const co2Container = (
     <>
       <View style={styles.co2Container}>
         <Text style={{ fontSize: 20 }}>🌱</Text>
         <View style={styles.co2Kpi}>
-          <Text style={{ fontSize: 26, fontWeight: "bold" }}>0.5</Text>
+          <Text style={{ fontSize: 26, fontWeight: "bold" }}>
+            {user.totalSavedCo2}
+          </Text>
           <Text style={{ fontSize: 20, fontWeight: "700" }}>kg</Text>
         </View>
         <Text
@@ -54,7 +56,7 @@ export default function HomeScreen({ navigation }) {
       </View>
       <View style={styles.levelContainer}>
         <Text style={{ fontSize: 14, fontWeight: "bold" }}>Mon niveau</Text>
-        <Text>🌱 Jeune pousse</Text>
+        <Text>🌱 {user.level}</Text>
         <CustomButton
           title={"Historique de quêtes"}
           textSize={13}
@@ -127,7 +129,7 @@ export default function HomeScreen({ navigation }) {
         </View>
       </View>
       <View style={styles.progressCard}>
-        {isConnected ? co2Container : connectionContainer}
+        {user.token ? co2Container : connectionContainer}
       </View>
     </View>
   );
