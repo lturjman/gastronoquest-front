@@ -3,7 +3,13 @@ import { TextInput, StyleSheet, View, Dimensions } from "react-native";
 
 const { width } = Dimensions.get("window");
 
-const CustomInput = ({ placeholder, value, onChangeText }) => {
+const CustomInput = ({
+  placeholder,
+  value,
+  onChangeText,
+  type = "text",
+  password = false,
+}) => {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
@@ -17,6 +23,8 @@ const CustomInput = ({ placeholder, value, onChangeText }) => {
         style={styles.input}
         placeholder={placeholder}
         placeholderTextColor="#999"
+        inputMode={type}
+        secureTextEntry={password}
         value={value}
         onChangeText={onChangeText}
         onFocus={() => setIsFocused(true)}
