@@ -9,8 +9,6 @@ import {
 
 import { Leaf, Heart } from "lucide-react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Platform } from "react-native";
-import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 export default function CustomCard({ restaurant, navigation }) {
