@@ -9,7 +9,12 @@ const ErrorModal = ({ errorMessage, onPress }) => {
     <View style={styles.modalContainer}>
       <View style={styles.modalCard}>
         <Text style={styles.errorMessage}>{errorMessage}</Text>
-        <CustomButton title="Compris" onPress={onPress} textSize={13} />
+        <CustomButton
+          title="Compris"
+          variant="light"
+          onPress={onPress}
+          textSize={13}
+        />
       </View>
     </View>
   );
