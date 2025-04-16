@@ -1,8 +1,10 @@
 import { StyleSheet, Platform, Dimensions, SafeAreaView, Text, View, TouchableOpacity, ScrollView, Modal } from "react-native";
 import { Search, List, Map, ChevronsUpDown } from "lucide-react-native";
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import SelectDropdown from 'react-native-select-dropdown';
+import MapView, { Marker } from "react-native-maps";
+import * as Location from 'expo-location';
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 // import CustomCheckbox from "../components/ui-kit/CustomCheckbox";
 import Checkbox from "../components/ui-kit/Checkbox";
@@ -16,8 +18,11 @@ const perimeterOptions = ['Lieu exact', '2 km', '5 km', '10 km', '20 km', '30 km
 const priceRangeOptions = ['Moins de 15€', 'Entre 15€ et 30€', 'Entre 30€ et 50€', 'Entre 50€ et 100€', 'Plus de 100€'];
 const typesOptions = ['Bistronomique', 'Café-restaurant', 'Traiteurs', 'Food truck', 'Gastronomique', 'Sur le pouce', 'Sandwicherie', 'Street-food', 'Salon de thé', 'Bar à vin'];
 
+// useNavigation
+
 export default function SearchScreen() {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.value);
 
   const [view, setView] = useState('map');
   const [searchType, setSearchType] = useState('restaurant');
@@ -27,8 +32,28 @@ export default function SearchScreen() {
   const [priceRange, setPriceRange] = useState('');
   const [perimeter, setPerimeter] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
 
-  const fetchResults = () => {   // A l'appui sur le bouton "Afficher les résultats"
+  const markers = searchResults.map((data, i) => {
+    const { latitude, longitude } = data.coordinates;
+    return (<Marker key={i} coordinate={{ latitude, longitude }} onPress={() => console.log(data.name)} />);
+  });
+  /*
+  name: String,
+  desc: String,
+  longDesc: String,
+  score: Number,
+  badges: [{ type: String, enum: ['', 'Bio', 'Circuit court', 'Locavore', 'Pêche durable', 'Vegan', 'Viande durable', 'Zéro-déchet', '100% Veggie', 'Contenant accepté'] }],
+  types: [{ type: String, enum: ['', 'Bistronomique', 'Café-restaurant', 'Traiteurs', 'Food truck', 'Gastronomique', 'Sur le pouce', 'Sandwicherie', 'Street-food', 'Salon de thé', 'Bar à vin'] }],
+  priceRange: { type: String, enum: ['', 'Moins de 15€', 'Entre 15€ et 30€', 'Entre 30€ et 50€', 'Entre 50€ et 100€', 'Plus de 100€'] },
+  address: String,
+  coordinates: coordinatesSchema,
+  imageUrl: String,
+  websiteUrl: String,
+  bookingUrl: String,
+  */
+
+  const fetchResults = async () => {   // A l'appui sur le bouton "Afficher les résultats"
     setModalVisible(false);   // Fermer la modale (voir si on le met avant ou après les requêtes)
 
     // Envoyer une requête au backend en fonction du type de recherche (Pour le moment : affichage pour tests)
@@ -58,12 +83,24 @@ export default function SearchScreen() {
     // Pour le moment ça sauvegarde les paramètres de la requête, voir si on veut changer ça
   }
 
-  // Alterner entre vue Map/List et changement de l'icône
-  const switchView = () => {
+  const switchView = () => {   // Alterner entre vue Map/List et changement de l'icône
     setView(view => view === 'map' ? 'list' : 'map');
   };
 
-  /* Rajouter un useEffect pour la géolocalisation */
+  /*
+  useEffect(() => {
+    (async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status === 'granted') {
+        Location.watchPositionAsync({ distanceInterval: 10 },
+          (location) => {
+            const { latitude, longitude } = location.coords;
+            setUserLocation({ latitude, longitude });
+          });
+      }
+    })();
+  }, []);
+  */
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -81,6 +118,7 @@ export default function SearchScreen() {
         </View>
         <View style={styles.results}>
           { view === 'map' && <Text>Map</Text> }
+          { view === 'map' && <MapView></MapView> }
           { view === 'list' && <Text>List</Text> }
           <CustomCard />
         </View>
@@ -177,7 +215,7 @@ const styles = StyleSheet.create({
   options: {
     width: '90%',
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'center', // 'space-between' à tester
     alignItems: 'center',
     gap: 10,
   },
@@ -192,7 +230,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     gap: 15,
-    elevation: 3
+    elevation: 3,
+    // width: '80%' à tester
   },
   buttonText: {
     fontFamily: Platform.select({
