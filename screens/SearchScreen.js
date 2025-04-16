@@ -87,7 +87,7 @@ export default function SearchScreen() {
       </View>
 
     {/* "Drawer" SearchFilters pour le moment sous forme de modale */}
-      <Modal visible={modalVisible} animationType="fade" transparent>
+      <Modal visible={modalVisible} animationType="slide" transparent>
         <View style={styles.modalView}>
           <ScrollView contentContainerStyle={styles.scrollView}>
             <View style={styles.modalContent}>
