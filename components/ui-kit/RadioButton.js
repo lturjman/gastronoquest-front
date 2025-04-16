@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 8,
+    paddingHorizontal: 0,
     borderRadius: 12,
   },
   radioOuter: {
@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginRight: 8,
+    marginLeft: 12
   },
   radioOuterSelected: {
     borderColor: "#6ac46a", // Light Green
