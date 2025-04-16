@@ -49,7 +49,7 @@ export default function RegisterScreen({ navigation }) {
     }
     if (!password || !isValidPassword(password)) {
       newErrors.push(
-        "・ Veuillez saisir un mot de passe contenant au moions 8 caractères, une majuscule, une minuscule et un caractère spécial"
+        "・ Veuillez saisir un mot de passe contenant au moins 8 caractères, une majuscule, une minuscule et un caractère spécial"
       );
     }
 
@@ -66,6 +66,7 @@ export default function RegisterScreen({ navigation }) {
         dispatch(updateUser(response.data));
         // Redirection vers la home
         navigation.navigate("TabNavigator");
+        return;
       }
     });
   };
