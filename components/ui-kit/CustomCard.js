@@ -4,21 +4,32 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Platform
+  Platform,
 } from "react-native";
+
 import { Leaf, Heart } from "lucide-react-native";
-// import { useNavigation } from "@react-navigation/native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
-
-export default function CustomCard() {
+export default function CustomCard({ restaurant, navigation }) {
   const [liked, setLiked] = useState(false);
+
+  const leaves = [];
+  for (let i = 0; i < restaurant.score; i++) {
+    leaves.push(<Leaf key={i} color="#173e19" size={20} />);
+  }
 
   return (
     <View style={styles.card}>
-
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>Nom du restaurant</Text>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("RestaurantScreen", { restaurant })
+          }
+        >
+          <Text style={styles.title}>{restaurant.name}</Text>
+        </TouchableOpacity>
         <View style={styles.headerRight}>
           <TouchableOpacity onPress={() => setLiked(!liked)}>
             <Heart color={liked ? "#e53935" : "#173e19"} size={30} />
@@ -26,46 +37,37 @@ export default function CustomCard() {
         </View>
       </View>
 
-      {/* Score Ecotables */}
-      <View style={styles.noteContainer}>
-        <Leaf color="#173e19" size={20} />
-        <Leaf color="#173e19" size={20} />
-        <Leaf color="#173e19" size={20} />
-      </View>
+      {/* Note (score de 1 à 3) */}
+      <View style={styles.noteContainer}>{leaves}</View>
 
       {/* Adresse */}
-      <Text style={styles.address}>Adresse</Text>
+      <Text style={styles.address}>{restaurant.address}</Text>
 
       {/* Badges */}
       <View style={styles.tagContainer}>
-        <View style={[styles.tag, styles.badge]}>
-          <Text style={styles.tagText}>Badge 1</Text>
-        </View>
-        <View style={[styles.tag, styles.badge]}>
-          <Text style={styles.tagText}>Badge 2</Text>
-        </View>
+        {restaurant.badges.map((badge, index) => (
+          <View key={index} style={styles.tag}>
+            <Text style={styles.tagText}>{badge}</Text>
+          </View>
+        ))}
       </View>
 
       {/* Types */}
       <View style={styles.tagContainer}>
-        <View style={[styles.tag, styles.type]}>
-          <Text style={styles.tagText}>Type 1</Text>
-        </View>
-        <View style={[styles.tag, styles.type]}>
-          <Text style={styles.tagText}>Type 2</Text>
-        </View>
+        {restaurant.types.map((type, index) => (
+          <View key={index} style={styles.type}>
+            <Text style={styles.typeText}>{type}</Text>
+          </View>
+        ))}
       </View>
 
       {/* Gamme de prix */}
       <View style={styles.tagContainer}>
-        <View style={[styles.tag, styles.price]}>
-          <Text style={styles.priceText}>Gamme de prix</Text>
-        </View>
+        <Text style={styles.priceText}>{restaurant.priceRange}</Text>
       </View>
-      
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   card: {
@@ -111,23 +113,33 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   tag: {
+    backgroundColor: "#1C3B1D",
     borderRadius: 20,
     paddingHorizontal: 14,
     paddingVertical: 6,
-  },
-  badge: {
-    backgroundColor: "#1C3B1D",
-  },
-  type: {
-    backgroundColor: "#6ac46a",
   },
   tagText: {
     fontSize: 14,
     color: "#fff",
     fontWeight: "600",
   },
-  price: {
+  type: {
+    backgroundColor: "#6ac46a",
+    borderRadius: 20,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+  },
+  typeText: {
+    color: "#fff",
+    fontWeight: "600",
+  },
+  priceTag: {
+    marginTop: 8,
+    alignSelf: "flex-start",
     backgroundColor: "#eee", //gris
+    borderRadius: 20,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
   },
   priceText: {
     fontSize: 14,
@@ -135,61 +147,3 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
-
-
-// const CustomCard = ({ restaurant }) => {
-//   const navigation = useNavigation();
-//   return (
-//     <View style={styles.card}>
-//       {/* Header */}
-//       <View style={styles.header}>
-//         <Pressable
-//           onPress={() =>
-//             navigation.navigate("RestaurantScreen", { restaurant })
-//           }
-//         >
-//           <Text style={styles.title}>{restaurant.name}</Text>
-//         </Pressable>
-//         <View style={styles.headerRight}>
-//           <TouchableOpacity>
-//             <Heart color="#173e19" size={30} />
-//           </TouchableOpacity>
-//         </View>
-//       </View>
-
-//       <View style={styles.noteContainer}>
-//         <Leaf color="#173e19" size={20} />
-//         <Leaf color="#173e19" size={20} />
-//         <Leaf color="#173e19" size={20} />
-//       </View>
-
-//       {/* Adresse */}
-//       <Text style={styles.address}>{restaurant.address}</Text>
-
-//       {/* Badges */}
-//       <View style={styles.badgeContainer}>
-//         <View style={styles.badge}>
-//           <Text style={styles.badgeText}>Badge 1</Text>
-//         </View>
-//         <View style={styles.badge}>
-//           <Text style={styles.badgeText}>Badge 2</Text>
-//         </View>
-//       </View>
-
-//       {/* Types */}
-//       <View style={styles.badgeContainer}>
-//         <View style={styles.type}>
-//           <Text style={styles.typeText}>Type 1</Text>
-//         </View>
-//         <View style={styles.type}>
-//           <Text style={styles.typeText}>Type 2</Text>
-//         </View>
-//       </View>
-
-//       {/* Gamme de prix */}
-//       <View style={styles.priceTag}>
-//         <Text style={styles.priceText}>G{restaurant.priceRange}</Text>
-//       </View>
-//     </View>
-//   );
-// };
