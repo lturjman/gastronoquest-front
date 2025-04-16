@@ -30,6 +30,14 @@ const news = [
 
 const { width } = Dimensions.get("window");
 
+const levelIcons = {
+  "jeune pousse": "🌱",
+  curieux: "🍪",
+  padawan: "🧑‍🎓",
+  "maître jedi": "✨",
+  "vieille branche": "🌳",
+};
+
 export default function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
 
@@ -47,7 +55,7 @@ export default function HomeScreen({ navigation }) {
           style={{
             color: "#565656",
             fontSize: 14,
-            width: "80%",
+            width: "90%",
             textAlign: "center",
           }}
         >
@@ -56,7 +64,9 @@ export default function HomeScreen({ navigation }) {
       </View>
       <View style={styles.levelContainer}>
         <Text style={{ fontSize: 14, fontWeight: "bold" }}>Mon niveau</Text>
-        <Text>🌱 {user.level}</Text>
+        <Text>
+          {levelIcons[user.level]} {user.level}
+        </Text>
         <CustomButton
           title={"Historique de quêtes"}
           textSize={13}
@@ -142,9 +152,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-evenly",
   },
-  carousel: { height: 182, width: "80%" },
+  carousel: { height: 182, width: "90%" },
   carouselImg: {
-    width: width * 0.8,
+    width: width * 0.9,
     height: "100%",
   },
   carouselOverlay: {
@@ -156,7 +166,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     padding: 15,
     bottom: 20,
-    width: "80%",
+    width: "90%",
   },
   carouselTitle: {
     fontSize: 16,
@@ -171,7 +181,7 @@ const styles = StyleSheet.create({
   },
   btnContainer: {
     flexDirection: "row",
-    width: "80%",
+    width: "90%",
     justifyContent: "space-between",
     alignItems: "center",
     gap: 10,
@@ -190,7 +200,7 @@ const styles = StyleSheet.create({
     elevation: 7,
     backgroundColor: "#fff",
     height: 350,
-    width: "80%",
+    width: "90%",
     justifyContent: "center",
     alignItems: "center",
     gap: 25,
