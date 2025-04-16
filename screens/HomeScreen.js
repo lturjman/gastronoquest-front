@@ -140,8 +140,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F9F9F9",
     alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
+    justifyContent: "space-evenly",
   },
   carousel: { height: 182, width: "80%" },
   carouselImg: {
