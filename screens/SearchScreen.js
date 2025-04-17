@@ -6,7 +6,7 @@ import * as Location from 'expo-location';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-// import CustomCheckbox from "../components/ui-kit/CustomCheckbox";
+import RestaurantCard from "../components/ui-kit/RestaurantCard";
 import Checkbox from "../components/ui-kit/Checkbox";
 import CustomInput from "../components/ui-kit/CustomInput";
 import RadioButton from "../components/ui-kit/RadioButton";
@@ -18,25 +18,28 @@ const perimeterOptions = ['Lieu exact', '2 km', '5 km', '10 km', '20 km', '30 km
 const priceRangeOptions = ['Moins de 15€', 'Entre 15€ et 30€', 'Entre 30€ et 50€', 'Entre 50€ et 100€', 'Plus de 100€'];
 const typesOptions = ['Bistronomique', 'Café-restaurant', 'Traiteurs', 'Food truck', 'Gastronomique', 'Sur le pouce', 'Sandwicherie', 'Street-food', 'Salon de thé', 'Bar à vin'];
 
-// useNavigation
+// useNavigation ?
 
 export default function SearchScreen() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
 
-  const [view, setView] = useState('map');
-  const [searchType, setSearchType] = useState('restaurant');
-  const [searchInput, setSearchInput] = useState('');
+  const [view, setView] = useState("map");
+  const [searchType, setSearchType] = useState("restaurant");
+  const [searchInput, setSearchInput] = useState("");
   const [badges, setBadges] = useState([]);
   const [types, setTypes] = useState([]);
-  const [priceRange, setPriceRange] = useState('');
-  const [perimeter, setPerimeter] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);
+  const [priceRange, setPriceRange] = useState("");
+  const [perimeter, setPerimeter] = useState("");
+  const [filtersVisible, setFiltersVisible] = useState(false);   // Modale pour les filtres de recherche
+  const [cardVisible, setCardVisible] = useState(false);   // Modale carte du restaurant (pour vue par carte)
   const [searchResults, setSearchResults] = useState([]);
 
   const markers = searchResults.map((data, i) => {
     const { latitude, longitude } = data.coordinates;
     return (<Marker key={i} coordinate={{ latitude, longitude }} onPress={() => console.log(data.name)} />);
+    // Trouver moyen de cacher le callout, changer la couleur du marker sélectionné
+    // Sur le onPress, passer toutes les informations du restaurant à RestaurantCard (à dynamiser avec notamment lien du resto qui navigue vers RestaurantScreen avec les infos correspondantes
   });
   /*
   name: String,
@@ -54,21 +57,21 @@ export default function SearchScreen() {
   */
 
   const fetchResults = async () => {   // A l'appui sur le bouton "Afficher les résultats"
-    setModalVisible(false);   // Fermer la modale (voir si on le met avant ou après les requêtes)
+    setFiltersVisible(false);   // Fermer la modale (voir si on le met avant ou après les requêtes)
 
     // Envoyer une requête au backend en fonction du type de recherche (Pour le moment : affichage pour tests)
-    
+
     // Construction de la requête
     const body = { badges, types, priceRange }; // voir si faudrait pas mettre une condition avant en fonction de comment le backend reçoit ça
-    if (searchType === 'restaurant') {
-      console.log('POST /search/restaurant');
+    if (searchType === "restaurant") {
+      console.log("POST /search/restaurant");
       body.name = searchInput;
-    } else if (searchType === 'lieu') {
-      console.log('POST /search/place ou address ???');
-      if (perimeter === 'Lieu exact') body.address = searchInput;
-      if (perimeter && perimeter !== 'Lieu exact') {
+    } else if (searchType === "lieu") {
+      console.log("POST /search/place ou address (à mieux définir)");
+      if (perimeter === "Lieu exact") body.address = searchInput;
+      if (perimeter && perimeter !== "Lieu exact") {
         body.input = searchInput;
-        body.perimeter = perimeter.replace(' km','');
+        body.perimeter = perimeter.replace(" km", "");
       }
       if (!perimeter) {
         body.input = searchInput;
@@ -81,11 +84,11 @@ export default function SearchScreen() {
     console.log(body);
 
     // Pour le moment ça sauvegarde les paramètres de la requête, voir si on veut changer ça
-  }
+  };
 
   const switchView = () => {   // Alterner entre vue Map/List et changement de l'icône
     setView(view => view === 'map' ? 'list' : 'map');
-  };
+  }
 
   /*
   useEffect(() => {
@@ -105,49 +108,80 @@ export default function SearchScreen() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
+
+        {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Trouver un restaurant</Text>
           <View style={styles.options}>
-            <TouchableOpacity style={styles.searchButton} onPress={() => setModalVisible(true)}>
+            <TouchableOpacity style={styles.searchButton} onPress={() => setFiltersVisible(true)}>
               <Text style={styles.buttonText}>Chercher un restaurant</Text>
-              <Search size={20} color={'#173e19'} />
+              <Search size={20} color={"#173e19"} />
             </TouchableOpacity>
-            { view === 'map' && <List size={40} color={'#173e19'} onPress={switchView} /> }
-            { view === 'list' && <Map size={40} color={'#173e19'} onPress={switchView} /> }
+            { view === "map" && (<List size={40} color={"#173e19"} onPress={switchView} />) }
+            { view === "list" && (<Map size={40} color={"#173e19"} onPress={switchView} />) }
           </View>
+          { searchResults && (<Text>Nombre de résultats</Text>) }
         </View>
+
         <View style={styles.results}>
+
+          {/* Map */}
           { view === 'map' && <Text>Map</Text> }
           { view === 'map' && <MapView></MapView> }
+          { view === 'map' && <RestaurantCard restaurant={restaurant} />} {/* A mettre dans la vue en carte en position fixe en bas de l'écran avec une modale */}
+
+          {/* List */}
           { view === 'list' && <Text>List</Text> }
-          <CustomCard />
+          
         </View>
       </View>
 
-    {/* "Drawer" SearchFilters pour le moment sous forme de modale */}
-      <Modal visible={modalVisible} animationType="slide" transparent>
+      {/* SearchFilters sous forme de modale */}
+      <Modal visible={filtersVisible} animationType="slide" transparent>
         <View style={styles.modalView}>
           <ScrollView contentContainerStyle={styles.scrollView}>
             <View style={styles.modalContent}>
-              <CustomInput placeholder="Chercher un restaurant" value={searchInput} onChangeText={(value) => setSearchInput(value)} />
+              <CustomInput
+                placeholder="Chercher un restaurant"
+                value={searchInput}
+                onChangeText={(value) => setSearchInput(value)}
+              />
               <View style={styles.searchTypeContainer}>
                 <Text>Je cherche un</Text>
-                <RadioButton options={['lieu', 'restaurant']} checkedValue={searchType} onChange={setSearchType} />
+                <RadioButton
+                  options={["lieu", "restaurant"]}
+                  checkedValue={searchType}
+                  onChange={setSearchType}
+                />
               </View>
-              <View style={{ width: '100%', alignItems: 'start' }}>
-                <Text style={{ fontWeight: 'bold', marginVertical: 10, fontSize: 16 }}>Périmètre</Text>
+              <View style={{ width: "100%", alignItems: "start" }}>
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    marginVertical: 10,
+                    fontSize: 16,
+                  }}
+                >
+                  Périmètre
+                </Text>
                 <SelectDropdown
                   data={perimeterOptions}
                   onSelect={(selectedOption) => setPerimeter(selectedOption)}
                   renderButton={(selectedOption) => (
                     <View style={styles.dropdownButtonStyle}>
-                      <Text style={styles.dropdownButtonTxtStyle}>{(selectedOption && selectedOption) || ''}</Text>
+                      <Text style={styles.dropdownButtonTxtStyle}>
+                        {(selectedOption && selectedOption) || ""}
+                      </Text>
                       <ChevronsUpDown size={20} color="black" />
                     </View>
-                    )}
+                  )}
                   renderItem={(item, index, isSelected) => {
                     return (
-                      <View style={{...styles.dropdownItemStyle, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
+                      <View
+                        style={{
+                          ...styles.dropdownItemStyle,
+                          ...(isSelected && { backgroundColor: "#D2D9DF" }),
+                        }}
+                      >
                         <Text style={styles.dropdownItemTxtStyle}>{item}</Text>
                       </View>
                     );
@@ -155,44 +189,87 @@ export default function SearchScreen() {
                   showsVerticalScrollIndicator={false}
                   dropdownStyle={styles.dropdownMenuStyle}
                 />
-                <Text style={{ fontWeight: 'bold', marginVertical: 10, fontSize: 16 }}>Prix</Text>
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    marginVertical: 10,
+                    fontSize: 16,
+                  }}
+                >
+                  Prix
+                </Text>
                 <SelectDropdown
-                        data={priceRangeOptions}
-                        onSelect={(selectedOption) => setPriceRange(selectedOption)}
-                        renderButton={(selectedOption) => (
-                            <View style={styles.dropdownButtonStyle}>
-                              <Text style={styles.dropdownButtonTxtStyle}>{(selectedOption && selectedOption) || ''}</Text>
-                              <ChevronsUpDown size={20} color="black" />
-                            </View>
-                          )}
-                        renderItem={(item, index, isSelected) => {
-                          return (
-                            <View style={{...styles.dropdownItemStyle, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
-                              <Text style={styles.dropdownItemTxtStyle}>{item}</Text>
-                            </View>
-                          );
+                  data={priceRangeOptions}
+                  onSelect={(selectedOption) => setPriceRange(selectedOption)}
+                  renderButton={(selectedOption) => (
+                    <View style={styles.dropdownButtonStyle}>
+                      <Text style={styles.dropdownButtonTxtStyle}>
+                        {(selectedOption && selectedOption) || ""}
+                      </Text>
+                      <ChevronsUpDown size={20} color="black" />
+                    </View>
+                  )}
+                  renderItem={(item, index, isSelected) => {
+                    return (
+                      <View
+                        style={{
+                          ...styles.dropdownItemStyle,
+                          ...(isSelected && { backgroundColor: "#D2D9DF" }),
                         }}
-                        showsVerticalScrollIndicator={false}
-                        dropdownStyle={styles.dropdownMenuStyle}
-                      />
-                <Text style={{ fontWeight: 'bold', marginVertical: 10, fontSize: 16 }}>Badges</Text>
-                <Checkbox options={badgesOptions} checkedValues={badges} onChange={setBadges} />
-                <Text style={{ fontWeight: 'bold', marginVertical: 10, fontSize: 16 }}>Types d'établissement</Text>
-                <Checkbox options={typesOptions} checkedValues={types} onChange={setTypes} />
+                      >
+                        <Text style={styles.dropdownItemTxtStyle}>{item}</Text>
+                      </View>
+                    );
+                  }}
+                  showsVerticalScrollIndicator={false}
+                  dropdownStyle={styles.dropdownMenuStyle}
+                />
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    marginVertical: 10,
+                    fontSize: 16,
+                  }}
+                >
+                  Badges
+                </Text>
+                <Checkbox
+                  options={badgesOptions}
+                  checkedValues={badges}
+                  onChange={setBadges}
+                />
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    marginVertical: 10,
+                    fontSize: 16,
+                  }}
+                >
+                  Types d'établissement
+                </Text>
+                <Checkbox
+                  options={typesOptions}
+                  checkedValues={types}
+                  onChange={setTypes}
+                />
               </View>
             </View>
           </ScrollView>
           <View style={styles.footer}>
             <View style={styles.buttonContainer}>
-              <CustomButton title="Afficher les résultats" variant="light" textSize={14} onPress={() => fetchResults()} />
+              <CustomButton
+                title="Afficher les résultats"
+                variant="light"
+                textSize={14}
+                onPress={() => fetchResults()}
+              />
             </View>
           </View>
         </View>
       </Modal>
-
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -202,18 +279,13 @@ const styles = StyleSheet.create({
     justifyContent: "start",
   },
   header: {
-    width: '100%',
+    width: "100%",
     height: 170,
-    alignItems: "center"
-  },
-  title: {
-    textAlign: 'center',
-    fontSize: 25,
-    marginTop: 40,
-    marginBottom: 10
+    alignItems: "center",
   },
   options: {
     width: '90%',
+    marginTop: 40,
     flexDirection: 'row',
     justifyContent: 'center', // 'space-between' à tester
     alignItems: 'center',
@@ -226,7 +298,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
-    flexDirection: 'row',
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     gap: 15,
@@ -244,82 +316,74 @@ const styles = StyleSheet.create({
     color: "#173e19",
   },
   results: {
-    width: '100%',
+    width: "100%",
     flex: 1,
   },
   searchTypeContainer: {
-    flexDirection: 'row',
-    flexWrap: 'no-wrap',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    flexWrap: "no-wrap",
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 5,
     marginBottom: 10,
   },
   modalView: {
-    height: Dimensions.get('window').height,
-    width: Dimensions.get('window').width,
-    backgroundColor: '#FFFFFF',
+    height: Dimensions.get("window").height,
+    width: Dimensions.get("window").width,
+    backgroundColor: "#FFFFFF",
   },
   scrollView: {
-    width: Dimensions.get('window').width,
+    width: Dimensions.get("window").width,
     alignItems: "center",
-    justifyContent: "start"
+    justifyContent: "start",
   },
   modalContent: {
-    minWidth: '90%',
-    maxWidth: '90%',
-    alignItems: 'center',
+    minWidth: "90%",
+    maxWidth: "90%",
+    alignItems: "center",
   },
   footer: {
-    width: '100%',
+    width: "100%",
     borderTopWidth: 2,
-    borderTopColor: 'lightgrey',
+    borderTopColor: "lightgrey",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 5
+    paddingVertical: 5,
   },
   buttonContainer: {
-    width: '80%',
-    maxWidth: '80%',
+    width: "80%",
+    maxWidth: "80%",
   },
   dropdownButtonStyle: {
     width: 200,
     height: 50,
-    backgroundColor: '#E9ECEF',
+    backgroundColor: "#E9ECEF",
     borderRadius: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 12,
   },
   dropdownButtonTxtStyle: {
     flex: 1,
     fontSize: 14,
-    color: '#151E26',
+    color: "#151E26",
   },
   dropdownMenuStyle: {
-    backgroundColor: '#E9ECEF',
+    backgroundColor: "#E9ECEF",
     borderRadius: 8,
   },
   dropdownItemStyle: {
-    width: '100%',
-    flexDirection: 'row',
+    width: "100%",
+    flexDirection: "row",
     paddingHorizontal: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingVertical: 8,
   },
   dropdownItemTxtStyle: {
     flex: 1,
     fontSize: 14,
-    color: '#151E26',
-  }
+    color: "#151E26",
+  },
 });
-
-
-/*
-<CustomCheckbox label="Test" checked={false} onPress={handleCheck} />
-  const handleCheck = () => {
-    console.log("check");
-  };
-*/
