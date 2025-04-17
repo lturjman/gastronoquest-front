@@ -11,7 +11,9 @@ import {
 } from "react-native";
 import { Search, List, Map, ChevronsUpDown } from "lucide-react-native";
 import SelectDropdown from "react-native-select-dropdown";
-import MapView, { Marker } from "react-native-maps";
+
+// import MapView, { Marker } from "react-native-maps";
+
 import * as Location from "expo-location";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
