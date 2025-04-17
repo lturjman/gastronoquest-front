@@ -7,10 +7,10 @@ import {
   Platform
 } from "react-native";
 import { Leaf, Heart } from "lucide-react-native";
-// import { useNavigation } from "@react-navigation/native";
+// import { useNavigation } from "@react-navigation/native"; ???
 
 
-export default function RestaurantCard() {
+export default function RestaurantCard({ restaurant, navigation }) {
   const [liked, setLiked] = useState(false);
 
   return (

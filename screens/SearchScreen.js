@@ -35,8 +35,8 @@ export default function SearchScreen() {
   const [cardVisible, setCardVisible] = useState(false);   // Modale carte du restaurant (pour vue par carte)
   const [searchResults, setSearchResults] = useState([]);
 
-  const markers = searchResults.map((data, i) => {
-    const { latitude, longitude } = data.coordinates;
+  const markers = searchResults.map((restaurant, i) => {
+    const { latitude, longitude } = restaurant.coordinates;
     return (<Marker key={i} coordinate={{ latitude, longitude }} onPress={() => console.log(data.name)} />);
     // Trouver moyen de cacher le callout, changer la couleur du marker sélectionné
     // Sur le onPress, passer toutes les informations du restaurant à RestaurantCard (à dynamiser avec notamment lien du resto qui navigue vers RestaurantScreen avec les infos correspondantes
@@ -126,7 +126,7 @@ export default function SearchScreen() {
 
           {/* Map */}
           { view === 'map' && <Text>Map</Text> }
-          { view === 'map' && <MapView></MapView> }
+          {/* view === 'map' && <MapView></MapView> */}
           { view === 'map' && <RestaurantCard restaurant={restaurant} />} {/* A mettre dans la vue en carte en position fixe en bas de l'écran avec une modale */}
 
           {/* List */}
