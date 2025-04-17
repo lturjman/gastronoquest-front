@@ -23,6 +23,15 @@ export const UserSlice = createSlice({
     removeUser: (state) => {
       state.value = { username: null, email: null, token: null };
     },
+    addFavorite: (state, action) => {
+      state.value.favorites.push(action.payload);
+    },
+    removeFavorite: (state, action) => {
+      const removedId = action.payload._id.toString();
+      state.favorites = state.favorites.filter(
+        (restaurant) => restaurant._id.toString() !== removedId
+      );
+    },
   },
 });
 

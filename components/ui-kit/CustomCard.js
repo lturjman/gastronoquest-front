@@ -1,4 +1,6 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { removeFavorite, addFavorite } from "../../reducers/user.js";
+import { useState } from "react";
 import {
   View,
   Text,
@@ -11,22 +13,26 @@ import { Leaf, Heart } from "lucide-react-native";
 import { useNavigation } from "@react-navigation/native";
 
 export default function CustomCard({ restaurant }) {
-  const favorites = useSelector((state) => state.user.value.favorites);
+  const favorites = useSelector((state) => state.user.favorites);
+  const token = useSelector((state) => state.user.value.token);
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
-  const isFavorite = favorites.includes(restaurant);
+  const [isFavorite, setIsFavorite] = useState(
+    favorites.some((fav) => fav._id === restaurant._id)
+  );
 
   const leaves = [];
   for (let i = 0; i < restaurant.score; i++) {
     leaves.push(<Leaf key={i} color="#173e19" size={20} />);
   }
 
-  const handleRemoveFromFavorites = async ({ restaurant }) => {
+  const handleRemoveFromFavorites = async (restaurant) => {
     const response = await fetch(
       `${process.env.EXPO_PUBLIC_BACKEND_URL}/favorites`,
       {
         method: "DELETE",
-        headers: { authorization: token },
+        headers: { "Content-Type": "application/json", authorization: token },
         body: JSON.stringify({
           restaurantId: restaurant._id,
         }),
@@ -34,11 +40,34 @@ export default function CustomCard({ restaurant }) {
     );
 
     const data = await response.json();
+    console.log("restaurant", restaurant);
 
     if (data.result) {
-      console.log("Restaurant retiré des favoris avec succès");
-    } else {
-      console.warn("Erreur côté serveur :", data.message);
+      console.log(restaurant);
+
+      dispatch(removeFavorite(restaurant));
+      setIsFavorite(false);
+    }
+  };
+
+  const handleAddFromFavorites = async (restaurant) => {
+    const response = await fetch(
+      `${process.env.EXPO_PUBLIC_BACKEND_URL}/favorites`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json", authorization: token },
+        body: JSON.stringify({
+          restaurantId: restaurant._id,
+        }),
+      }
+    );
+
+    const data = await response.json();
+    console.log("data", data);
+
+    if (data.result) {
+      dispatch(addFavorite(restaurant));
+      setIsFavorite(true);
     }
   };
 
@@ -58,7 +87,11 @@ export default function CustomCard({ restaurant }) {
             <TouchableOpacity
               style={isFavorite ? styles.liked : styles.notLiked}
               onPress={() => {
-                handleRemoveFromFavorites;
+                if (isFavorite) {
+                  handleRemoveFromFavorites(restaurant);
+                } else {
+                  handleAddFromFavorites(restaurant);
+                }
               }}
             >
               <Heart color={"#fff"} size={25} />
