@@ -37,8 +37,11 @@ export default function CustomCard({ restaurant, favorites }) {
             <Text style={styles.title}>{restaurant.name}</Text>
           </TouchableOpacity>
           <View style={styles.headerRight}>
-            <TouchableOpacity onPress={() => setLiked(!liked)}>
-              <Heart color={liked ? "#e53935" : "#173e19"} size={30} />
+            <TouchableOpacity
+              onPress={() => setLiked(!liked)}
+              style={liked ? styles.liked : styles.notLiked}
+            >
+              <Heart color={"#fff"} size={25} />
             </TouchableOpacity>
           </View>
         </View>
@@ -156,5 +159,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#173e19",
     fontWeight: "600",
+  },
+  liked: {
+    backgroundColor: "#e5685c",
+    borderRadius: 50,
+    padding: 8,
+  },
+  notLiked: {
+    backgroundColor: "#C4C4C4",
+    borderRadius: 50,
+    padding: 8,
   },
 });
