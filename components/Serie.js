@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, Platform, Pressable } from "react-native";
 
 import { Lock, ArrowRight } from "lucide-react-native";
 
+// Liste des styles variables en fonction du status du quizz
 const variantStyles = {
   validated: {
     backgroundSerie: {
@@ -51,9 +52,18 @@ const variantStyles = {
   },
 };
 
+// Liste des labels à afficher en fonction de la difficulté
+const seriesLevelLabels = {
+  Facile: "🟢 Facile",
+  Moyen: "🟠 Moyen",
+  Difficile: "🔴 Difficile",
+};
+
 const Serie = ({ serieTitle, serieLevel, variant, score = 0, onPress }) => {
+  // Récupération du style variable
   const selectedVariant = variantStyles[variant];
 
+  // Gestion de l'affichage du score en fonction du status du quizz
   const scoreToDisplay = () => {
     if (variant === "blocked") {
       return <Lock size={20} color={"gray"} />;
@@ -73,7 +83,9 @@ const Serie = ({ serieTitle, serieLevel, variant, score = 0, onPress }) => {
         <Text style={[styles.serieTitle, selectedVariant.fontColor]}>
           {serieTitle}
         </Text>
-        <Text style={selectedVariant.fontColor}>{serieLevel}</Text>
+        <Text style={selectedVariant.fontColor}>
+          {seriesLevelLabels[serieLevel]}
+        </Text>
       </View>
       <View
         style={[styles.scoreSerieContainer, selectedVariant.backgroundScore]}
@@ -87,7 +99,7 @@ const Serie = ({ serieTitle, serieLevel, variant, score = 0, onPress }) => {
 const styles = StyleSheet.create({
   serieContainer: {
     width: "100%",
-    height: 80,
+    height: 70,
     backgroundColor: "white",
     flexDirection: "row",
     justifyContent: "space-between",

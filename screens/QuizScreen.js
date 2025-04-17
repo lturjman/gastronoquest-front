@@ -1,7 +1,15 @@
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import Serie from "../components/Serie";
 import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 
+// Objet qui contient les icones à afficher en fonction du niveau
 const levelIcons = {
   "jeune pousse": "🌱",
   curieux: "🍪",
@@ -10,65 +18,172 @@ const levelIcons = {
   "vieille branche": "🌳",
 };
 
+// Fonction pour récupérer les quizz depuis le backend
+const fetchQuiz = async () => {
+  try {
+    // Récupération des quiz
+    const response = await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URL}/quiz`);
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// Fonction pour récupérer les résultats de l'utilisateur
+const fetchQuizResults = async (token) => {
+  try {
+    // Récupération des résultats de quizz
+    const response = await fetch(
+      `${process.env.EXPO_PUBLIC_BACKEND_URL}/quizResults`,
+      {
+        method: "GET",
+        headers: { authorization: token },
+      }
+    );
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// Fonction pour transformer les quizz récupérer et débloquer uniquement le premier quizz
+const getQuizWithoutConnection = async () => {
+  const quizData = await fetchQuiz();
+
+  // Remise en ordre des quiz
+  const quizDataSorted = quizData.quizzes.sort(
+    (a, b) => a.quizNumber - b.quizNumber
+  );
+
+  // Modification des données à retourner pour spécifier le status du quiz
+  return quizDataSorted.map((quiz) => {
+    const { _id, title, difficulty, quizNumber } = quiz;
+    // Comme l'utilisateur n'est pas connecté, on débloque uniquement le premier quizz
+    let status = quizNumber === 1 ? "todo" : "blocked";
+    return { _id, title, difficulty, quizNumber, status, score: 0 };
+  });
+};
+
+// Fonction pour transformer les quizz en fonction des quiz réalisés par l'utilisateur
+const getQuizWithConnection = async (token) => {
+  // Récupération des quizz et des résultats de l'utilisateur
+  const quizData = await fetchQuiz();
+  const quizResultsData = await fetchQuizResults(token);
+
+  // Remise en ordre des quizz pour avoir le bon ordre d'affichage
+  const quizDataSorted = quizData.quizzes.sort(
+    (a, b) => a.quizNumber - b.quizNumber
+  );
+
+  // Retourne une liste de quizz enrichie en fonction des données utilisateur
+  return quizDataSorted.map((quiz) => {
+    const { _id, title, difficulty, quizNumber } = quiz;
+    let status;
+    let score = 0;
+    // Calcul du nombre de quizz réalisés pour savoir lequel doit être débloqué
+    const quizzesNumberRealized = quizResultsData.data.length;
+
+    // Filtrage des résultats pour voir si le quizz qu'on cherche est mentionné
+    const quizResultsFiltered = quizResultsData.data.filter(
+      (quizResult) => quiz._id === quizResult.quiz
+    );
+
+    // Si le quizz est mentionné, il peut être uniquement en status validated ou toImprove
+    if (quizResultsFiltered.length) {
+      // Si le quizz est noté comme passed, il est validated, sinon on lui met un status toImprove
+      status = quizResultsFiltered[0].passed ? "validated" : "toImprove";
+      // On actualise le score en fonction des résultats
+      score = quizResultsFiltered[0].score;
+    } else {
+      // Si on ne trouve pas le quizz dans les résultats, il doit être soit en blocked soit en todo
+      if (quiz.quizNumber === quizzesNumberRealized + 1) {
+        // On met un status todo au prochain quizz qui doit être réalisé
+        status = "todo";
+      } else {
+        // Les autres quizz sont mis en blocked pour empêcher l'utilisateur de les réaliser
+        status = "blocked";
+      }
+    }
+    return { _id, title, difficulty, quizNumber, status, score };
+  });
+};
+
 export default function QuizScreen({ navigation }) {
+  // Récupérer les données de l'utilisateur
   const user = useSelector((state) => state.user.value);
+
+  // State pour stocker les quizz et l'avancée
+  const [quizzes, setQuizzes] = useState([]);
+
+  // Redirection vers la page de question
   const handlePress = () => {
     navigation.navigate("QuestionScreen");
   };
+
+  // Chargement des quizz
+  useEffect(() => {
+    // Si l'utilisateur n'est pas connecté
+    if (!user.token) {
+      // On charge simplement les quiz et on débloque uniquement le premier
+      getQuizWithoutConnection().then((dataQuizzes) => setQuizzes(dataQuizzes));
+    } else {
+      // Sinon on appelle la fonction qui charge les quizz et les résultats de l'utilisateur
+      getQuizWithConnection(user.token).then((dataQuizzes) =>
+        setQuizzes(dataQuizzes)
+      );
+    }
+  }, []);
+
+  // Variable pour stocker le nombre de quizz réalisés
+  const seriesNumberRealized = quizzes.filter(
+    (quiz) => quiz.status === "validated"
+  ).length;
+
   return (
     <View style={styles.container}>
       <View style={styles.presentationContainer}>
         <View style={styles.seriesNumberContainer}>
           <Text style={{ fontSize: 20 }}>✅</Text>
-          <Text style={{ fontWeight: 600, fontSize: 50 }}>3</Text>
+          <Text style={{ fontWeight: 600, fontSize: 50 }}>
+            {seriesNumberRealized}
+          </Text>
           <View>
-            <Text style={{ fontSize: 18 }}>séries</Text>
-            <Text style={{ fontSize: 18 }}>réalisées</Text>
+            <Text style={{ fontSize: 18 }}>
+              {seriesNumberRealized > 1 ? "séries" : "série"}
+            </Text>
+            <Text style={{ fontSize: 18 }}>
+              {seriesNumberRealized > 1 ? "réalisées" : "réalisée"}
+            </Text>
           </View>
         </View>
-        <Text style={{ fontSize: 15 }}>
-          {levelIcons[user.level]} {user.level}
-        </Text>
+        {user.token ? (
+          <Text style={{ fontSize: 15 }}>
+            {levelIcons[user.level]} {user.level}
+          </Text>
+        ) : (
+          <TouchableOpacity onPress={() => navigation.navigate("Enter")}>
+            <Text
+              style={{ textAlign: "center", textDecorationLine: "underline" }}
+            >
+              Connectez-vous pour sauvegarder votre avancée
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
       <ScrollView style={styles.seriesContainer}>
-        <Serie
-          serieTitle={"Cuisine écoresponsable"}
-          serieLevel={"🔴 Difficile"}
-          variant={"toImprove"}
-          score={5}
-          onPress={handlePress}
-        />
-        <Serie
-          serieTitle={"Cuisine écoresponsable"}
-          serieLevel={"🔴 Difficile"}
-          variant={"validated"}
-          score={10}
-          onPress={handlePress}
-        />
-        <Serie
-          serieTitle={"Cuisine écoresponsable"}
-          serieLevel={"🔴 Difficile"}
-          variant={"todo"}
-          onPress={handlePress}
-        />
-        <Serie
-          serieTitle={"Cuisine écoresponsable"}
-          serieLevel={"🔴 Difficile"}
-          variant={"blocked"}
-          onPress={handlePress}
-        />
-        <Serie
-          serieTitle={"Cuisine écoresponsable"}
-          serieLevel={"🔴 Difficile"}
-          variant={"blocked"}
-          onPress={handlePress}
-        />
-        <Serie
-          serieTitle={"Cuisine écoresponsable"}
-          serieLevel={"🔴 Difficile"}
-          variant={"blocked"}
-          onPress={handlePress}
-        />
+        {quizzes.map((quiz, i) => (
+          <Serie
+            key={i}
+            serieTitle={quiz.title}
+            serieLevel={quiz.difficulty}
+            score={quiz.score}
+            variant={quiz.status}
+            onPress={handlePress}
+          />
+        ))}
       </ScrollView>
     </View>
   );
