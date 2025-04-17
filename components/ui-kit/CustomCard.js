@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
   View,
   Text,
@@ -10,18 +10,37 @@ import {
 import { Leaf, Heart } from "lucide-react-native";
 import { useNavigation } from "@react-navigation/native";
 
-export default function CustomCard({ restaurant, favorites }) {
+export default function CustomCard({ restaurant }) {
+  const favorites = useSelector((state) => state.user.value.favorites);
   const navigation = useNavigation();
-  const [liked, setLiked] = useState(false);
 
-  useEffect(() => {
-    setLiked(favorites?.some((fav) => fav._id === restaurant._id));
-  }, [favorites]); // met à jour le state liked si favorites change
+  const isFavorite = favorites.includes(restaurant);
 
   const leaves = [];
   for (let i = 0; i < restaurant.score; i++) {
     leaves.push(<Leaf key={i} color="#173e19" size={20} />);
   }
+
+  const handleRemoveFromFavorites = async ({ restaurant }) => {
+    const response = await fetch(
+      `${process.env.EXPO_PUBLIC_BACKEND_URL}/favorites`,
+      {
+        method: "DELETE",
+        headers: { authorization: token },
+        body: JSON.stringify({
+          restaurantId: restaurant._id,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (data.result) {
+      console.log("Restaurant retiré des favoris avec succès");
+    } else {
+      console.warn("Erreur côté serveur :", data.message);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -37,8 +56,10 @@ export default function CustomCard({ restaurant, favorites }) {
           </TouchableOpacity>
           <View style={styles.headerRight}>
             <TouchableOpacity
-              onPress={() => setLiked(!liked)}
-              style={liked ? styles.liked : styles.notLiked}
+              style={isFavorite ? styles.liked : styles.notLiked}
+              onPress={() => {
+                handleRemoveFromFavorites;
+              }}
             >
               <Heart color={"#fff"} size={25} />
             </TouchableOpacity>
