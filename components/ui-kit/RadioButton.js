@@ -1,4 +1,3 @@
-import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 export default function RadioButton({ options, checkedValue, onChange }) {
@@ -58,6 +57,6 @@ const styles = StyleSheet.create({
   },
   labelSelected: {
     fontWeight: "bold",
-    color: "#173e19", // Vert foncé
+    color: "#173e19", // Dark Green
   },
 });
