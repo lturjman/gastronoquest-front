@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,11 +8,15 @@ import {
 } from "react-native";
 
 import { Leaf, Heart } from "lucide-react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-export default function CustomCard({ restaurant, navigation }) {
+export default function CustomCard({ restaurant, favorites }) {
+  const navigation = useNavigation();
   const [liked, setLiked] = useState(false);
+
+  useEffect(() => {
+    setLiked(favorites?.some((fav) => fav._id === restaurant._id));
+  }, [favorites]); // met à jour le state liked si favorites change
 
   const leaves = [];
   for (let i = 0; i < restaurant.score; i++) {
@@ -20,51 +24,56 @@ export default function CustomCard({ restaurant, navigation }) {
   }
 
   return (
-    <View style={styles.card}>
-      
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("RestaurantScreen", { restaurant })
-          }
-        >
-          <Text style={styles.title}>{restaurant.name}</Text>
-        </TouchableOpacity>
-        <View style={styles.headerRight}>
-          <TouchableOpacity onPress={() => setLiked(!liked)}>
-            <Heart color={liked ? "#e53935" : "#173e19"} size={30} />
+    <View style={styles.container}>
+      <View style={styles.card}>
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("RestaurantScreen", { restaurant })
+            }
+          >
+            <Text style={styles.title}>{restaurant.name}</Text>
           </TouchableOpacity>
+          <View style={styles.headerRight}>
+            <TouchableOpacity
+              onPress={() => setLiked(!liked)}
+              style={liked ? styles.liked : styles.notLiked}
+            >
+              <Heart color={"#fff"} size={25} />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
 
-      {/* Note (score de 1 à 3) */}
-      <View style={styles.noteContainer}>{leaves}</View>
-
-      {/* Adresse */}
-      <Text style={styles.address}>{restaurant.address}</Text>
-
-      {/* Badges */}
-      <View style={styles.tagContainer}>
-        {restaurant.badges.map((badge, index) => (
-          <View key={index} style={styles.tag}>
-            <Text style={styles.tagText}>{badge}</Text>
+        <View style={styles.notenpricecontainer}>
+          {/* Note (score de 1 à 3) */}
+          <View style={styles.noteContainer}>{leaves}</View>
+          {/* Gamme de prix */}
+          <View style={styles.priceTag}>
+            <Text style={styles.priceText}>{restaurant.priceRange}</Text>
           </View>
-        ))}
-      </View>
+        </View>
 
-      {/* Types */}
-      <View style={styles.tagContainer}>
-        {restaurant.types.map((type, index) => (
-          <View key={index} style={styles.type}>
-            <Text style={styles.typeText}>{type}</Text>
-          </View>
-        ))}
-      </View>
+        {/* Adresse */}
+        <Text style={styles.address}>{restaurant.address}</Text>
 
-      {/* Gamme de prix */}
-      <View style={styles.tagContainer}>
-        <Text style={styles.priceText}>{restaurant.priceRange}</Text>
+        {/* Badges */}
+        <View style={styles.tagContainer}>
+          {restaurant.badges.map((badge, index) => (
+            <View key={index} style={styles.tag}>
+              <Text style={styles.tagText}>{badge}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Types */}
+        <View style={styles.tagContainer}>
+          {restaurant.types.map((type, index) => (
+            <View key={index} style={styles.type}>
+              <Text style={styles.typeText}>{type}</Text>
+            </View>
+          ))}
+        </View>
       </View>
     </View>
   );
@@ -72,6 +81,8 @@ export default function CustomCard({ restaurant, navigation }) {
 
 const styles = StyleSheet.create({
   card: {
+    width: "90%",
+    alignSelf: "center",
     backgroundColor: "#fff",
     padding: 20,
     borderRadius: 10,
@@ -100,6 +111,11 @@ const styles = StyleSheet.create({
   noteContainer: {
     flexDirection: "row",
   },
+  notenpricecontainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 20,
+  },
   title: {
     fontSize: 20,
     fontWeight: "bold",
@@ -111,6 +127,7 @@ const styles = StyleSheet.create({
   },
   tagContainer: {
     flexDirection: "row",
+    flexWrap: "wrap",
     gap: 8,
   },
   tag: {
@@ -118,6 +135,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 14,
     paddingVertical: 6,
+    height: 30,
   },
   tagText: {
     fontSize: 14,
@@ -129,22 +147,26 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 14,
     paddingVertical: 6,
+    height: 30,
   },
   typeText: {
     color: "#fff",
     fontWeight: "600",
   },
-  priceTag: {
-    marginTop: 8,
-    alignSelf: "flex-start",
-    backgroundColor: "#eee", //gris
-    borderRadius: 20,
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-  },
+
   priceText: {
     fontSize: 14,
-    color: "#333",
+    color: "#173e19",
     fontWeight: "600",
+  },
+  liked: {
+    backgroundColor: "#e5685c",
+    borderRadius: 50,
+    padding: 8,
+  },
+  notLiked: {
+    backgroundColor: "#C4C4C4",
+    borderRadius: 50,
+    padding: 8,
   },
 });

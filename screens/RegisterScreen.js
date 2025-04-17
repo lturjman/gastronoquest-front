@@ -58,6 +58,17 @@ export default function RegisterScreen({ navigation }) {
       setModalVisible(true);
       return;
     }
+    const handleApiErrors = (responseError) => {
+      const apiErrors = [];
+
+      if (responseError === "Email already exists") {
+        apiErrors.push("・ Cette adresse email est déjà utilisée");
+      } else {
+        apiErrors.push("・ Une erreur est survenue lors de l'inscription");
+      }
+
+      return apiErrors;
+    };
 
     // Appel de la fonction pour fetch vers le back
     fetchRegister(username, email, password).then((response) => {
@@ -66,7 +77,9 @@ export default function RegisterScreen({ navigation }) {
         dispatch(updateUser(response.data));
         // Redirection vers la home
         navigation.navigate("TabNavigator");
-        return;
+      } else if (response.error) {
+        setErrors(["・ Cet email est déjà utilisé"]);
+        setModalVisible(true);
       }
     });
   };

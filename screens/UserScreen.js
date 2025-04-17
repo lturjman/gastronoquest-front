@@ -11,6 +11,12 @@ export default function UserScreen({ navigation }) {
             navigation.navigate("User", { screen: "FavoritesScreen" })
           }
         />
+        <CustomButton
+          title={"Mon Historique"}
+          onPress={() =>
+            navigation.navigate("User", { screen: "HistoryScreen" })
+          }
+        />
       </View>
     </View>
   );

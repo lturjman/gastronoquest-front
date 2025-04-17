@@ -134,7 +134,6 @@ export default function SearchScreen({ navigation }) {
     setView(view => view === 'map' ? 'list' : 'map');
   }
 
-
   useEffect(() => {
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -183,7 +182,6 @@ export default function SearchScreen({ navigation }) {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
-
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.options}>
@@ -200,7 +198,6 @@ export default function SearchScreen({ navigation }) {
         </View>
 
         <View style={styles.results}>
-
           {/* Map */}
           { view === 'map' && (
             <MapView
@@ -226,8 +223,6 @@ export default function SearchScreen({ navigation }) {
               {/* searchResults.map((restaurant, i) => <RestaurantCard key={i} restaurant={restaurant} />) */}
             </ScrollView>            
           ) }
-          
-          
         </View>
       </View>
 
@@ -364,7 +359,7 @@ export default function SearchScreen({ navigation }) {
 
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -381,7 +376,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#E0E0E0",
   },
   options: {
-    width: '90%',
+    width: "90%",
     marginTop: 40,
     flexDirection: 'row',
     justifyContent: 'space-between',
