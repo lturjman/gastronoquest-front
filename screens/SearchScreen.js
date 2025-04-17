@@ -1,10 +1,20 @@
-import { StyleSheet, Platform, Dimensions, SafeAreaView, Text, View, TouchableOpacity, ScrollView, Modal } from "react-native";
+import {
+  StyleSheet,
+  Platform,
+  Dimensions,
+  SafeAreaView,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Modal,
+} from "react-native";
 import { Search, List, Map, ChevronsUpDown } from "lucide-react-native";
-import SelectDropdown from 'react-native-select-dropdown';
-import MapView, { Marker } from "react-native-maps";
-import * as Location from 'expo-location';
-import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import SelectDropdown from "react-native-select-dropdown";
+// import MapView, { Marker } from "react-native-maps";
+import * as Location from "expo-location";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import RestaurantCard from "../components/ui-kit/RestaurantCard";
 import Checkbox from "../components/ui-kit/Checkbox";
@@ -13,10 +23,45 @@ import RadioButton from "../components/ui-kit/RadioButton";
 import CustomButton from "../components/ui-kit/CustomButton";
 import CustomCard from "../components/ui-kit/CustomCard";
 
-const badgesOptions = ['Bio', 'Circuit court', 'Locavore', 'Pêche durable', 'Vegan', 'Viande durable', 'Zéro-déchet', '100% Veggie', 'Contenant accepté'];
-const perimeterOptions = ['Lieu exact', '2 km', '5 km', '10 km', '20 km', '30 km', '50 km'];
-const priceRangeOptions = ['Moins de 15€', 'Entre 15€ et 30€', 'Entre 30€ et 50€', 'Entre 50€ et 100€', 'Plus de 100€'];
-const typesOptions = ['Bistronomique', 'Café-restaurant', 'Traiteurs', 'Food truck', 'Gastronomique', 'Sur le pouce', 'Sandwicherie', 'Street-food', 'Salon de thé', 'Bar à vin'];
+const badgesOptions = [
+  "Bio",
+  "Circuit court",
+  "Locavore",
+  "Pêche durable",
+  "Vegan",
+  "Viande durable",
+  "Zéro-déchet",
+  "100% Veggie",
+  "Contenant accepté",
+];
+const perimeterOptions = [
+  "Lieu exact",
+  "2 km",
+  "5 km",
+  "10 km",
+  "20 km",
+  "30 km",
+  "50 km",
+];
+const priceRangeOptions = [
+  "Moins de 15€",
+  "Entre 15€ et 30€",
+  "Entre 30€ et 50€",
+  "Entre 50€ et 100€",
+  "Plus de 100€",
+];
+const typesOptions = [
+  "Bistronomique",
+  "Café-restaurant",
+  "Traiteurs",
+  "Food truck",
+  "Gastronomique",
+  "Sur le pouce",
+  "Sandwicherie",
+  "Street-food",
+  "Salon de thé",
+  "Bar à vin",
+];
 
 // useNavigation ?
 
@@ -31,13 +76,19 @@ export default function SearchScreen() {
   const [types, setTypes] = useState([]);
   const [priceRange, setPriceRange] = useState("");
   const [perimeter, setPerimeter] = useState("");
-  const [filtersVisible, setFiltersVisible] = useState(false);   // Modale pour les filtres de recherche
-  const [cardVisible, setCardVisible] = useState(false);   // Modale carte du restaurant (pour vue par carte)
+  const [filtersVisible, setFiltersVisible] = useState(false); // Modale pour les filtres de recherche
+  const [cardVisible, setCardVisible] = useState(false); // Modale carte du restaurant (pour vue par carte)
   const [searchResults, setSearchResults] = useState([]);
 
   const markers = searchResults.map((restaurant, i) => {
     const { latitude, longitude } = restaurant.coordinates;
-    return (<Marker key={i} coordinate={{ latitude, longitude }} onPress={() => console.log(data.name)} />);
+    return (
+      <Marker
+        key={i}
+        coordinate={{ latitude, longitude }}
+        onPress={() => console.log(data.name)}
+      />
+    );
     // Trouver moyen de cacher le callout, changer la couleur du marker sélectionné
     // Sur le onPress, passer toutes les informations du restaurant à RestaurantCard (à dynamiser avec notamment lien du resto qui navigue vers RestaurantScreen avec les infos correspondantes
   });
@@ -56,8 +107,9 @@ export default function SearchScreen() {
   bookingUrl: String,
   */
 
-  const fetchResults = async () => {   // A l'appui sur le bouton "Afficher les résultats"
-    setFiltersVisible(false);   // Fermer la modale (voir si on le met avant ou après les requêtes)
+  const fetchResults = async () => {
+    // A l'appui sur le bouton "Afficher les résultats"
+    setFiltersVisible(false); // Fermer la modale (voir si on le met avant ou après les requêtes)
 
     // Envoyer une requête au backend en fonction du type de recherche (Pour le moment : affichage pour tests)
 
@@ -86,9 +138,10 @@ export default function SearchScreen() {
     // Pour le moment ça sauvegarde les paramètres de la requête, voir si on veut changer ça
   };
 
-  const switchView = () => {   // Alterner entre vue Map/List et changement de l'icône
-    setView(view => view === 'map' ? 'list' : 'map');
-  }
+  const switchView = () => {
+    // Alterner entre vue Map/List et changement de l'icône
+    setView((view) => (view === "map" ? "list" : "map"));
+  };
 
   /*
   useEffect(() => {
@@ -108,30 +161,34 @@ export default function SearchScreen() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
-
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.options}>
-            <TouchableOpacity style={styles.searchButton} onPress={() => setFiltersVisible(true)}>
+            <TouchableOpacity
+              style={styles.searchButton}
+              onPress={() => setFiltersVisible(true)}
+            >
               <Text style={styles.buttonText}>Chercher un restaurant</Text>
               <Search size={20} color={"#173e19"} />
             </TouchableOpacity>
-            { view === "map" && (<List size={40} color={"#173e19"} onPress={switchView} />) }
-            { view === "list" && (<Map size={40} color={"#173e19"} onPress={switchView} />) }
+            {view === "map" && (
+              <List size={40} color={"#173e19"} onPress={switchView} />
+            )}
+            {view === "list" && (
+              <Map size={40} color={"#173e19"} onPress={switchView} />
+            )}
           </View>
-          { searchResults && (<Text>Nombre de résultats</Text>) }
+          {searchResults && <Text>Nombre de résultats</Text>}
         </View>
 
         <View style={styles.results}>
-
           {/* Map */}
-          { view === 'map' && <Text>Map</Text> }
+          {view === "map" && <Text>Map</Text>}
           {/* view === 'map' && <MapView></MapView> */}
-          { view === 'map' && <RestaurantCard restaurant={restaurant} />} {/* A mettre dans la vue en carte en position fixe en bas de l'écran avec une modale */}
-
+          {view === "map" && <RestaurantCard restaurant={restaurant} />}{" "}
+          {/* A mettre dans la vue en carte en position fixe en bas de l'écran avec une modale */}
           {/* List */}
-          { view === 'list' && <Text>List</Text> }
-          
+          {view === "list" && <Text>List</Text>}
         </View>
       </View>
 
@@ -269,7 +326,7 @@ export default function SearchScreen() {
       </Modal>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -284,11 +341,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   options: {
-    width: '90%',
+    width: "90%",
     marginTop: 40,
-    flexDirection: 'row',
-    justifyContent: 'center', // 'space-between' à tester
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center", // 'space-between' à tester
+    alignItems: "center",
     gap: 10,
   },
   searchButton: {

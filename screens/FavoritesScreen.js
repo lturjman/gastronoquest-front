@@ -1,55 +1,31 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
 import CustomCard from "../components/ui-kit/CustomCard";
 import user from "../reducers/user";
-
-// const fetchFavorites = async () => {
-//   const response = await fetch(
-//     `${process.env.EXPO_PUBLIC_BACKEND_URL}/favorites`,
-//     {
-//       headers: { authorization: user.token },
-//     }
-//   );
-//   const data = await response.json();
-//   return data;
-// };
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 
 export default function FavoritesScreen({ navigation }) {
-  const [data, setData] = useState(null);
-  useEffect(() => {
-    const fetchData = async () => {
-      const favorites = await fetchFavorites();
-      setData(favorites);
-      setLoading(false);
-    };
-    fetchData();
-  }, []);
+  const favorites = useSelector((state) => state.user.value.favorites);
 
-  let Message;
-  if (!data || data.length === 0) {
-    Message = "Aucun restaurant n'a encore été ajouté aux favoris";
-  } else {
-    Message = null;
-  }
+  const hasFavorites = favorites && favorites.length > 0;
 
   return (
-    <View style={styles.container}>
-      <View style={styles.buttonContainer}>
-        {Message ? (
-          <Text>{Message}</Text>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.messageContainer}>
+        {!hasFavorites ? (
+          <Text style={styles.message}>
+            Aucun restaurant n'a encore été ajouté aux favoris
+          </Text>
         ) : (
-          data.map((restaurant, index) => (
-            <CustomCard
-              key={index}
-              title={restaurant.name}
-              description={restaurant.description}
-              image={restaurant.image}
-              onPress={() =>
-                navigation.navigate("RestaurantDetails", {
-                  restaurantId: restaurant.id,
-                })
-              }
-            />
+          favorites.map((restaurant, index) => (
+            <View key={index} style={styles.card}>
+              <CustomCard
+                restaurant={restaurant}
+                navigation={navigation}
+                favorites={favorites}
+              />
+            </View>
           ))
         )}
         <View style={styles.buttonContainer}>
@@ -62,20 +38,38 @@ export default function FavoritesScreen({ navigation }) {
           />
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 const styles = StyleSheet.create({
+  scrollContainer: {
+    alignItems: "center",
+    paddingBottom: 40,
+  },
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
   },
   buttonContainer: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     gap: 20,
   },
+  messageContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  message: {
+    textAlign: "center",
+    margin: 20,
+    fontSize: 16,
+    color: "grey",
+    alignItems: "center",
+    flex: 1,
+  },
+  // card.Heart: {
+  //   color: "#e53935"
+  // }
 });
