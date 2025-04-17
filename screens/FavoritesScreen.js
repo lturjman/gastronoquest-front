@@ -11,34 +11,37 @@ export default function FavoritesScreen({ navigation }) {
   const hasFavorites = favorites && favorites.length > 0;
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.messageContainer}>
-        {!hasFavorites ? (
-          <Text style={styles.message}>
-            Aucun restaurant n'a encore été ajouté aux favoris
-          </Text>
-        ) : (
-          favorites.map((restaurant, index) => (
-            <View key={index} style={styles.card}>
-              <CustomCard
-                restaurant={restaurant}
-                navigation={navigation}
-                favorites={favorites}
-              />
-            </View>
-          ))
-        )}
-        <View style={styles.buttonContainer}>
-          <CustomButton
-            title="Rechercher des restaurants"
-            onPress={() =>
-              navigation.navigate("Search", { screen: "SearchScreen" })
-            }
-            textSize={13}
-          />
+    <View>
+      <Text style={styles.title}> Mes Favoris</Text>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.messageContainer}>
+          {!hasFavorites ? (
+            <Text style={styles.message}>
+              Aucun restaurant n'a encore été ajouté aux favoris
+            </Text>
+          ) : (
+            favorites.map((restaurant, index) => (
+              <View key={index} style={styles.card}>
+                <CustomCard
+                  restaurant={restaurant}
+                  navigation={navigation}
+                  favorites={favorites}
+                />
+              </View>
+            ))
+          )}
+          <View style={styles.buttonContainer}>
+            <CustomButton
+              title="Rechercher des restaurants"
+              onPress={() =>
+                navigation.navigate("Search", { screen: "SearchScreen" })
+              }
+              textSize={13}
+            />
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 const styles = StyleSheet.create({
@@ -50,6 +53,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  title: {
+    maxWidth: "100%",
+    fontSize: 30,
+    fontWeight: "bold",
+    margin: 10,
   },
   buttonContainer: {
     justifyContent: "center",
@@ -69,7 +78,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
   },
-  // card.Heart: {
-  //   color: "#e53935"
-  // }
 });
