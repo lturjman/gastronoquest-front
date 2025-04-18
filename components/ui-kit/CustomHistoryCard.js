@@ -1,11 +1,18 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Check } from "lucide-react-native";
-import { useState } from "react";
-import { Heart } from "lucide-react-native";
 
-const CustomHistoryCard = () => {
-  const [liked, setLiked] = useState(false);
+const CustomHistoryCard = ({
+  restaurant,
+  achievedChallenges,
+  indexn,
+  navigation,
+}) => {
+  const totalCo2 = (achievedChallenges ?? []).reduce(
+    (acc, quest) => acc + (quest.savedCo2 ?? 0),
+    0
+  );
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -14,24 +21,14 @@ const CustomHistoryCard = () => {
             navigation.navigate("RestaurantScreen", { restaurant })
           }
         >
-          <Text style={styles.title}>Nom du restaurant</Text>
+          <Text style={styles.title}>{restaurant.name}</Text>
         </TouchableOpacity>
-        <View style={styles.headerRight}>
-          <TouchableOpacity
-            onPress={() => setLiked(!liked)}
-            style={liked ? styles.liked : styles.notLiked}
-          >
-            <Heart color={"#fff"} size={25} />
-          </TouchableOpacity>
-        </View>
       </View>
 
       <View style={styles.content}>
         <View style={styles.imagePlaceholder}>
           <Image
-            source={{
-              uri: "https://images.prismic.io/ecotable/Z8bECxsAHJWomFHn_DSC09572.JPG?auto=format%2Ccompress&rect=0%2C157%2C2048%2C1434&w=1024&h=2800&dpr=2",
-            }}
+            source={{ uri: restaurant.imageUrl }}
             style={styles.image}
             resizeMode="cover"
           />
@@ -39,21 +36,19 @@ const CustomHistoryCard = () => {
 
         <View style={styles.info}>
           <Text style={styles.co2}>
-            <Text style={{ fontWeight: "bold" }}>X kg de CO₂ économisés</Text>
+            <Text style={{ fontWeight: "bold" }}>
+              {totalCo2.toFixed(2)} kg de CO₂ économisés
+            </Text>
           </Text>
 
-          <View style={styles.checkItem}>
-            <View style={styles.check}>
-              <Check color="#fff" size={14} />
+          {achievedChallenges.map((challenge, i) => (
+            <View key={i} style={styles.checkItem}>
+              <View style={styles.check}>
+                <Check color="#fff" size={14} />
+              </View>
+              <Text style={styles.checkText}>{challenge.title}</Text>
             </View>
-            <Text style={styles.checkText}>Défi validé</Text>
-          </View>
-          <View style={styles.checkItem}>
-            <View style={styles.nonCheck}>
-              <Check color="#fff" size={14} />
-            </View>
-            <Text style={styles.checkText}>Défi non validé</Text>
-          </View>
+          ))}
           <View style={styles.messageContainer}>
             <Text style={styles.message}>Bravo ! 🎉</Text>
           </View>

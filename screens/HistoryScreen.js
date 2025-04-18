@@ -1,35 +1,65 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import CustomHistoryCard from "../components/ui-kit/CustomHistoryCard";
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 
-// const restaurant = {
-//   name: "Restaurant Name",
-//   imageUrl: "https://example.com/image.jpg",
-// };
-
-// const challenges = [
-//   { name: "Challenge 1", completed: true, co2Saved: 10 },
-//   { name: "Challenge 2", completed: false, co2Saved: 3 },
-// ];
-
-// // Fonction pour récupérer l'historique de l'utilisateur
-// const fetchHistory = async (token) => {
-//   // Récupération de l'historique
-//   const response = await fetch(
-//     `${process.env.EXPO_PUBLIC_BACKEND_URL}/history`,
-//     {
-//       headers: { authorization: token },
-//     }
-//   );
-//   const data = await response.json();
-//   return data;
-// };
+import { useDispatch } from "react-redux";
 
 export default function HistoryScreen() {
+  const token = useSelector((state) => state.user.value.token);
+
+  const [quests, setQuests] = useState([]);
+
+  useEffect(() => {
+    const fetchQuests = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.EXPO_PUBLIC_BACKEND_URL}/history`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              authorization: token,
+            },
+          }
+        );
+
+        const data = await res.json();
+        if (data.result && data.data) {
+          setQuests(data.data);
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement des quêtes", error);
+      }
+    };
+
+    fetchQuests();
+  }, []);
+
+  const hasQuest = quests && quests.length > 0;
+  console.log("Quests data:", quests);
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}> Mon Historique</Text>
-      <CustomHistoryCard />
-    </View>
+    <ScrollView contentContainerStyle={{ alignItems: "center" }}>
+      <View style={styles.container}>
+        <Text style={styles.title}> Mon Historique</Text>
+        <CustomHistoryCard />
+      </View>
+
+      <View>
+        {!hasQuest ? (
+          <Text style={styles.message}>Pas encore d’historique !</Text>
+        ) : (
+          quests.map((quest, index) => (
+            <CustomHistoryCard
+              key={index}
+              index={index}
+              restaurant={quest.data.restaurant}
+              achievedChallenges={quest.data.achievedChallenges}
+              navigation={navigation}
+            />
+          ))
+        )}
+      </View>
+    </ScrollView>
   );
 }
 
