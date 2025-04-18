@@ -182,17 +182,17 @@ export default function SearchScreen() {
     if (searchType === "ville") {
       if (perimeter && perimeter === "Lieu exact") {
         route = "address";
-        body.address = searchInput;
+        reqBody.address = searchInput;
       } else {
         route = "city";
-        body.city = searchInput;
+        reqBody.city = searchInput;
       }
     }
 
     console.log(reqBody); // #test
 
     // FETCH BACKEND
-    const response = await fetch(EXPO_PUBLIC_BACKEND_URL + 'search/' + route, {
+    const response = await fetch(process.env.EXPO_PUBLIC_BACKEND_URL + 'search/' + route, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(reqBody)
@@ -243,6 +243,7 @@ export default function SearchScreen() {
     }
     
     // Fermer la modale SearchFilters
+    console.log("Here");
     setFiltersVisible(false);
   };
 
