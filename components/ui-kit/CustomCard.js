@@ -1,6 +1,3 @@
-import { useSelector, useDispatch } from "react-redux";
-import { removeFavorite, addFavorite } from "../../reducers/user.js";
-import { useState } from "react";
 import {
   View,
   Text,
@@ -12,64 +9,13 @@ import {
 import { Leaf, Heart } from "lucide-react-native";
 import { useNavigation } from "@react-navigation/native";
 
-export default function CustomCard({ restaurant }) {
-  const favorites = useSelector((state) => state.user.favorites);
-  const token = useSelector((state) => state.user.value.token);
+export default function CustomCard({ restaurant, onPress }) {
   const navigation = useNavigation();
-  const dispatch = useDispatch();
-
-  const [isFavorite, setIsFavorite] = useState(
-    favorites.some((fav) => fav._id === restaurant._id)
-  );
 
   const leaves = [];
   for (let i = 0; i < restaurant.score; i++) {
     leaves.push(<Leaf key={i} color="#173e19" size={20} />);
   }
-
-  const handleRemoveFromFavorites = async (restaurant) => {
-    const response = await fetch(
-      `${process.env.EXPO_PUBLIC_BACKEND_URL}/favorites`,
-      {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json", authorization: token },
-        body: JSON.stringify({
-          restaurantId: restaurant._id,
-        }),
-      }
-    );
-
-    const data = await response.json();
-    console.log("restaurant", restaurant);
-
-    if (data.result) {
-      console.log(restaurant);
-
-      dispatch(removeFavorite(restaurant));
-      setIsFavorite(false);
-    }
-  };
-
-  const handleAddFromFavorites = async (restaurant) => {
-    const response = await fetch(
-      `${process.env.EXPO_PUBLIC_BACKEND_URL}/favorites`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json", authorization: token },
-        body: JSON.stringify({
-          restaurantId: restaurant._id,
-        }),
-      }
-    );
-
-    const data = await response.json();
-    console.log("data", data);
-
-    if (data.result) {
-      dispatch(addFavorite(restaurant));
-      setIsFavorite(true);
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -85,14 +31,8 @@ export default function CustomCard({ restaurant }) {
           </TouchableOpacity>
           <View style={styles.headerRight}>
             <TouchableOpacity
-              style={isFavorite ? styles.liked : styles.notLiked}
-              onPress={() => {
-                if (isFavorite) {
-                  handleRemoveFromFavorites(restaurant);
-                } else {
-                  handleAddFromFavorites(restaurant);
-                }
-              }}
+              style={styles.liked}
+              onPress={() => onPress(restaurant)}
             >
               <Heart color={"#fff"} size={25} />
             </TouchableOpacity>
@@ -215,11 +155,6 @@ const styles = StyleSheet.create({
   },
   liked: {
     backgroundColor: "#e5685c",
-    borderRadius: 50,
-    padding: 8,
-  },
-  notLiked: {
-    backgroundColor: "#C4C4C4",
     borderRadius: 50,
     padding: 8,
   },

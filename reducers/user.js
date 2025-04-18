@@ -27,13 +27,13 @@ export const UserSlice = createSlice({
       state.value.favorites.push(action.payload);
     },
     removeFavorite: (state, action) => {
-      const removedId = action.payload._id.toString();
-      state.favorites = state.favorites.filter(
-        (restaurant) => restaurant._id.toString() !== removedId
+      state.value.favorites = state.value.favorites.filter(
+        (restaurant) => restaurant._id !== action.payload._id
       );
     },
   },
 });
 
-export const { updateUser, removeUser } = UserSlice.actions;
+export const { updateUser, removeUser, removeFavorite, addFavorite } =
+  UserSlice.actions;
 export default UserSlice.reducer;
