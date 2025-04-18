@@ -31,9 +31,17 @@ export const UserSlice = createSlice({
         (restaurant) => restaurant._id !== action.payload._id
       );
     },
+    addSavedCo2: (state, action) => {
+      state.value.totalSavedCo2 += action.payload;
+    },
   },
 });
 
-export const { updateUser, removeUser, removeFavorite, addFavorite } =
-  UserSlice.actions;
+export const {
+  updateUser,
+  removeUser,
+  removeFavorite,
+  addFavorite,
+  addSavedCo2,
+} = UserSlice.actions;
 export default UserSlice.reducer;

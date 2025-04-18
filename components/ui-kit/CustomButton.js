@@ -31,13 +31,20 @@ const variantStyles = {
   },
 };
 
-const CustomButton = ({ title, variant = "dark", textSize = 18, onPress }) => {
+const CustomButton = ({
+  title,
+  variant = "dark",
+  textSize = 18,
+  onPress,
+  disabled = false,
+}) => {
   const selectedVariant = variantStyles[variant] || variantStyles.dark;
 
   return (
     <TouchableOpacity
       style={[styles.baseButton, selectedVariant.button]}
       onPress={onPress}
+      disabled={disabled}
     >
       <Text
         style={[styles.baseText, selectedVariant.text, { fontSize: textSize }]}
