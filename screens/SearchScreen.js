@@ -19,88 +19,14 @@ const perimeterOptions = ['Lieu exact', '2 km', '5 km', '10 km', '20 km', '30 km
 const priceRangeOptions = ['Tous les prix', 'Moins de 15€', 'Entre 15€ et 30€', 'Entre 30€ et 50€', 'Entre 50€ et 100€', 'Plus de 100€'];
 const typesOptions = ['Bistronomique', 'Café-restaurant', 'Traiteurs', 'Food truck', 'Gastronomique', 'Sur le pouce', 'Sandwicherie', 'Street-food', 'Salon de thé', 'Bar à vin', 'Européen'];
 
-const test1 = {
-  "_id": "6800b6036c8cbce8c4b8c025",
-  "name": "Entre nous",
-  "desc": "Boire, manger à l'air iodé",
-  "longDesc": "Chez Entre Nous, Victoire et Sébastien mettent à l’honneur une cuisine locale et faite maison, en étroite collaboration avec une quarantaine de producteurs, majoritairement bio. Ici, on partage des plats gourmands et authentiques : acras de poisson, nems de légumes, frites maison bien dorées ou encore des langoustines cuites minute. La sélection des boissons privilégie les circuits courts, avec notamment des vins sourcés auprès de vignerons indépendants engagés. Dans ce lieu convivial et ouvert à toutes et tous, du pêcheur du coin au voyageur curieux, l’essentiel reste le plaisir des bonnes choses et des instants partagés.",
-  "score": 3,
-  "badges": [
-    "Viande durable",
-    "Bio",
-    "Locavore",
-    "Circuit court"
-  ],
-  "types": [
-    "Européen",
-    "Bistrot",
-    "Café-restaurant"
-  ],
-  "priceRange": "Entre 15€ et 30€",
-  "address": "35 Rue de la Marine, 29730 Guilvinec",
-  "coordinates": {
-    "latitude": 47.7947028,
-    "longitude": -4.2823403
-  },
-  "imageUrl": "https://images.prismic.io/ecotable/Z-El93dAxsiBvy8__entre-nous-guilvinec-marine-burucoa-93.jpg?auto=format%2Ccompress&rect=0%2C910%2C2631%2C1842&w=4000&h=2800&dpr=0.5",
-  "websiteUrl": "https://www.entrenous.bzh/",
-  "bookingUrl": "https://app.overfull.fr/booking-v2/?key_id=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJrZXkiOjQxNH0.k8PMgmKjFJHB7RcG-d0Q09Kih3vHS7MwWipxzD0NikI&source=Web",
-}
-
-const test2 = [
-  {
-    "_id": "6800b6036c8cbce8c4b8c067",
-    "name": "Case.",
-    "desc": "Carrément délicieux !",
-    "longDesc": "Case., c'est le projet de Rodolphe et Mélanie, un couple qui a su allier ses forces pour créer un restaurant gastronomique à la cuisine innovante et où le végétal est à l'honneur. En cuisine, Rodolphe travaille des produits bruts qu'il déniche auprès de producteurs en circuit court, et les sublime dans les assiettes en céramique créées par sa compagne. Lacto-fermentation, koso, poudres ou encore jus : toutes les techniques sont bonnes pour utiliser les produits des feuilles à la racine et adopter une démarche zéro déchet ! ",
-    "score": 2,
-    "badges": [
-      "Circuit court"
-    ],
-    "types": [
-      "Gastronomique"
-    ],
-    "priceRange": "Entre 50€ et 100€",
-    "address": "37 Rue Étienne Marcel, 37000 Tours",
-    "coordinates": {
-      "latitude": 47.3944484,
-      "longitude": 0.6715814
-    },
-    "imageUrl": "https://images.prismic.io/ecotable/ZtGGO0aF0TcGJkQ9_Re_avril_5812-d81179.jpg?auto=format%2Ccompress&rect=48%2C0%2C1904%2C1333&w=4000&h=2800&dpr=0.5",
-    "websiteUrl": "https://www.instagram.com/case.restaurant_tours/?hl=fr",
-    "bookingUrl": "https://www.google.com/maps/reserve/v/dine/c/A2WsrHkVOiI?source=pa&opi=89978449&hl=fr-FR&gei=nqDrZ9S8I6jtkdUPx56q4A8&sourceurl=https%3A%2F%2Fwww.google.com%2Fsearch%3Fq%3Dcase%2Brestaurant%2Btours%26rlz%3D1C1GCEA_enFR1116FR1116%26oq%3Dcase%2Bres%26pf%3Dcs%26sourceid%3Dchrome%26ie%3DUTF-8&ihs=1"
-  },
-  {
-    "_id": "6800b6036c8cbce8c4b8c0fb",
-    "name": "La Cantine Arkose Tours",
-    "desc": "Camp de base du locavorisme",
-    "longDesc": "Ouverte en 2018, l'adresse tourangelle du groupe Arkose, est fidèle aux codes de la maison. Ancien entrepôt réhabilité, murs d'escalade colorés et cantine éthique. Celle-ci a d'ailleurs un autre avantage : une terrasse ombragée ! Mais c'est surtout l'assiette qui plaît. Car si elle est simple dans la forme, la cuisine mise sur la qualité et la fraîcheur. Le reste de la carte fait la part belle aux légumes de saison, épices et herbes aromatiques.",
-    "score": 1,
-    "badges": [
-      "Contenant accepté"
-    ],
-    "types": [],
-    "priceRange": "",
-    "address": "15 Av. du Danemark, 37100 Tours",
-    "coordinates": {
-      "latitude": 47.43203558473964,
-      "longitude": 0.6908994913101197
-    },
-    "imageUrl": "https://images.prismic.io/ecotable/1f7eeec6-eeb3-499b-a520-ecd42016473c_arkose_tours23.jpeg?auto=compress,format&rect=162,0,6400,4480&w=4000&h=2800&dpr=0.5",
-    "websiteUrl": "https://arkose.com/tours/cantine",
-    "bookingUrl": "https://module.lafourchette.com/fr_FR/module/414395-3b4fa"
-  }
-]
-
 // Constantes
+const ANIMATION_TIME = 1500;
 const INITIAL_REGION = {
   latitude: 46.603354,
   longitude: 1.888334,
   latitudeDelta: 9.8,
   longitudeDelta: 14.8
 };
-const ANIMATION_TIME = 1500;
-
 
 // A isoler dans module ou côté back ???
 const getMapRegionForRadius = (latitude, longitude, radiusInKm, marginFactor = 1.5) => {
@@ -192,7 +118,7 @@ export default function SearchScreen() {
     console.log(reqBody); // #test
 
     // FETCH BACKEND
-    const response = await fetch(process.env.EXPO_PUBLIC_BACKEND_URL + 'search/' + route, {
+    const response = await fetch(process.env.EXPO_PUBLIC_BACKEND_URL + '/search/' + route, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(reqBody)
@@ -269,7 +195,7 @@ export default function SearchScreen() {
         setUserLocation(location.coords);    // ???
 
         // Fetch les restaurants autour de l'utilisateur (5 km de radius)
-        const response = await fetch(process.env.EXPO_PUBLIC_BACKEND_URL + "search/geolocation", {
+        const response = await fetch(process.env.EXPO_PUBLIC_BACKEND_URL + "/search/geolocation", {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ geolocation: location, distance: 5 })
