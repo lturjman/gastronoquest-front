@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,13 +9,8 @@ import {
 import { Leaf, Heart } from "lucide-react-native";
 import { useNavigation } from "@react-navigation/native";
 
-export default function CustomCard({ restaurant, favorites }) {
+export default function CustomCard({ restaurant, onPress }) {
   const navigation = useNavigation();
-  const [liked, setLiked] = useState(false);
-
-  useEffect(() => {
-    setLiked(favorites?.some((fav) => fav._id === restaurant._id));
-  }, [favorites]); // met à jour le state liked si favorites change
 
   const leaves = [];
   for (let i = 0; i < restaurant.score; i++) {
@@ -37,8 +31,8 @@ export default function CustomCard({ restaurant, favorites }) {
           </TouchableOpacity>
           <View style={styles.headerRight}>
             <TouchableOpacity
-              onPress={() => setLiked(!liked)}
-              style={liked ? styles.liked : styles.notLiked}
+              style={styles.liked}
+              onPress={() => onPress(restaurant)}
             >
               <Heart color={"#fff"} size={25} />
             </TouchableOpacity>
@@ -161,11 +155,6 @@ const styles = StyleSheet.create({
   },
   liked: {
     backgroundColor: "#e5685c",
-    borderRadius: 50,
-    padding: 8,
-  },
-  notLiked: {
-    backgroundColor: "#C4C4C4",
     borderRadius: 50,
     padding: 8,
   },

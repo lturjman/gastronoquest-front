@@ -23,8 +23,17 @@ export const UserSlice = createSlice({
     removeUser: (state) => {
       state.value = { username: null, email: null, token: null };
     },
+    addFavorite: (state, action) => {
+      state.value.favorites.push(action.payload);
+    },
+    removeFavorite: (state, action) => {
+      state.value.favorites = state.value.favorites.filter(
+        (restaurant) => restaurant._id !== action.payload._id
+      );
+    },
   },
 });
 
-export const { updateUser, removeUser } = UserSlice.actions;
+export const { updateUser, removeUser, removeFavorite, addFavorite } =
+  UserSlice.actions;
 export default UserSlice.reducer;

@@ -5,10 +5,38 @@ import user from "../reducers/user";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
+import { useDispatch } from "react-redux";
+import { removeFavorite } from "../reducers/user";
+
 export default function FavoritesScreen({ navigation }) {
+  const dispatch = useDispatch();
   const favorites = useSelector((state) => state.user.value.favorites);
+  const token = useSelector((state) => state.user.value.token);
 
   const hasFavorites = favorites && favorites.length > 0;
+
+  const handleRemoveFromFavorites = async (restaurant) => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_BACKEND_URL}/favorites`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json", authorization: token },
+          body: JSON.stringify({
+            restaurantId: restaurant._id,
+          }),
+        }
+      );
+      const data = await response.json();
+      if (data.result) {
+        dispatch(removeFavorite(restaurant));
+      } else {
+        throw new Error("Failed to remove favorite");
+      }
+    } catch (error) {
+      console.error("Error removing favorite:", error);
+    }
+  };
 
   return (
     <View>
@@ -26,6 +54,7 @@ export default function FavoritesScreen({ navigation }) {
                   restaurant={restaurant}
                   navigation={navigation}
                   favorites={favorites}
+                  onPress={handleRemoveFromFavorites}
                 />
               </View>
             ))
