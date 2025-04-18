@@ -5,7 +5,9 @@ import { useState, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import MapView, { Marker, Callout } from "react-native-maps";
 import * as Location from 'expo-location';
-import { getCenter, getBounds } from 'geolib';
+
+import { getMapRegionForRadius } from "../utils/getMapRegionForRadius";
+import { getMapRegionForBounds } from "../utils/getMapRegionForBounds";
 
 import RestaurantCard from "../components/ui-kit/RestaurantCard";
 import Checkbox from "../components/ui-kit/Checkbox";
@@ -28,19 +30,6 @@ const INITIAL_REGION = {
   longitudeDelta: 14.8
 };
 
-// A isoler dans module ou côté back ???
-const getMapRegionForRadius = (latitude, longitude, radiusInKm, marginFactor = 1.5) => {
-  const diameter = radiusInKm * 2 * marginFactor;
-  const latitudeDelta = diameter / 111;
-  const longitudeDelta = diameter / (111 * Math.cos(latitude * Math.PI / 180));
-  return {
-    latitude,
-    longitude,
-    latitudeDelta,
-    longitudeDelta
-  };
-};
-//
 
 export default function SearchScreen() {
   const user = useSelector((state) => state.user.value); // s'en servir pour le token et pour les favoris ? ou direct dans la carte ?
@@ -154,18 +143,10 @@ export default function SearchScreen() {
     if (result && restaurants.length > 1) {
       console.log("Plusieurs résultats"); // #test
 
-      // (à mettre dans un module ?) #todo
-      const coordinates = restaurants.map(restaurant => restaurant.coordinates);
-      const center = getCenter(coordinates);
-      const bounds = getBounds(coordinates);
-      const region = {
-        latitude: center.latitude,
-        longitude: center.longitude,
-        latitudeDelta: Math.abs(bounds.maxLat - bounds.minLat) * 1.5,
-        longitudeDelta: Math.abs(bounds.maxLng - bounds.minLng) * 1.5
-      };
-      
-      mapRef.current && mapRef.current.animateToRegion(region, ANIMATION_TIME);
+      mapRef.current && mapRef.current.animateToRegion(
+        getMapRegionForBounds(restaurants),
+        ANIMATION_TIME
+      );
     }
     
     // Fermer la modale SearchFilters
@@ -208,7 +189,7 @@ export default function SearchScreen() {
           setSearchResults(data.restaurants);
           setStartedSearch(true);
           mapRef.current.animateToRegion(
-            getMapRegionForRadius(location.coords.latitude, location.coords.longitude, 5), // #todo module ?
+            getMapRegionForRadius(location.coords.latitude, location.coords.longitude, 5),
             ANIMATION_TIME
           );
         } else {   // Si pas de restaurants trouvés
