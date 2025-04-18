@@ -4,6 +4,7 @@ import CustomInput from "../components/ui-kit/CustomInput";
 import ErrorModal from "../components/ErrorModal.js";
 import { useState } from "react";
 import { isValidEmail } from "../utils/emailValidation.js";
+import { isValidPassword } from "../utils/passwordValidation.js";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../reducers/user.js";
 
@@ -20,7 +21,7 @@ const fetchLogin = async (email, password) => {
     );
     const data = await response.json();
     // Retourne le status de la réponse en plus pour ajuster les messages d'erreur en fonction
-    return { status: response.status, response: data };
+    return data;
   } catch (error) {
     console.error(error);
   }
@@ -31,47 +32,67 @@ export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   // States pour la modale d'erreur
+  // const [modalVisible, setModalVisible] = useState(false);
+  // const [errorMessage, setErrorMessage] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errors, setErrors] = useState([]);
 
   const dispatch = useDispatch();
 
   // Gérer la demande de connexion
   const handleSubmit = () => {
+    const newErrors = [];
     // Afficher la modale si email invalide
     if (!email || !isValidEmail(email)) {
-      setErrorMessage("Veuillez saisir une email valide");
-      return setModalVisible(true);
+      // setErrorMessage("・ Veuillez saisir un email valide");
+      // return setModalVisible(true);
+      newErrors.push("Veuillez saisir un email valide");
     }
 
     // Afficher la modale si password invalide
-    if (!password) {
-      setErrorMessage("Veuillez saisir un mot de passe valide");
-      return setModalVisible(true);
+    if (!password || !isValidPassword(password)) {
+      // setErrorMessage("・ Veuillez saisir un mot de passe valide");
+      // return setModalVisible(true);
+      newErrors.push("Mot de passe incorrect");
+    }
+
+    if (newErrors.length > 0) {
+      setErrors(newErrors);
+      setModalVisible(true);
+      return;
     }
 
     // On fetch une fois les vérifications côtés client faites
-    fetchLogin(email, password).then((result) => {
-      if (result.status === 400) {
-        // Cas d'une erreur avec un email déjà utilisé
-        setErrorMessage("Email inconnue");
-        return setModalVisible(true);
-      } else if (result.status === 401) {
-        // Cas d'une erreur avec un mauvais mot de passe
-        setErrorMessage("Mot de passe incorrect");
-        return setModalVisible(true);
-      } else if (result.status === 200) {
-        // Connexion réussie
+    fetchLogin(email, password).then((response) => {
+      if (response.result) {
         // Envoi des données en réponse dans le store redux
-        dispatch(updateUser(result.response.data));
+        dispatch(updateUser(response.data));
         // Redirection vers la home
         navigation.navigate("TabNavigator");
-        return;
-      } else {
-        // Autre erreur
-        setErrorMessage("Echec de la connexion");
-        return setModalVisible(true);
+      } else if (response.error) {
+        setErrors(["Echec de la connexion"]);
+        setModalVisible(true);
       }
+      // if (result.status === 400) {
+      //   // Cas d'une erreur avec un email déjà utilisé
+      //   setErrorMessage("Email inconnu");
+      //   return setModalVisible(true);
+      // } else if (result.status === 401) {
+      //   // Cas d'une erreur avec un mauvais mot de passe
+      //   setErrorMessage("Mot de passe incorrect");
+      //   return setModalVisible(true);
+      // } else if (result.status === 200) {
+      //   // Connexion réussie
+      //   // Envoi des données en réponse dans le store redux
+      //   dispatch(updateUser(result.response.data));
+      //   // Redirection vers la home
+      //   navigation.navigate("TabNavigator");
+      //   return;
+      // } else {
+      //   // Autre erreur
+      //   setErrorMessage("Echec de la connexion");
+      //   return setModalVisible(true);
+      // }
     });
   };
 
@@ -79,8 +100,9 @@ export default function LoginScreen({ navigation }) {
     <View style={styles.container}>
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <ErrorModal
-          errorMessage={errorMessage}
-          onPress={() => setModalVisible(!modalVisible)}
+          // errorMessage={errorMessage}
+          errorMessage={errors.join("\n")}
+          onPress={() => setModalVisible(false)}
         />
       </Modal>
       <View style={styles.logoContainer}>

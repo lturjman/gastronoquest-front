@@ -42,14 +42,14 @@ export default function RegisterScreen({ navigation }) {
     const newErrors = [];
 
     if (!username) {
-      newErrors.push("・ Veuillez saisir un nom d'utilisateur");
+      newErrors.push("Veuillez saisir un nom d'utilisateur");
     }
     if (!email || !isValidEmail(email)) {
-      newErrors.push("・ Veuillez saisir un email valide");
+      newErrors.push("Veuillez saisir un email valide");
     }
     if (!password || !isValidPassword(password)) {
       newErrors.push(
-        "・ Veuillez saisir un mot de passe contenant au moins 8 caractères, une majuscule, une minuscule et un caractère spécial"
+        "Veuillez saisir un mot de passe contenant au moins 8 caractères, une majuscule, une minuscule et un caractère spécial"
       );
     }
 
@@ -62,9 +62,9 @@ export default function RegisterScreen({ navigation }) {
       const apiErrors = [];
 
       if (responseError === "Email already exists") {
-        apiErrors.push("・ Cette adresse email est déjà utilisée");
+        apiErrors.push("Cette adresse email est déjà utilisée");
       } else {
-        apiErrors.push("・ Une erreur est survenue lors de l'inscription");
+        apiErrors.push("Une erreur est survenue lors de l'inscription");
       }
 
       return apiErrors;
@@ -78,7 +78,7 @@ export default function RegisterScreen({ navigation }) {
         // Redirection vers la home
         navigation.navigate("TabNavigator");
       } else if (response.error) {
-        setErrors(["・ Cet email est déjà utilisé"]);
+        setErrors(["Cet email est déjà utilisé"]);
         setModalVisible(true);
       }
     });
@@ -90,6 +90,7 @@ export default function RegisterScreen({ navigation }) {
         <ErrorModal
           errorMessage={errors.join("\n")}
           onPress={() => setModalVisible(false)}
+          visible={modalVisible}
         />
       </Modal>
       <View style={styles.logoContainer}>

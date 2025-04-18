@@ -1,39 +1,53 @@
 import React from "react";
 
-import { View, Text, StyleSheet, Platform } from "react-native";
+import { View, Text, StyleSheet, Platform, Modal } from "react-native";
 
 import CustomButton from "./ui-kit/CustomButton";
 
-const ErrorModal = ({ errorMessage, onPress }) => {
+const ErrorModal = ({ errorMessage, onPress, visible = true }) => {
+  const errorLines = errorMessage.split("\n");
+
   return (
-    <View style={styles.modalContainer}>
-      <View style={styles.modalCard}>
-        <Text style={styles.errorMessage}>{errorMessage}</Text>
-        <CustomButton
-          title="Compris"
-          variant="light"
-          onPress={onPress}
-          textSize={13}
-        />
+    <Modal transparent visible={visible} animationType="slide">
+      <View style={styles.overlay}>
+        <View style={styles.modalContainer}>
+          <View style={styles.content}>
+            {errorLines.map((line, index) => (
+              <Text key={index} style={styles.errorText}>
+                • {line}
+              </Text>
+            ))}
+
+            <View style={styles.buttonSpacing} />
+            <CustomButton
+              title="Compris"
+              onPress={onPress}
+              variant="light"
+              textSize={13}
+            />
+          </View>
+        </View>
       </View>
-    </View>
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  modalContainer: {
+  overlay: {
     flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: "center",
     alignItems: "center",
   },
-  modalCard: {
-    backgroundColor: "#fff",
-    padding: 20,
+  modalContainer: {
+    backgroundColor: "white",
     borderRadius: 10,
+    padding: 20,
+    width: "80%",
+    elevation: 3,
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 10,
-    elevation: 3,
     margin: 20,
     gap: 30,
     fontFamily: Platform.select({
@@ -41,14 +55,18 @@ const styles = StyleSheet.create({
       android: "Roboto",
       default: "System",
     }),
-    justifyContent: "center",
-    alignItems: "center",
-    width: "90%",
   },
-  errorMessage: {
+  content: {
+    justifyContent: "center",
+    alignItems: "stretch",
+  },
+  errorText: {
     fontWeight: 700,
     fontSize: 15,
+    paddingVertical: 3,
+  },
+  buttonSpacing: {
+    height: 20,
   },
 });
-
 export default ErrorModal;
