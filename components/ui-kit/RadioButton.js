@@ -12,7 +12,7 @@ export default function RadioButton({ options, checkedValue, onChange }) {
                 {selected && <View style={styles.radioInner} />}
               </View>
               <Text style={[styles.label, selected && styles.labelSelected]}>
-                {option}
+                { option }
               </Text>
           </TouchableOpacity>
         )
