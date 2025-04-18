@@ -13,7 +13,6 @@ export default function RestaurantCard({ restaurant }) {
 
   const [liked, setLiked] = useState(favorites.includes(restaurant._id));
 
-
   const leaves = [];
   for (let i = 0; i < restaurant.score; i++) {
     leaves.push(<Leaf key={i} color="#173e19" size={20} />);
