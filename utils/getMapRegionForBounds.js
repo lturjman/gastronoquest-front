@@ -6,7 +6,7 @@ export const getMapRegionForBounds = (restaurants) => {
   const coordinates = restaurants.map(restaurant => restaurant.coordinates);
   const center = getCenter(coordinates);
   const bounds = getBounds(coordinates);
-  const region = {
+  return {
     latitude: center.latitude,
     longitude: center.longitude,
     latitudeDelta: Math.abs(bounds.maxLat - bounds.minLat) * 1.5,
