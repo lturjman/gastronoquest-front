@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
-export default function RadioButton({ options, checkedValue, onChange }) {
+export default function SearchFiltersRadioInputs({ options, checkedValue, onChange }) {
   return (
     <View style={styles.radioContainer}>
     { options.map((option, i) => {

@@ -2,16 +2,15 @@ import { StyleSheet, Platform, Dimensions, SafeAreaView, Text, View, TouchableOp
 import { Search, List, Map, ChevronsUpDown, Info, MapPin, Store } from "lucide-react-native";
 import SelectDropdown from 'react-native-select-dropdown';
 import { useState, useRef, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import MapView, { Marker, Callout } from "react-native-maps";
 import * as Location from 'expo-location';
 
 import { getMapRegionForRadius } from "../utils/getMapRegionForRadius";
 import { getMapRegionForBounds } from "../utils/getMapRegionForBounds";
 import RestaurantCard from "../components/ui-kit/RestaurantCard";
-import Checkbox from "../components/ui-kit/Checkbox";
-import RadioButton from "../components/ui-kit/RadioButton";
 import CustomButton from "../components/ui-kit/CustomButton";
+import SearchFiltersCheckboxes from "../components/SearchFiltersCheckboxes";
+import SearchFiltersRadioInputs from "../components/SearchFiltersRadioInputs";
 import EcotableInfo from "../components/EcotableInfo";
 import SearchInputComponent from "../components/SearchInputComponent";
 
@@ -310,7 +309,7 @@ export default function SearchScreen() {
               />
               <View style={styles.searchTypeContainer}>
                 <Text>Chercher par :</Text>
-                <RadioButton
+                <SearchFiltersRadioInputs
                   options={["ville", "restaurant"]}
                   checkedValue={searchType}
                   onChange={setSearchType}
@@ -380,7 +379,7 @@ export default function SearchScreen() {
                 <Text style={styles.filterCategory}>
                   Badges
                 </Text>
-                <Checkbox
+                <SearchFiltersCheckboxes
                   options={badgesOptions}
                   checkedValues={badges}
                   onChange={setBadges}
@@ -388,7 +387,7 @@ export default function SearchScreen() {
                 <Text style={styles.filterCategory}>
                   Types d'établissement
                 </Text>
-                <Checkbox
+                <SearchFiltersCheckboxes
                   options={typesOptions}
                   checkedValues={types}
                   onChange={setTypes}
