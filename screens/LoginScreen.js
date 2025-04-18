@@ -4,6 +4,7 @@ import CustomInput from "../components/ui-kit/CustomInput";
 import ErrorModal from "../components/ErrorModal.js";
 import { useState } from "react";
 import { isValidEmail } from "../utils/emailValidation.js";
+import { isValidPassword } from "../utils/passwordValidation.js";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../reducers/user.js";
 
@@ -20,7 +21,7 @@ const fetchLogin = async (email, password) => {
     );
     const data = await response.json();
     // Retourne le status de la réponse en plus pour ajuster les messages d'erreur en fonction
-    return { status: response.status, response: data };
+    return { status: response.status, data };
   } catch (error) {
     console.error(error);
   }
@@ -32,45 +33,48 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
   // States pour la modale d'erreur
   const [modalVisible, setModalVisible] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errors, setErrors] = useState([]);
 
   const dispatch = useDispatch();
 
   // Gérer la demande de connexion
   const handleSubmit = () => {
+    const newErrors = [];
     // Afficher la modale si email invalide
     if (!email || !isValidEmail(email)) {
-      setErrorMessage("Veuillez saisir une email valide");
-      return setModalVisible(true);
+      newErrors.push("Veuillez saisir un email valide");
     }
 
     // Afficher la modale si password invalide
-    if (!password) {
-      setErrorMessage("Veuillez saisir un mot de passe valide");
-      return setModalVisible(true);
+    if (!password || !isValidPassword(password)) {
+      newErrors.push("Mot de passe incorrect");
+    }
+
+    if (newErrors.length > 0) {
+      setErrors(newErrors);
+      setModalVisible(true);
+      return;
     }
 
     // On fetch une fois les vérifications côtés client faites
-    fetchLogin(email, password).then((result) => {
-      if (result.status === 400) {
-        // Cas d'une erreur avec un email déjà utilisé
-        setErrorMessage("Email inconnue");
-        return setModalVisible(true);
-      } else if (result.status === 401) {
-        // Cas d'une erreur avec un mauvais mot de passe
-        setErrorMessage("Mot de passe incorrect");
-        return setModalVisible(true);
-      } else if (result.status === 200) {
-        // Connexion réussie
-        // Envoi des données en réponse dans le store redux
-        dispatch(updateUser(result.response.data));
-        // Redirection vers la home
+    fetchLogin(email, password).then((response) => {
+      const { status, data } = response;
+
+      if (status === 200 && data.result) {
+        dispatch(updateUser(data.data));
         navigation.navigate("TabNavigator");
-        return;
       } else {
-        // Autre erreur
-        setErrorMessage("Echec de la connexion");
-        return setModalVisible(true);
+        // Gère les erreurs backend avec le même tableau newErrors
+        if (status === 400) {
+          newErrors.push("Email inconnu");
+        } else if (status === 401) {
+          newErrors.push("Mot de passe incorrect");
+        } else {
+          newErrors.push("Échec de la connexion");
+        }
+
+        setErrors(newErrors);
+        setModalVisible(true);
       }
     });
   };
@@ -79,8 +83,9 @@ export default function LoginScreen({ navigation }) {
     <View style={styles.container}>
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <ErrorModal
-          errorMessage={errorMessage}
-          onPress={() => setModalVisible(!modalVisible)}
+          // errorMessage={errorMessage}
+          errorMessage={errors.join("\n")}
+          onPress={() => setModalVisible(false)}
         />
       </Modal>
       <View style={styles.logoContainer}>
