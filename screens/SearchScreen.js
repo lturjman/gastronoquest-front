@@ -2,20 +2,20 @@ import { StyleSheet, Platform, Dimensions, SafeAreaView, Text, View, TouchableOp
 import { Search, List, Map, ChevronsUpDown, Info, MapPin, Store } from "lucide-react-native";
 import SelectDropdown from 'react-native-select-dropdown';
 import { useState, useRef, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import MapView, { Marker, Callout } from "react-native-maps";
 import * as Location from 'expo-location';
-import { getCenter, getBounds } from 'geolib';
 
+import { getMapRegionForRadius } from "../utils/getMapRegionForRadius";
+import { getMapRegionForBounds } from "../utils/getMapRegionForBounds";
 import RestaurantCard from "../components/ui-kit/RestaurantCard";
-import Checkbox from "../components/ui-kit/Checkbox";
-import RadioButton from "../components/ui-kit/RadioButton";
 import CustomButton from "../components/ui-kit/CustomButton";
+import SearchFiltersCheckboxes from "../components/SearchFiltersCheckboxes";
+import SearchFiltersRadioInputs from "../components/SearchFiltersRadioInputs";
 import EcotableInfo from "../components/EcotableInfo";
 import SearchInputComponent from "../components/SearchInputComponent";
 
 const badgesOptions = ['Bio', 'Circuit court', 'Locavore', 'Pêche durable', 'Vegan', 'Viande durable', 'Zéro-déchet', '100% Veggie', 'Contenant accepté'];
-const perimeterOptions = ['Lieu exact', '2 km', '5 km', '10 km', '20 km', '30 km', '50 km'];
+const distanceOptions = ['Lieu exact', '2 km', '5 km', '10 km', '20 km', '30 km', '50 km'];
 const priceRangeOptions = ['Tous les prix', 'Moins de 15€', 'Entre 15€ et 30€', 'Entre 30€ et 50€', 'Entre 50€ et 100€', 'Plus de 100€'];
 const typesOptions = ['Bistronomique', 'Café-restaurant', 'Traiteurs', 'Food truck', 'Gastronomique', 'Sur le pouce', 'Sandwicherie', 'Street-food', 'Salon de thé', 'Bar à vin', 'Européen'];
 
@@ -28,34 +28,18 @@ const INITIAL_REGION = {
   longitudeDelta: 14.8
 };
 
-// A isoler dans module ou côté back ???
-const getMapRegionForRadius = (latitude, longitude, radiusInKm, marginFactor = 1.5) => {
-  const diameter = radiusInKm * 2 * marginFactor;
-  const latitudeDelta = diameter / 111;
-  const longitudeDelta = diameter / (111 * Math.cos(latitude * Math.PI / 180));
-  return {
-    latitude,
-    longitude,
-    latitudeDelta,
-    longitudeDelta
-  };
-};
-//
 
 export default function SearchScreen() {
-  const user = useSelector((state) => state.user.value); // s'en servir pour le token et pour les favoris ? ou direct dans la carte ?
-
-  const selectPerimeterRef = useRef(null);
-  const selectPriceRangeRef = useRef(null);
-  const mapRef = useRef(null);
-
   // Affichage et gestion des modales
   const [view, setView] = useState("map");
-  const [userLocation, setUserLocation] = useState({});   // ???
-  const [startedSearch, setStartedSearch] = useState(false);    // ???
+  const [userLocation, setUserLocation] = useState(null);
+  const [startedSearch, setStartedSearch] = useState(false);
   const [filtersVisible, setFiltersVisible] = useState(false);
   const [cardVisible, setCardVisible] = useState(false);
   const [infoVisible, setInfoVisible] = useState(false);
+  const selectDistanceRef = useRef(null);
+  const selectPriceRangeRef = useRef(null);
+  const mapRef = useRef(null);
 
   // Gestion de la recherche
   const [searchType, setSearchType] = useState("restaurant");
@@ -63,7 +47,7 @@ export default function SearchScreen() {
   const [badges, setBadges] = useState([]);
   const [types, setTypes] = useState([]);
   const [priceRange, setPriceRange] = useState("");
-  const [perimeter, setPerimeter] = useState("");
+  const [distance, setDistance] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [selectedRestaurant, setSelectedRestaurant] = useState({});
 
@@ -80,97 +64,120 @@ export default function SearchScreen() {
     setBadges([]);
     setTypes([]);
     setPriceRange("");
-    setPerimeter("");
+    setDistance("");
     setSearchResults([]);
     setSelectedRestaurant({});
-    if (selectPerimeterRef.current) selectPerimeterRef.current.reset();
+    if (selectDistanceRef.current) selectDistanceRef.current.reset();
     if (selectPriceRangeRef.current) selectPriceRangeRef.current.reset();
   }
 
+  // Recentrer la carte sur la région initiale
+  const resetMapRegion = () => {
+    if (userLocation) {
+      mapRef.current && mapRef.current.animateToRegion({
+          latitude: userLocation.latitude,
+          longitude: userLocation.longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        },
+        ANIMATION_TIME
+      );
+    } else {
+      mapRef.current && mapRef.current.animateToRegion(
+        INITIAL_REGION,
+        ANIMATION_TIME
+      );
+    }
+  };
+
   // Chercher des restaurants
   const fetchResults = async () => {
-    setStartedSearch === false && setStartedSearch(true);
+    console.log("fetchResults()");
+    startedSearch === false && setStartedSearch(true);
+    setSearchResults([]);
 
-    // Construction de la requête (voir si faudrait pas mettre une condition avant en fonction de comment le backend reçoit ça) #todo
-    let route = "";
+    // Construction du req.body
     const reqBody = {
+      input: searchInput,
       badges,
       types,
       priceRange,
-      distance: perimeter.replace(" km", "")
+      distance: distance.replace(" km", "")
     };
+    console.log("body:", reqBody);
 
-    if (searchType === "restaurant") {
+    // Définition de la route
+    let route = "";
+    if (searchInput.length === 0) {
+      route = "geolocation";
+      reqBody.geolocation = userLocation;
+    } else if (searchType === "restaurant") {
       route = "restaurant";
-      reqBody.name = searchInput;
+    } else if (searchType === "ville") {
+      route = (distance === "Lieu exact" || distance === "") ? "address" : "coordinates" ;
     }
-    
-    if (searchType === "ville") {
-      if (perimeter && perimeter === "Lieu exact") {
-        route = "address";
-        reqBody.address = searchInput;
-      } else {
-        route = "city";
-        reqBody.city = searchInput;
-      }
-    }
-
-    console.log(reqBody); // #test
+    console.log("route:", route);
 
     // FETCH BACKEND
-    const response = await fetch(process.env.EXPO_PUBLIC_BACKEND_URL + '/search/' + route, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(reqBody)
-    });
-    const data = await response.json();
+    try {
+      const response = await fetch(process.env.EXPO_PUBLIC_BACKEND_URL + '/search/' + route, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reqBody)
+      });
+      const data = await response.json();
 
-    console.log(data); // #test
+      // Si aucun résultat
+      if (!data.result) {
+        console.log("Pas de résultats");
+        if (route !== "geolocation") {
+          resetMapRegion();
+        } else if (route === "geolocation" && distance !== "Lieu exact") {
+          const radius = parseInt(distance.replace(" km", ""));
+          mapRef.current && mapRef.current.animateToRegion(
+            getMapRegionForRadius(userLocation.latitude, userLocation.longitude, radius),
+            ANIMATION_TIME
+          );
+        } else if (route === "geolocation") {
+          mapRef.current && mapRef.current.animateToRegion(
+            getMapRegionForRadius(userLocation.latitude, userLocation.longitude, 5),
+            ANIMATION_TIME
+          );
+        }
+        return setFiltersVisible(false);
+      }
 
-    // Si aucun résultat
-    if (!data.result) {
-      console.log("Pas de résultats"); // #test
-      // Fermer la modale SearchFilters
-      setFiltersVisible(false);
-      return;
-    }
+      const { restaurants, result } = data;
+      setSearchResults(restaurants);
 
-    const { restaurants, result } = data;
-    setSearchResults(restaurants);
+      // Affichage des résultats sur la carte
 
-    // Affichage des résultats sur la carte
+      if (result && restaurants.length === 1) {   // Un résultat
+        console.log("1 résultat");
 
-    if (result && restaurants.length === 1) {
-      console.log("1 résultat"); // #test
-
-      mapRef.current && mapRef.current.animateToRegion({
-        latitude: restaurants[0].coordinates.latitude,
-        longitude: restaurants[0].coordinates.longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      }, ANIMATION_TIME);
-    }
-    
-    if (result && restaurants.length > 1) {
-      console.log("Plusieurs résultats"); // #test
-
-      // (à mettre dans un module ?) #todo
-      const coordinates = restaurants.map(restaurant => restaurant.coordinates);
-      const center = getCenter(coordinates);
-      const bounds = getBounds(coordinates);
-      const region = {
-        latitude: center.latitude,
-        longitude: center.longitude,
-        latitudeDelta: Math.abs(bounds.maxLat - bounds.minLat) * 1.5,
-        longitudeDelta: Math.abs(bounds.maxLng - bounds.minLng) * 1.5
-      };
+        mapRef.current && mapRef.current.animateToRegion({
+          latitude: restaurants[0].coordinates.latitude,
+          longitude: restaurants[0].coordinates.longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        }, ANIMATION_TIME);
+      }
       
-      mapRef.current && mapRef.current.animateToRegion(region, ANIMATION_TIME);
-    }
-    
-    // Fermer la modale SearchFilters
-    console.log("Here");
-    setFiltersVisible(false);
+      if (result && restaurants.length > 1) {   // Plusieurs résultats
+        console.log("Plusieurs résultats");
+
+        mapRef.current && mapRef.current.animateToRegion(
+          getMapRegionForBounds(restaurants),
+          ANIMATION_TIME
+        );
+      }
+      
+      // Fermer la modale SearchFilters
+      console.log("Fin de fetchResults()");
+      setFiltersVisible(false);
+    } catch (error) {
+    console.log(error);
+  }
   };
 
   // Alterner entre vue Map/List et changement de l'icône
@@ -180,45 +187,45 @@ export default function SearchScreen() {
 
   useEffect(() => {
     (async () => {
+      console.log("Initiation du composant SearchScreen");
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status === 'granted') {
-        /*
-        Location.watchPositionAsync({ distanceInterval: 10 },
-          (location) => {
-            const { latitude, longitude } = location.coords;
-            setUserLocation({ latitude, longitude });
-          });
-        */
-
         const location = await Location.getCurrentPositionAsync({});
-
-        setUserLocation(location.coords);    // ???
+        console.log("Localisation acceptée et enregistrée");
+        setUserLocation(location.coords);
 
         // Fetch les restaurants autour de l'utilisateur (5 km de radius)
-        const response = await fetch(process.env.EXPO_PUBLIC_BACKEND_URL + "/search/geolocation", {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ geolocation: location, distance: 5 })
-        });
-        const data = await response.json();
+        try {
+          console.log("Envoi de la requête au backend");
+          const response = await fetch(process.env.EXPO_PUBLIC_BACKEND_URL + "/search/geolocation", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ geolocation: location, distance: 5 })
+          });
+          const data = await response.json();
 
-        // Affichage de la map en fonction des résultats
-        if (data.result) {   // Si restaurants trouvés
-          console.log("Restaurants trouvés"); // #test
-          setSearchResults(data.restaurants);
-          setStartedSearch(true);
-          mapRef.current.animateToRegion(
-            getMapRegionForRadius(location.coords.latitude, location.coords.longitude, 5), // #todo module ?
-            ANIMATION_TIME
-          );
-        } else {   // Si pas de restaurants trouvés
-          console.log("Pas de restaurants trouvés"); //
-          mapRef.current.animateToRegion({
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01,
-          }, ANIMATION_TIME);
+          // Affichage de la map en fonction des résultats
+          if (data.result) {   // Si restaurants trouvés
+            console.log("Restaurants trouvés");
+            setSearchResults(data.restaurants);
+            setStartedSearch(true);
+            mapRef.current && mapRef.current.animateToRegion(
+              getMapRegionForRadius(location.coords.latitude, location.coords.longitude, 5),
+              ANIMATION_TIME
+            );
+            console.log("Affichage des restaurants trouvés");
+          } else {   // Si pas de restaurants trouvés
+            console.log("Pas de restaurants trouvés");
+            mapRef.current && mapRef.current.animateToRegion({
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
+            }, ANIMATION_TIME);
+            console.log("Affichage de la position de l'utilisateur");
+          }
+        } catch (error) {
+          console.error(error);
         }
       }
       
@@ -274,7 +281,7 @@ export default function SearchScreen() {
             >
               { searchResults.map((restaurant, i) => (
                 <Marker key={i} coordinate={restaurant.coordinates} onPress={() => displayRestaurantCard(restaurant)}>
-                  <Callout tooltip><></></Callout> {/* Pour iOS */}
+                  <Callout tooltip><>{/* Pour iOS */}</></Callout>
                 </Marker>
               ))}
             </MapView>
@@ -302,7 +309,7 @@ export default function SearchScreen() {
               />
               <View style={styles.searchTypeContainer}>
                 <Text>Chercher par :</Text>
-                <RadioButton
+                <SearchFiltersRadioInputs
                   options={["ville", "restaurant"]}
                   checkedValue={searchType}
                   onChange={setSearchType}
@@ -310,12 +317,12 @@ export default function SearchScreen() {
               </View>
               <View style={{ width: "100%", alignItems: "start" }}>
                 <Text style={styles.filterCategory}>
-                  Périmètre
+                  Distance
                 </Text>
                 <SelectDropdown
-                  ref={selectPerimeterRef}
-                  data={perimeterOptions}
-                  onSelect={(selectedOption) => setPerimeter(selectedOption)}
+                  ref={selectDistanceRef}
+                  data={distanceOptions}
+                  onSelect={(selectedOption) => setDistance(selectedOption)}
                   renderButton={(selectedOption) => (
                     <View style={styles.dropdownButtonStyle}>
                       <Text style={styles.dropdownButtonTxtStyle}>
@@ -372,7 +379,7 @@ export default function SearchScreen() {
                 <Text style={styles.filterCategory}>
                   Badges
                 </Text>
-                <Checkbox
+                <SearchFiltersCheckboxes
                   options={badgesOptions}
                   checkedValues={badges}
                   onChange={setBadges}
@@ -380,7 +387,7 @@ export default function SearchScreen() {
                 <Text style={styles.filterCategory}>
                   Types d'établissement
                 </Text>
-                <Checkbox
+                <SearchFiltersCheckboxes
                   options={typesOptions}
                   checkedValues={types}
                   onChange={setTypes}

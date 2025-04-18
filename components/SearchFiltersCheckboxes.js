@@ -1,9 +1,7 @@
-
-import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { Check } from "lucide-react-native";
 
-export default function CheckBox({ options, checkedValues, onChange }) {
+export default function SearchFiltersCheckboxes({ options, checkedValues, onChange }) {
   let updatedCheckedValues = [... checkedValues];
 
   const handlePress = (checked, option) => {

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Platform } from "react-native";
 import { Leaf, Heart } from "lucide-react-native";
 import { useSelector, useDispatch } from "react-redux";
@@ -8,10 +7,8 @@ export default function RestaurantCard({ restaurant }) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  const token = useSelector((state) => state.user.value.token);
   const favorites = useSelector((state) => state.user.value.favorites);
-
-  const [liked, setLiked] = useState(favorites.includes(restaurant._id));
+  const liked = favorites.includes(restaurant._id);
 
   const leaves = [];
   for (let i = 0; i < restaurant.score; i++) {
@@ -35,7 +32,7 @@ export default function RestaurantCard({ restaurant }) {
       <View style={styles.row}>
         {/* Score */}
         <View style={styles.score}>{ leaves }</View>
-        <Text> - </Text>           {/* #todo enjoliver */}
+        <Text> • </Text>
         {/* Gamme de prix */}
         <Text style={styles.text}>{restaurant.priceRange}</Text>
       </View>
