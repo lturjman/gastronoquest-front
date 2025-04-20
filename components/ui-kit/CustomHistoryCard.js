@@ -5,7 +5,7 @@ import { Check } from "lucide-react-native";
 const CustomHistoryCard = ({
   restaurant,
   achievedChallenges,
-  indexn,
+  index,
   navigation,
 }) => {
   const totalCo2 = (achievedChallenges ?? []).reduce(
@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flexDirection: "row",
+    flex: 1,
   },
   imagePlaceholder: {
     width: 125,
