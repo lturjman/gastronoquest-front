@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 
 import { useDispatch } from "react-redux";
 
-export default function HistoryScreen() {
+export default function HistoryScreen({ navigation }) {
   const token = useSelector((state) => state.user.value.token);
 
   const [quests, setQuests] = useState([]);
@@ -41,10 +41,9 @@ export default function HistoryScreen() {
     <ScrollView contentContainerStyle={{ alignItems: "center" }}>
       <View style={styles.container}>
         <Text style={styles.title}> Mon Historique</Text>
-        <CustomHistoryCard />
       </View>
 
-      <View>
+      <View style={styles.cardContainer}>
         {!hasQuest ? (
           <Text style={styles.message}>Pas encore d’historique !</Text>
         ) : (
@@ -52,8 +51,8 @@ export default function HistoryScreen() {
             <CustomHistoryCard
               key={index}
               index={index}
-              restaurant={quest.data.restaurant}
-              achievedChallenges={quest.data.achievedChallenges}
+              restaurant={quest.restaurant}
+              achievedChallenges={quest.achievedChallenges}
               navigation={navigation}
             />
           ))
@@ -66,7 +65,6 @@ export default function HistoryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -75,5 +73,8 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     margin: 10,
+  },
+  cardContainer: {
+    gap: 10,
   },
 });
