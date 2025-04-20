@@ -5,7 +5,7 @@ import { Check } from "lucide-react-native";
 const CustomHistoryCard = ({
   restaurant,
   achievedChallenges,
-  indexn,
+  index,
   navigation,
 }) => {
   const totalCo2 = (achievedChallenges ?? []).reduce(
@@ -36,15 +36,16 @@ const CustomHistoryCard = ({
 
         <View style={styles.info}>
           <Text style={styles.co2}>
-            <Text style={{ fontWeight: "bold" }}>
-              {totalCo2.toFixed(2)} kg de CO₂ économisés
+            <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+              {totalCo2.toFixed(2)}
             </Text>
+            <Text style={{ fontWeight: "bold" }}>kg de CO₂ économisés</Text>
           </Text>
 
           {achievedChallenges.map((challenge, i) => (
             <View key={i} style={styles.checkItem}>
               <View style={styles.check}>
-                <Check color="#fff" size={14} />
+                <Check color="#fff" size={12} />
               </View>
               <Text style={styles.checkText}>{challenge.title}</Text>
             </View>
@@ -63,9 +64,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#cfd8dc",
     borderRadius: 10,
-    padding: 16,
+    padding: 10,
     width: "90%",
-    position: "relative",
   },
   header: {
     flexDirection: "row",
@@ -80,38 +80,41 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "600",
-    marginBottom: 12,
+    marginBottom: 10,
+    marginLeft: 8,
     color: "#263238",
   },
   content: {
     flexDirection: "row",
+    width: "100%",
   },
   imagePlaceholder: {
     width: 125,
     height: 175,
   },
   image: {
-    width: "90%",
-    height: "100%",
+    flex: 1,
     borderRadius: 4,
     backgroundColor: "#eee",
   },
   info: {
     flex: 1,
     justifyContent: "center",
+    padding: 5,
+    gap: 8,
   },
   co2: {
     fontSize: 16,
     color: "#263238",
-    marginBottom: 8,
+    marginLeft: 10,
   },
   checkItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 4,
+    margin: 4,
   },
   checkText: {
-    marginLeft: 6,
+    marginLeft: 10,
     color: "#37474f",
     fontSize: 14,
   },
@@ -123,7 +126,7 @@ const styles = StyleSheet.create({
   message: {
     fontSize: 18,
     fontWeight: "600",
-    margin: 10,
+    margin: 5,
   },
   check: {
     backgroundColor: "#6ac46a",
