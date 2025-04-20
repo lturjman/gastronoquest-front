@@ -43,7 +43,7 @@ export default function HistoryScreen({ navigation }) {
         <Text style={styles.title}> Mon Historique</Text>
       </View>
 
-      <View>
+      <View style={styles.cardContainer}>
         {!hasQuest ? (
           <Text style={styles.message}>Pas encore d’historique !</Text>
         ) : (
@@ -73,5 +73,8 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     margin: 10,
+  },
+  cardContainer: {
+    gap: 10,
   },
 });
