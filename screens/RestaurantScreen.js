@@ -20,77 +20,24 @@ import {
 } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import CustomButton from "../components/ui-kit/CustomButton";
-import ChallengesChexBox from "../components/ChallengesCheckbox";
+import ChallengesCheckBox from "../components/ChallengesCheckbox";
 import { useSelector, useDispatch } from "react-redux";
-import { addSavedCo2 } from "../reducers/user";
-
-// Fonction pour récupérer les défis
-const fetchGetChallenges = async () => {
-  try {
-    // Récupération des défis
-    const response = await fetch(
-      `${process.env.EXPO_PUBLIC_BACKEND_URL}/challenges`
-    );
-    const data = await response.json();
-
-    return data;
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-const fetchPostHistory = async (token, restaurantId, achievedChallenges) => {
-  try {
-    // Transformation de la liste de challenges pour ne garder que les id
-    const achievedChallengesId = achievedChallenges.map(
-      (achievedChallenge) => achievedChallenge._id
-    );
-
-    // Envoi des défis
-    const response = await fetch(
-      `${process.env.EXPO_PUBLIC_BACKEND_URL}/history`,
-      {
-        method: "POST",
-        headers: {
-          authorization: token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          restaurant: restaurantId,
-          achievedChallenges: achievedChallengesId,
-        }),
-      }
-    );
-    const data = await response.json();
-
-    return data;
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-// On prend les dimensions de l'écran pour l'affichage de l'image
-const { width } = Dimensions.get("window");
+import { addSavedCo2, addFavorite, removeFavorite } from "../reducers/user";
+import { fetchPostFavorites } from "../services/fetchPostFavorites";
+import { fetchDeleteFavorites } from "../services/fetchDeleteFavorites";
+import { fetchGetChallenges } from "../services/fetchGetChallenges";
+import { fetchPostHistory } from "../services/fetchPostHistory";
 
 export default function RestaurantScreen({ navigation }) {
-  // State pour le bouton like
-  const [liked, setLiked] = useState(false);
-  // State pour l'onglet sélectionné
-  // Soit challenges, soit description
-  const [selectedTab, setSelectedTab] = useState("description");
-  // States de challenges
-  const [challenges, setChallenges] = useState([]);
-  const [selectedChallenges, setSelectedChallenges] = useState([]);
-  // Récupération des données utilisateur
-  const user = useSelector((state) => state.user.value);
   const dispatch = useDispatch();
-
+  
   // Récupération des données du restaurant
   const route = useRoute();
-
+  const restaurant = route.params.restaurant;
   const {
     _id,
     name,
+    desc,
     longDesc,
     score,
     badges,
@@ -99,7 +46,65 @@ export default function RestaurantScreen({ navigation }) {
     address,
     imageUrl,
     websiteUrl,
+    bookingUrl
   } = route.params.restaurant;
+
+  // State pour l'onglet sélectionné (soit challenges, soit description)
+  const [selectedTab, setSelectedTab] = useState("description");
+  // States de challenges
+  const [challenges, setChallenges] = useState([]);
+  const [selectedChallenges, setSelectedChallenges] = useState([]);
+  // Récupération des données utilisateur
+  const user = useSelector((state) => state.user.value);
+
+  const isFavorite = user.favorites.some(favorite => favorite._id === _id);
+
+  const handleFavorite = async () => {
+    if (!user.token) return navigation.navigate('Enter');
+
+    if (isFavorite) {
+      try {
+        const data = await fetchDeleteFavorites(user.token, restaurant._id);
+        if (data.result) {
+          dispatch(removeFavorite(restaurant));
+        } else {
+          throw new Error("Failed to delete favorite");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      try {
+        const data = await fetchPostFavorites(user.token, restaurant._id);
+        if (data.result) {
+          dispatch(addFavorite(restaurant));
+        } else {
+          throw new Error("Failed to save favorite");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+  const handleChallenges = async () => {
+    if (!user.token) return navigation.navigate('Enter');
+
+    try {
+      // Envoi des défis relevés via la fonction dédiée
+      const data = await fetchPostHistory(user.token, _id, selectedChallenges);
+      if (data.result) {
+        // Si le fetch est réussi, on ajoute le CO2 économisé dans le store et redirection vers la home
+        dispatch(addSavedCo2(data.totalSavedCo2));
+        setSelectedChallenges([]);
+        navigation.navigate("Home");
+      } else {
+        throw new Error("Failed to save new quest");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   // Initialisation des défis
   useEffect(() => {
@@ -118,7 +123,28 @@ export default function RestaurantScreen({ navigation }) {
   // Contenu à afficher dans l'onglet description
   const restaurantDescContainer = (
     <View style={styles.tabContentContainer}>
+      <Text style={{ width: "100%", fontStyle: "italic" }}>{desc}</Text>
       <Text style={{ marginBottom: 10 }}>{longDesc}</Text>
+      <View style={{ width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10 }}>
+        <View style={{ flexShrink: 1, minWidth: "45%", maxWidth: "45%" }}>
+          <CustomButton
+            title={"Site web"}
+            variant="outline"
+            textSize={14}
+            onPress={() => Linking.openURL(websiteUrl)}
+          />
+        </View>
+        { bookingUrl && (
+          <View style={{ flexShrink: 1, minWidth: "45%", maxWidth: "45%" }}>
+            <CustomButton
+              title={"Réserver"}
+              variant="outline"
+              textSize={14}
+              onPress={() => Linking.openURL(bookingUrl)}
+            />
+          </View>
+          )}
+      </View>
       <View style={{ width: "100%" }}>
         <CustomButton
           title={"Site web du restaurant"}
@@ -134,7 +160,7 @@ export default function RestaurantScreen({ navigation }) {
     <View style={styles.tabContentContainer}>
       <View style={{ width: "100%" }}>
         {/* La liste des challenges à relever sous forme de chexbox */}
-        <ChallengesChexBox
+        <ChallengesCheckBox
           options={challenges}
           checkedValues={selectedChallenges}
           onChange={(updatedValues) => setSelectedChallenges(updatedValues)}
@@ -145,49 +171,34 @@ export default function RestaurantScreen({ navigation }) {
         title={"Valider mes défis"}
         textSize={15}
         disabled={selectedChallenges.length ? false : true}
-        onPress={() => {
-          if (user.token) {
-            // Envoi des défis relevés via la fonction dédiée
-            fetchPostHistory(user.token, _id, selectedChallenges).then(
-              (data) => {
-                if (data.result) {
-                  // Si le fetch est réussi, on ajoute le CO2 économisé dans le store
-                  // et redirection vers la home
-                  dispatch(addSavedCo2(data.totalSavedCo2));
-                  navigation.navigate("Home");
-                }
-              }
-            );
-          } else {
-            navigation.navigate("Enter");
-          }
-        }}
+        onPress={() => handleChallenges()}
       />
     </View>
   );
 
   return (
     <View style={styles.container}>
+
       {/* Header */}
       <View style={styles.headerContainer}>
         <View style={styles.headerLeft}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <ArrowLeft color={"black"} size={23} />
+            <ArrowLeft color="black" size={25} />
           </TouchableOpacity>
           <Text style={{ fontSize: 23, fontWeight: 500 }}>{name}</Text>
         </View>
         <TouchableOpacity
-          onPress={() => setLiked(!liked)}
-          style={liked ? styles.liked : styles.notLiked}
+          onPress={() => handleFavorite()}
+          style={{ borderRadius: 50, padding: 8, backgroundColor: isFavorite ? "#e5685c" : "#C4C4C4" }}
         >
-          <Heart color={liked ? "red" : "black"} size={25} />
+          <Heart color="#FFFFFF" size={25} />
         </TouchableOpacity>
       </View>
-      {/*Partie haute de la page  avec la présentation du restaurant sans les onglets*/}
+      
       <ScrollView
-        style={{ flex: 1, width: "90%", marginTop: 20 }}
-        contentContainerStyle={{ paddingBottom: 10 }}
+        contentContainerStyle={{ width: Dimensions.get('window').width, alignItems: 'center', paddingBottom: 20 }}
       >
+        {/* Présentation du restaurant sans les onglets */}
         <View style={styles.presentationContainer}>
           {/*Image du restaurant*/}
           <Image
@@ -196,37 +207,37 @@ export default function RestaurantScreen({ navigation }) {
             resizeMode="cover"
           />
           {/* Bloc qui contient les métadonnées (prix, types, addresse, etc.) */}
-          <View style={styles.metadataContainer}>
-            <View style={styles.score}>
-              {leaves}
-              <Text style={styles.scoreLabel}>Label Ecotable</Text>
+          <View style={{ gap: 9 }}>
+            <View style={{ ...styles.itemContainer, alignItems: "center" }}>
+              <View style={{ flexDirection: 'row' }}>{ leaves }</View>
+              <Text>Label Écotable</Text>
             </View>
-            <View style={styles.itemPresentationContainer}>
-              <MapPin size={20} color={"black"} />
-              <Text>{address}</Text>
+            <View style={styles.itemContainer}>
+              <MapPin size={20} color={"black"} style={styles.presentationIcon} />
+              <Text style={{ flex: 1 }}>{address}</Text>
             </View>
-            <View style={styles.itemPresentationContainer}>
-              <UtensilsCrossed size={20} color={"black"} />
+            <View style={styles.itemContainer}>
+              <UtensilsCrossed size={20} color={"black"} style={styles.presentationIcon} />
               <View style={styles.tagContainer}>
                 {badges.map((badge, i) => (
-                  <View key={i} style={[styles.tag, styles.badge]}>
+                  <View key={i} style={{ ...styles.tag, backgroundColor: "#1C3B1D" }}>
                     <Text style={styles.tagText}>{badge}</Text>
                   </View>
                 ))}
               </View>
             </View>
-            <View style={styles.itemPresentationContainer}>
-              <Store size={20} color={"black"} />
+            <View style={styles.itemContainer}>
+              <Store size={20} color={"black"} style={styles.presentationIcon} />
               <View style={styles.tagContainer}>
                 {types.map((badge, i) => (
-                  <View key={i} style={[styles.tag, styles.type]}>
+                  <View key={i} style={{ ...styles.tag, backgroundColor: "#6AC46A" }}>
                     <Text style={styles.tagText}>{badge}</Text>
                   </View>
                 ))}
               </View>
             </View>
-            <View style={styles.itemPresentationContainer}>
-              <Euro size={20} color={"black"} />
+            <View style={styles.itemContainer}>
+              <Euro size={20} color={"black"} style={styles.presentationIcon} />
               <Text>{priceRange}</Text>
             </View>
           </View>
@@ -266,6 +277,7 @@ export default function RestaurantScreen({ navigation }) {
             </Text>
           </TouchableOpacity>
         </View>
+        {/* Contenu des onglets */}
         {selectedTab === "description"
           ? restaurantDescContainer
           : challengesList}
@@ -280,44 +292,36 @@ const styles = StyleSheet.create({
     backgroundColor: "#F9F9F9",
     alignItems: "center",
     justifyContent: "flex-start",
-    paddingTop: 20,
-  },
-  presentationContainer: {
-    width: "90%",
-    gap: 20,
   },
   headerContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 20,
   },
   headerLeft: {
     flexDirection: "row",
     gap: 10,
     alignItems: "center",
   },
+  presentationContainer: {
+    width: "90%",
+    gap: 15,
+    marginBottom: 20,
+  },
   image: {
-    width: width * 0.9,
+    width: Dimensions.get("window").width * 0.9,
     height: 170,
     borderRadius: 10,
   },
-  metadataContainer: {
-    gap: 9,
-  },
-  score: {
-    flexDirection: "row",
-  },
-  scoreLabel: {
-    marginLeft: 10,
-  },
-  itemPresentationContainer: {
+  itemContainer: {
     flexDirection: "row",
     gap: 10,
   },
   tagContainer: {
+    flex: 1,
     flexDirection: "row",
     gap: 5,
     flexWrap: "wrap",
@@ -327,23 +331,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 11,
     paddingVertical: 3,
   },
-  badge: {
-    backgroundColor: "#1C3B1D",
-  },
-  type: {
-    backgroundColor: "#6ac46a",
-  },
   tagText: {
     fontSize: 13,
     color: "#fff",
   },
-  price: {
-    backgroundColor: "#eee", //gris
+  presentationIcon: {
+    marginTop: 3
   },
   tabContainer: {
+    width: "90%",
     flexDirection: "row",
-    gap: 10,
-    marginTop: 10,
+    gap: 15,
   },
   tabLabelSelected: {
     color: "#173e19",
@@ -359,6 +357,7 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   tabContentContainer: {
+    width: "90%",
     marginTop: 15,
     alignItems: "center",
     gap: 10,

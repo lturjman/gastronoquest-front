@@ -93,12 +93,13 @@ export default function SearchScreen() {
   // Chercher des restaurants
   const fetchResults = async () => {
     console.log("fetchResults()");
+    
     startedSearch === false && setStartedSearch(true);
     setSearchResults([]);
 
     // Construction du req.body
     const reqBody = {
-      input: searchInput,
+      input: searchInput.trim(),
       badges,
       types,
       priceRange,
@@ -176,7 +177,7 @@ export default function SearchScreen() {
       console.log("Fin de fetchResults()");
       setFiltersVisible(false);
     } catch (error) {
-    console.log(error);
+      console.log(error);
   }
   };
 
