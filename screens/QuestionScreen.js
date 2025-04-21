@@ -6,9 +6,11 @@ import { useState } from "react";
 import QuestionResultModal from "../components/questionResultModal";
 import { badAnswer, goodAnswer } from "../reducers/quiz";
 import ProgressBar from "../components/ui-kit/ProgressBar";
+import { fetchPutQuizResults } from "../services/quizResultsServices";
 
-export default function QuestionScreen() {
+export default function QuestionScreen({ navigation }) {
   // Récupération des données du quiz dans le store redux
+  const user = useSelector((state) => state.user.value);
   const quiz = useSelector((state) => state.quiz.value);
   const dispatch = useDispatch();
 
@@ -33,6 +35,20 @@ export default function QuestionScreen() {
     isGoodAnswer ? dispatch(goodAnswer()) : dispatch(badAnswer());
     setCurrentAnswer("");
     setIsModalVisible(!isModalVisible);
+  };
+
+  const handleSubmitQuiz = () => {
+    const passed = quiz.correctAnswers >= 7;
+
+    fetchPutQuizResults(
+      user.token,
+      quiz.quizData._id,
+      quiz.correctAnswers,
+      passed
+    ).then((response) => {
+      if (response.result)
+        navigation.navigate("Quiz", { screen: "QuizScreen" });
+    });
   };
 
   const questionContainer = (
@@ -98,11 +114,7 @@ export default function QuestionScreen() {
         </Text>
       </View>
       <View>
-        <CustomButton
-          title="Continuer"
-          disabled={currentAnswer ? false : true}
-          onPress={handleSubmitAnswer}
-        />
+        <CustomButton title="Continuer" onPress={handleSubmitQuiz} />
       </View>
     </>
   );
