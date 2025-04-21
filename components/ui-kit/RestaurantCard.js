@@ -64,7 +64,10 @@ export default function RestaurantCard({ restaurant }) {
         <TouchableOpacity style={{ flexShrink: 1 }} onPress={() => navigation.navigate("RestaurantScreen", { restaurant })}>
           <Text style={styles.name}>{restaurant.name}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={{ marginTop: -5, borderRadius: 50, padding: 7, backgroundColor: isFavorite ? "#e5685c" : "#C4C4C4" }} onPress={() => handleFavorite()}>
+        <TouchableOpacity
+          style={{ marginTop: -5, borderRadius: 50, padding: 7, backgroundColor: isFavorite ? "#e5685c" : "#C4C4C4" }}
+          onPress={() => handleFavorite()}
+        >
           <Heart color="#FFFFFF" size={23} />
         </TouchableOpacity>
       </View>
