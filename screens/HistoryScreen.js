@@ -25,6 +25,7 @@ export default function HistoryScreen({ navigation }) {
     //permet d’exécuter du code chaque fois que ton écran devient actif
     useCallback(() => {
       // Garde cette fonction en mémoire tant que ses paramètres ne changent pas.
+      // c'est à dire que tant que le token ne change pas, il ne refait pas la requête
       const fetchQuests = async () => {
         try {
           const res = await fetch(
@@ -51,7 +52,7 @@ export default function HistoryScreen({ navigation }) {
   );
 
   const hasQuest = quests && quests.length > 0;
-  console.log("Quests data:", quests);
+
   return (
     <View>
       <View style={styles.headerLeft}>
