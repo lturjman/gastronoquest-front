@@ -55,9 +55,9 @@ export default function RestaurantCard({ restaurant }) {
     }
   }
 
-
-
-
+  const handleNavigation = () => {
+    navigation.navigate("RestaurantScreen", { restaurant });
+  }
 
   return (
     <View style={styles.card}>
@@ -65,7 +65,7 @@ export default function RestaurantCard({ restaurant }) {
 
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={{ flexShrink: 1 }} onPress={() => navigation.navigate("RestaurantScreen", { restaurant })}>
+        <TouchableOpacity style={{ flexShrink: 1 }} onPress={() => handleNavigation()}>
           <Text style={styles.name}>{restaurant.name}</Text>
         </TouchableOpacity>
         <TouchableOpacity

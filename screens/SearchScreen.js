@@ -231,6 +231,10 @@ export default function SearchScreen() {
       }
       
     })();
+
+    return () => {
+      setCardVisible(false);
+    };
   }, []);
 
   // Bouton de recherche

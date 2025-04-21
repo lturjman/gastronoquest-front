@@ -129,7 +129,7 @@ export default function RestaurantScreen({ navigation }) {
         <View style={{ flexShrink: 1, minWidth: "45%", maxWidth: "45%" }}>
           <CustomButton
             title={"Site web"}
-            variant="outline"
+            variant="dark"
             textSize={14}
             onPress={() => Linking.openURL(websiteUrl)}
           />
@@ -138,7 +138,7 @@ export default function RestaurantScreen({ navigation }) {
           <View style={{ flexShrink: 1, minWidth: "45%", maxWidth: "45%" }}>
             <CustomButton
               title={"Réserver"}
-              variant="outline"
+              variant="light"
               textSize={14}
               onPress={() => Linking.openURL(bookingUrl)}
             />
