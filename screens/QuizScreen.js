@@ -9,6 +9,9 @@ import Serie from "../components/Serie";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { updateQuiz } from "../reducers/quiz";
+import { fetchGetQuizResults } from "../services/quizResultsServices";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 
 // Objet qui contient les icones à afficher en fonction du niveau
 const levelIcons = {
@@ -26,24 +29,6 @@ const fetchQuiz = async () => {
     const response = await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URL}/quiz`);
     const data = await response.json();
 
-    return data;
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-// Fonction pour récupérer les résultats de l'utilisateur
-const fetchQuizResults = async (token) => {
-  try {
-    // Récupération des résultats de quizz
-    const response = await fetch(
-      `${process.env.EXPO_PUBLIC_BACKEND_URL}/quizResults`,
-      {
-        method: "GET",
-        headers: { authorization: token },
-      }
-    );
-    const data = await response.json();
     return data;
   } catch (error) {
     console.error(error);
@@ -72,7 +57,7 @@ const getQuizWithoutConnection = async () => {
 const getQuizWithConnection = async (token) => {
   // Récupération des quizz et des résultats de l'utilisateur
   const quizData = await fetchQuiz();
-  const quizResultsData = await fetchQuizResults(token);
+  const quizResultsData = await fetchGetQuizResults(token);
 
   // Remise en ordre des quizz pour avoir le bon ordre d'affichage
   const quizDataSorted = quizData.quizzes.sort(
@@ -85,7 +70,9 @@ const getQuizWithConnection = async (token) => {
     let status;
     let score = 0;
     // Calcul du nombre de quizz réalisés pour savoir lequel doit être débloqué
-    const quizzesNumberRealized = quizResultsData.data.length;
+    const quizzesNumberRealized = quizResultsData.data.filter(
+      (quizResult) => quizResult.passed === true
+    ).length;
 
     // Filtrage des résultats pour voir si le quizz qu'on cherche est mentionné
     const quizResultsFiltered = quizResultsData.data.filter(
@@ -146,18 +133,22 @@ export default function QuizScreen({ navigation }) {
   };
 
   // Chargement des quizz
-  useEffect(() => {
-    // Si l'utilisateur n'est pas connecté
-    if (!user.token) {
-      // On charge simplement les quiz et on débloque uniquement le premier
-      getQuizWithoutConnection().then((dataQuizzes) => setQuizzes(dataQuizzes));
-    } else {
-      // Sinon on appelle la fonction qui charge les quizz et les résultats de l'utilisateur
-      getQuizWithConnection(user.token).then((dataQuizzes) => {
-        setQuizzes(dataQuizzes);
-      });
-    }
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      // Si l'utilisateur n'est pas connecté
+      if (!user.token) {
+        // On charge simplement les quiz et on débloque uniquement le premier
+        getQuizWithoutConnection().then((dataQuizzes) =>
+          setQuizzes(dataQuizzes)
+        );
+      } else {
+        // Sinon on appelle la fonction qui charge les quizz et les résultats de l'utilisateur
+        getQuizWithConnection(user.token).then((dataQuizzes) => {
+          setQuizzes(dataQuizzes);
+        });
+      }
+    }, [])
+  );
 
   // Variable pour stocker le nombre de quizz réalisés
   const seriesNumberRealized = quizzes.filter(

@@ -231,6 +231,10 @@ export default function SearchScreen() {
       }
       
     })();
+
+    return () => {
+      setCardVisible(false);
+    };
   }, []);
 
   // Bouton de recherche
@@ -266,7 +270,9 @@ export default function SearchScreen() {
           { startedSearch && (
             <View style={{ width: '90%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
               <Text>{searchResults.length} {searchResults.length > 1 ? "résultats" : "résultat"}</Text>
-              <Info size={20} color="#173e19" onPress={() => setInfoVisible(true)} />
+              <TouchableOpacity onPress={() => setInfoVisible(true)}>
+                <Info size={20} color="#173e19" />
+              </TouchableOpacity>
             </View>
           ) }
         </View>

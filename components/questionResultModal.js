@@ -21,7 +21,7 @@ const QuestionResultModal = ({
   visible = true,
 }) => {
   return (
-    <Modal transparent visible={visible} animationType="slide">
+    <Modal transparent visible={visible} animationType="fade">
       <View style={styles.overlay}>
         <View style={styles.modalContainer}>
           <View style={styles.content}>

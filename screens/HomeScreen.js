@@ -139,8 +139,8 @@ export default function HomeScreen({ navigation }) {
 
         <View style={styles.textContainer}>
           <Text style={styles.text}>
-            Relève des défis, collecte du CO₂ et regarde ta plante grandir à
-            chaque palier atteint !
+            Relève des défis, collecte du CO₂ et fais grandir ta plante à chaque
+            palier atteint !
           </Text>
         </View>
       </View>
@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   text: {
-    fontSize: 12,
+    fontSize: 13,
     color: "#333333",
     textAlign: "center",
   },

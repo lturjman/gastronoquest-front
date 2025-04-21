@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   Platform,
 } from "react-native";
-
 import { Leaf, Heart } from "lucide-react-native";
 import { useNavigation } from "@react-navigation/native";
 
@@ -18,7 +17,7 @@ export default function CustomCard({ restaurant, onPress }) {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1 }}>
       <View style={styles.card}>
         {/* Header */}
         <View style={styles.header}>
@@ -27,7 +26,7 @@ export default function CustomCard({ restaurant, onPress }) {
               navigation.navigate("RestaurantScreen", { restaurant })
             }
           >
-            <Text style={styles.title}>{restaurant.name}</Text>
+            <Text style={styles.name}>{restaurant.name}</Text>
           </TouchableOpacity>
           <View style={styles.headerRight}>
             <TouchableOpacity
@@ -42,9 +41,12 @@ export default function CustomCard({ restaurant, onPress }) {
         <View style={styles.notenpricecontainer}>
           {/* Note (score de 1 à 3) */}
           <View style={styles.noteContainer}>{leaves}</View>
+          <Text> • </Text>
           {/* Gamme de prix */}
           <View style={styles.priceTag}>
-            <Text style={styles.priceText}> ・ {restaurant.priceRange}</Text>
+            <Text style={{ ...styles.tagText, color: "#173e19" }}>
+              {restaurant.priceRange}
+            </Text>
           </View>
         </View>
 
@@ -54,8 +56,11 @@ export default function CustomCard({ restaurant, onPress }) {
         {/* Badges */}
         <View style={styles.tagContainer}>
           {restaurant.badges.map((badge, index) => (
-            <View key={index} style={styles.tag}>
-              <Text style={styles.tagText}>{badge}</Text>
+            <View
+              key={index}
+              style={{ ...styles.tag, backgroundColor: "#1C3B1D" }}
+            >
+              <Text style={{ ...styles.tagText, color: "#fff" }}>{badge}</Text>
             </View>
           ))}
         </View>
@@ -63,8 +68,13 @@ export default function CustomCard({ restaurant, onPress }) {
         {/* Types */}
         <View style={styles.tagContainer}>
           {restaurant.types.map((type, index) => (
-            <View key={index} style={styles.type}>
-              <Text style={styles.typeText}>{type}</Text>
+            <View
+              key={index}
+              style={{ ...styles.tag, backgroundColor: "#6ac46a" }}
+            >
+              <Text style={{ ...styles.tagText, color: "#1C3B1D" }}>
+                {type}
+              </Text>
             </View>
           ))}
         </View>
@@ -108,9 +118,9 @@ const styles = StyleSheet.create({
   notenpricecontainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 20,
+    gap: 15,
   },
-  title: {
+  name: {
     fontSize: 20,
     fontWeight: "bold",
     marginRight: 30,
@@ -125,41 +135,16 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   tag: {
-    backgroundColor: "#1C3B1D",
     borderRadius: 20,
     paddingHorizontal: 14,
     paddingVertical: 6,
-    height: 30,
   },
   tagText: {
     fontSize: 14,
-    color: "#fff",
-    fontWeight: "600",
-  },
-  type: {
-    backgroundColor: "#6ac46a",
-    borderRadius: 20,
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    height: 30,
-  },
-  typeText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-
-  priceText: {
-    fontSize: 14,
-    color: "#173e19",
     fontWeight: "600",
   },
   liked: {
     backgroundColor: "#e5685c",
-    borderRadius: 50,
-    padding: 8,
-  },
-  Notliked: {
-    backgroundColor: "#C4C4C4",
     borderRadius: 50,
     padding: 8,
   },
