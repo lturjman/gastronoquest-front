@@ -21,36 +21,33 @@ export default function HistoryScreen({ navigation }) {
 
   const scrollViewRef = useRef(null); // prépare la référence du scrollView pour afficher le haut de la page lors du clic sur le bouton de pagination
 
-  useFocusEffect(
-    //exécute le code à chaque fois que l'écran devient actif
-    useCallback(() => {
-      // ne réexécute la fonction que si le token change
-      const fetchQuests = async () => {
-        //récupérer l'historique des quêtes
-        try {
-          const res = await fetch(
-            `${process.env.EXPO_PUBLIC_BACKEND_URL}/history`,
-            {
-              headers: {
-                "Content-Type": "application/json",
-                authorization: token,
-              },
-            }
-          );
-
-          const data = await res.json();
-          if (data.result && data.data) {
-            // Tri des quêtes du plus ancien au plus récent (inverse de la logique précédente)
-            setQuests(data.data.reverse());
-          }
-        } catch (error) {
-          console.error("Erreur lors du chargement des quêtes", error);
+  const fetchQuests = async () => {
+    try {
+      const res = await fetch(
+        `${process.env.EXPO_PUBLIC_BACKEND_URL}/history`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            authorization: token,
+          },
         }
-      };
+      );
 
-      fetchQuests();
-    }, [token])
-  );
+      const data = await res.json();
+      return data;
+    } catch (error) {
+      console.error("Erreur lors du chargement des quêtes", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchQuests().then((data) => {
+      if (data.result && data.data) {
+        // Tri des quêtes du plus récent au plus ancien
+        setQuests(data.data.reverse());
+      }
+    });
+  }, []);
 
   const hasQuest = quests && quests.length > 0;
 

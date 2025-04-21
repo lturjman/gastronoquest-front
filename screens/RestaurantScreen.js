@@ -30,7 +30,7 @@ import { fetchPostHistory } from "../services/fetchPostHistory";
 
 export default function RestaurantScreen({ navigation }) {
   const dispatch = useDispatch();
-  
+
   // Récupération des données du restaurant
   const route = useRoute();
   const restaurant = route.params.restaurant;
@@ -46,7 +46,7 @@ export default function RestaurantScreen({ navigation }) {
     address,
     imageUrl,
     websiteUrl,
-    bookingUrl
+    bookingUrl,
   } = route.params.restaurant;
 
   // State pour l'onglet sélectionné (soit challenges, soit description)
@@ -57,10 +57,10 @@ export default function RestaurantScreen({ navigation }) {
   // Récupération des données utilisateur
   const user = useSelector((state) => state.user.value);
 
-  const isFavorite = user.favorites.some(favorite => favorite._id === _id);
+  const isFavorite = user.favorites.some((favorite) => favorite._id === _id);
 
   const handleFavorite = async () => {
-    if (!user.token) return navigation.navigate('Enter');
+    if (!user.token) return navigation.navigate("Enter");
 
     if (isFavorite) {
       try {
@@ -85,10 +85,10 @@ export default function RestaurantScreen({ navigation }) {
         console.error(error);
       }
     }
-  }
+  };
 
   const handleChallenges = async () => {
-    if (!user.token) return navigation.navigate('Enter');
+    if (!user.token) return navigation.navigate("Enter");
 
     try {
       // Envoi des défis relevés via la fonction dédiée
@@ -104,7 +104,7 @@ export default function RestaurantScreen({ navigation }) {
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   // Initialisation des défis
   useEffect(() => {
@@ -125,7 +125,15 @@ export default function RestaurantScreen({ navigation }) {
     <View style={styles.tabContentContainer}>
       <Text style={{ width: "100%", fontStyle: "italic" }}>{desc}</Text>
       <Text style={{ marginBottom: 10 }}>{longDesc}</Text>
-      <View style={{ width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10 }}>
+      <View
+        style={{
+          width: "100%",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 10,
+        }}
+      >
         <View style={{ flexShrink: 1, minWidth: "45%", maxWidth: "45%" }}>
           <CustomButton
             title={"Site web"}
@@ -134,7 +142,7 @@ export default function RestaurantScreen({ navigation }) {
             onPress={() => Linking.openURL(websiteUrl)}
           />
         </View>
-        { bookingUrl && (
+        {bookingUrl && (
           <View style={{ flexShrink: 1, minWidth: "45%", maxWidth: "45%" }}>
             <CustomButton
               title={"Réserver"}
@@ -143,7 +151,7 @@ export default function RestaurantScreen({ navigation }) {
               onPress={() => Linking.openURL(bookingUrl)}
             />
           </View>
-          )}
+        )}
       </View>
       <View style={{ width: "100%" }}>
         <CustomButton
@@ -178,7 +186,6 @@ export default function RestaurantScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-
       {/* Header */}
       <View style={styles.headerContainer}>
         <View style={styles.headerLeft}>
@@ -189,14 +196,22 @@ export default function RestaurantScreen({ navigation }) {
         </View>
         <TouchableOpacity
           onPress={() => handleFavorite()}
-          style={{ borderRadius: 50, padding: 8, backgroundColor: isFavorite ? "#e5685c" : "#C4C4C4" }}
+          style={{
+            borderRadius: 50,
+            padding: 8,
+            backgroundColor: isFavorite ? "#e5685c" : "#C4C4C4",
+          }}
         >
           <Heart color="#FFFFFF" size={25} />
         </TouchableOpacity>
       </View>
-      
+
       <ScrollView
-        contentContainerStyle={{ width: Dimensions.get('window').width, alignItems: 'center', paddingBottom: 20 }}
+        contentContainerStyle={{
+          width: Dimensions.get("window").width,
+          alignItems: "center",
+          paddingBottom: 20,
+        }}
       >
         {/* Présentation du restaurant sans les onglets */}
         <View style={styles.presentationContainer}>
@@ -209,28 +224,46 @@ export default function RestaurantScreen({ navigation }) {
           {/* Bloc qui contient les métadonnées (prix, types, addresse, etc.) */}
           <View style={{ gap: 9 }}>
             <View style={{ ...styles.itemContainer, alignItems: "center" }}>
-              <View style={{ flexDirection: 'row' }}>{ leaves }</View>
+              <View style={{ flexDirection: "row" }}>{leaves}</View>
               <Text>Label Écotable</Text>
             </View>
             <View style={styles.itemContainer}>
-              <MapPin size={20} color={"black"} style={styles.presentationIcon} />
+              <MapPin
+                size={20}
+                color={"black"}
+                style={styles.presentationIcon}
+              />
               <Text style={{ flex: 1 }}>{address}</Text>
             </View>
             <View style={styles.itemContainer}>
-              <UtensilsCrossed size={20} color={"black"} style={styles.presentationIcon} />
+              <UtensilsCrossed
+                size={20}
+                color={"black"}
+                style={styles.presentationIcon}
+              />
               <View style={styles.tagContainer}>
                 {badges.map((badge, i) => (
-                  <View key={i} style={{ ...styles.tag, backgroundColor: "#1C3B1D" }}>
+                  <View
+                    key={i}
+                    style={{ ...styles.tag, backgroundColor: "#1C3B1D" }}
+                  >
                     <Text style={styles.tagText}>{badge}</Text>
                   </View>
                 ))}
               </View>
             </View>
             <View style={styles.itemContainer}>
-              <Store size={20} color={"black"} style={styles.presentationIcon} />
+              <Store
+                size={20}
+                color={"black"}
+                style={styles.presentationIcon}
+              />
               <View style={styles.tagContainer}>
                 {types.map((badge, i) => (
-                  <View key={i} style={{ ...styles.tag, backgroundColor: "#6AC46A" }}>
+                  <View
+                    key={i}
+                    style={{ ...styles.tag, backgroundColor: "#6AC46A" }}
+                  >
                     <Text style={styles.tagText}>{badge}</Text>
                   </View>
                 ))}
@@ -336,7 +369,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   presentationIcon: {
-    marginTop: 3
+    marginTop: 3,
   },
   tabContainer: {
     width: "90%",
