@@ -158,4 +158,9 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     padding: 8,
   },
+  Notliked: {
+    backgroundColor: "#C4C4C4",
+    borderRadius: 50,
+    padding: 8,
+  },
 });
