@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   },
   imagePlaceholder: {
     width: 125,
-    height: 175,
+    height: "100%",
   },
   image: {
     flex: 1,
@@ -119,8 +119,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   messageContainer: {
-    position: "absolute",
+    position: "relative",
     bottom: 0,
+    left: 110,
     right: 10,
   },
   message: {

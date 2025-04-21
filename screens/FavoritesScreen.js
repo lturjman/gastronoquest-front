@@ -1,4 +1,10 @@
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
 import CustomCard from "../components/ui-kit/CustomCard";
 import user from "../reducers/user";
@@ -7,6 +13,7 @@ import { useSelector } from "react-redux";
 
 import { useDispatch } from "react-redux";
 import { removeFavorite } from "../reducers/user";
+import { ArrowLeft } from "lucide-react-native";
 
 export default function FavoritesScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -40,7 +47,15 @@ export default function FavoritesScreen({ navigation }) {
 
   return (
     <View>
-      <Text style={styles.title}> Mes Favoris</Text>
+      <View style={styles.headerLeft}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("User", { screen: "UserScreen" })}
+        >
+          <ArrowLeft color={"black"} size={23} />
+        </TouchableOpacity>
+        <Text style={styles.title}> Mes Favoris</Text>
+      </View>
+
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.messageContainer}>
           {!hasFavorites ? (
@@ -76,23 +91,30 @@ export default function FavoritesScreen({ navigation }) {
 const styles = StyleSheet.create({
   scrollContainer: {
     alignItems: "center",
-    paddingBottom: 40,
+    paddingBottom: 80,
   },
   container: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
+  headerLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 20,
+    paddingHorizontal: 20,
+  },
   title: {
     maxWidth: "100%",
     fontSize: 30,
     fontWeight: "bold",
     margin: 10,
+    textAlign: "center",
   },
   buttonContainer: {
     justifyContent: "center",
     alignItems: "center",
-    gap: 20,
+    marginBottom: 20,
   },
   messageContainer: {
     flex: 1,
