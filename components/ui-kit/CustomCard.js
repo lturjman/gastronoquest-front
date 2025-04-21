@@ -44,7 +44,7 @@ export default function CustomCard({ restaurant, onPress }) {
           <View style={styles.noteContainer}>{leaves}</View>
           {/* Gamme de prix */}
           <View style={styles.priceTag}>
-            <Text style={styles.priceText}>{restaurant.priceRange}</Text>
+            <Text style={styles.priceText}> ・ {restaurant.priceRange}</Text>
           </View>
         </View>
 

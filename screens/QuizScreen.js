@@ -183,7 +183,8 @@ export default function QuizScreen({ navigation }) {
         </View>
         {user.token ? (
           <Text style={{ fontSize: 15 }}>
-            {levelIcons[user.level]} {user.level}
+            {/* {levelIcons[user.level]} {user.level} */}
+            Renforcer mes connaissances
           </Text>
         ) : (
           <TouchableOpacity onPress={() => navigation.navigate("Enter")}>

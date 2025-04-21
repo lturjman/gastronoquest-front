@@ -9,9 +9,11 @@ import {
   ImageBackground,
 } from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
-import { Platform } from "react-native";
+import { Platform, Animated } from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
 import { useSelector } from "react-redux";
+
+import { useEffect, useRef } from "react";
 
 const news = [
   {
@@ -31,15 +33,69 @@ const news = [
 const { width } = Dimensions.get("window");
 
 const levelIcons = {
-  "jeune pousse": "🌱",
-  curieux: "🍪",
-  padawan: "🧑‍🎓",
-  "maître jedi": "✨",
-  "vieille branche": "🌳",
+  "Jeune pousse": "🌱",
+  "Petit arbuste": "🪴",
+  "Arbre fruitier": "🍎",
+  "Grand arbre": "🌴",
+  "Chêne centenaire": "🌳",
+};
+
+const getUserLevel = (co2) => {
+  if (co2 >= 100) return "Chêne centenaire";
+  if (co2 >= 75) return "Grand arbre";
+  if (co2 >= 50) return "Arbre fruitier";
+  if (co2 >= 20) return "Petit arbuste";
+  return "Jeune pousse";
+};
+
+const levelThresholds = [
+  { level: "jeune pousse", icon: "🌱", co2: 10 },
+  { level: "Petit arbuste", icon: "🪴", co2: 20 },
+  { level: "Arbre fruitier", icon: "🍎", co2: 50 },
+  { level: "Grand arbre", icon: "🌴", co2: 75 },
+  { level: "Chêne centenaire", icon: "🌳", co2: 100 },
+];
+
+const getNextLevelInfo = (co2) => {
+  for (let i = 0; i < levelThresholds.length; i++) {
+    if (co2 < levelThresholds[i].co2) {
+      return {
+        nextLevel: levelThresholds[i].level,
+        icon: levelThresholds[i].icon,
+        remaining: levelThresholds[i].co2 - co2,
+      };
+    }
+  }
+  return null; // Déjà au niveau max
+};
+
+const getProgressPercentage = (co2) => {
+  let previous = 0;
+  for (let i = 0; i < levelThresholds.length; i++) {
+    if (co2 < levelThresholds[i].co2) {
+      const currentThreshold = levelThresholds[i].co2;
+      const percentage =
+        ((co2 - previous) / (currentThreshold - previous)) * 100;
+      return Math.min(Math.max(percentage, 0), 100);
+    }
+    previous = levelThresholds[i].co2;
+  }
+  return 100; // max atteint
 };
 
 export default function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
+
+  const progress = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const percentage = getProgressPercentage(user.totalSavedCo2);
+    Animated.timing(progress, {
+      toValue: percentage,
+      duration: 800,
+      useNativeDriver: false,
+    }).start();
+  }, [user.totalSavedCo2]);
 
   const co2Container = (
     <>
@@ -65,8 +121,45 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.levelContainer}>
         <Text style={{ fontSize: 14, fontWeight: "bold" }}>Mon niveau</Text>
         <Text>
-          {levelIcons[user.level]} {user.level}
+          {levelIcons[getUserLevel(user.totalSavedCo2)]}{" "}
+          {getUserLevel(user.totalSavedCo2)}
         </Text>
+        {(() => {
+          const next = getNextLevelInfo(user.totalSavedCo2);
+          if (next) {
+            return (
+              <Text
+                style={{ fontSize: 12, color: "#565656", textAlign: "center" }}
+              >
+                Encore {next.remaining}kg pour atteindre {next.nextLevel}{" "}
+                {next.icon}
+              </Text>
+            );
+          } else {
+            return (
+              <Text
+                style={{ fontSize: 12, color: "#565656", textAlign: "center" }}
+              >
+                Niveau maximum atteint ! 🌟
+              </Text>
+            );
+          }
+        })()}
+
+        <View style={styles.progressBarBackground}>
+          <Animated.View
+            style={[
+              styles.progressBarFill,
+              {
+                width: progress.interpolate({
+                  inputRange: [0, 100],
+                  outputRange: ["0%", "100%"],
+                }),
+              },
+            ]}
+          />
+        </View>
+
         <CustomButton
           title={"Historique de quêtes"}
           textSize={13}
@@ -124,7 +217,7 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.btnContainer}>
         <View style={styles.btn}>
           <CustomButton
-            title={"Ma série quotidienne"}
+            title={"Renforcer mes connaissances"}
             variant={"light"}
             textSize={13}
             onPress={() => navigation.navigate("Quiz")}
@@ -223,5 +316,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 13,
+  },
+  progressBarBackground: {
+    width: 200,
+    height: 10,
+    backgroundColor: "#e0e0e0",
+    borderRadius: 10,
+    overflow: "hidden",
+    marginTop: 5,
+  },
+
+  progressBarFill: {
+    height: "100%",
+    backgroundColor: "#6AC46A",
+    borderRadius: 10,
   },
 });
