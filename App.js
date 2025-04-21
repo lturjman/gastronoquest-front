@@ -25,6 +25,7 @@ import WelcomeScreen from "./screens/WelcomeScreen";
 import { Provider, useSelector } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import user from "./reducers/user";
+import quiz from "./reducers/quiz";
 
 // Configuration de la naviguation
 // Création de "groupes d'écrans" pour garder l'icône active sur des sous-écrans
@@ -102,7 +103,7 @@ const TabNavigator = () => {
 
 // Configuration du store redux
 const store = configureStore({
-  reducer: { user },
+  reducer: { user, quiz },
 });
 
 export default function App() {
