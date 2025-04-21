@@ -4,15 +4,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { addFavorite, removeFavorite } from "../../reducers/user";
 
-import { deleteFavorite } from "../../services/deleteFavorite";
-import { saveFavorite } from "../../services/saveFavorite";
+import { fetchPostFavorites } from "../../services/fetchPostFavorites";
+import { fetchDeleteFavorites } from "../../services/fetchDeleteFavorites";
 
 export default function RestaurantCard({ restaurant }) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const favorites = useSelector((state) => state.user.value.favorites);
-  const token = useSelector((state) => state.user.value.token);
-  const isFavorite = favorites.includes(restaurant._id);
+
+  const user = useSelector((state) => state.user.value);
+  const isFavorite = user.favorites.some(favorite => favorite._id === restaurant._id);
 
   const leaves = [];
   for (let i = 0; i < restaurant.score; i++) {
@@ -20,16 +20,18 @@ export default function RestaurantCard({ restaurant }) {
   }
 
   const handleFavorite = async () => {
+    console.log("1");
+    if (!user.token) return navigation.navigate('Enter');
     
-    if (!token) {
-      navigation.navigate('Enter');
-      return;
-    }
+    console.log("2");
 
     if (isFavorite) {
+      console.log("3");
       try {
-        const data = await deleteFavorite(token, restaurant._id);
+        const data = await fetchDeleteFavorites(user.token, restaurant._id);
+        console.log(data);
         if (data.result) {
+          console.log("Removing from store");
           dispatch(removeFavorite(restaurant));
         } else {
           throw new Error("Failed to delete favorite");
@@ -38,8 +40,10 @@ export default function RestaurantCard({ restaurant }) {
         console.error(error);
       }
     } else {
+    console.log("4");
+
       try {
-        const data = await saveFavorite(token, restaurant._id);
+        const data = await fetchPostFavorites(user.token, restaurant._id);
         if (data.result) {
           dispatch(addFavorite(restaurant));
         } else {

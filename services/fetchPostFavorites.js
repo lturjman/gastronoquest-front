@@ -1,4 +1,4 @@
-export const saveFavorite = async (token, restaurantId) => {
+export const fetchPostFavorites = async (token, restaurantId) => {
   try {
     const response = await fetch(
       `${process.env.EXPO_PUBLIC_BACKEND_URL}/favorites`,

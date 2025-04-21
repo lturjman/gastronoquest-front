@@ -20,71 +20,20 @@ import {
 } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import CustomButton from "../components/ui-kit/CustomButton";
-import ChallengesChexBox from "../components/ChallengesCheckbox";
+import ChallengesCheckBox from "../components/ChallengesCheckbox";
 import { useSelector, useDispatch } from "react-redux";
-import { addSavedCo2 } from "../reducers/user";
-
-// Fonction pour récupérer les défis
-const fetchGetChallenges = async () => {
-  try {
-    // Récupération des défis
-    const response = await fetch(
-      `${process.env.EXPO_PUBLIC_BACKEND_URL}/challenges`
-    );
-    const data = await response.json();
-
-    return data;
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-const fetchPostHistory = async (token, restaurantId, achievedChallenges) => {
-  try {
-    // Transformation de la liste de challenges pour ne garder que les id
-    const achievedChallengesId = achievedChallenges.map(
-      (achievedChallenge) => achievedChallenge._id
-    );
-
-    // Envoi des défis
-    const response = await fetch(
-      `${process.env.EXPO_PUBLIC_BACKEND_URL}/history`,
-      {
-        method: "POST",
-        headers: {
-          authorization: token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          restaurant: restaurantId,
-          achievedChallenges: achievedChallengesId,
-        }),
-      }
-    );
-    const data = await response.json();
-
-    return data;
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-
+import { addSavedCo2, addFavorite, removeFavorite } from "../reducers/user";
+import { fetchPostFavorites } from "../services/fetchPostFavorites";
+import { fetchDeleteFavorites } from "../services/fetchDeleteFavorites";
+import { fetchGetChallenges } from "../services/fetchGetChallenges";
+import { fetchPostHistory } from "../services/fetchPostHistory";
 
 export default function RestaurantScreen({ navigation }) {
   const dispatch = useDispatch();
-  const route = useRoute();
-
-  // State pour le bouton like
-  const [liked, setLiked] = useState(false);
-  // State pour l'onglet sélectionné (soit challenges, soit description)
-  const [selectedTab, setSelectedTab] = useState("description");
-  // States de challenges
-  const [challenges, setChallenges] = useState([]);
-  const [selectedChallenges, setSelectedChallenges] = useState([]);
-  // Récupération des données utilisateur
-  const user = useSelector((state) => state.user.value);
+  
   // Récupération des données du restaurant
+  const route = useRoute();
+  const restaurant = route.params.restaurant;
   const {
     _id,
     name,
@@ -99,6 +48,63 @@ export default function RestaurantScreen({ navigation }) {
     websiteUrl,
     bookingUrl
   } = route.params.restaurant;
+
+  // State pour l'onglet sélectionné (soit challenges, soit description)
+  const [selectedTab, setSelectedTab] = useState("description");
+  // States de challenges
+  const [challenges, setChallenges] = useState([]);
+  const [selectedChallenges, setSelectedChallenges] = useState([]);
+  // Récupération des données utilisateur
+  const user = useSelector((state) => state.user.value);
+
+  const isFavorite = user.favorites.some(favorite => favorite._id === _id);
+
+  const handleFavorite = async () => {
+    if (!user.token) return navigation.navigate('Enter');
+
+    if (isFavorite) {
+      try {
+        const data = await fetchDeleteFavorites(user.token, restaurant._id);
+        if (data.result) {
+          dispatch(removeFavorite(restaurant));
+        } else {
+          throw new Error("Failed to delete favorite");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      try {
+        const data = await fetchPostFavorites(user.token, restaurant._id);
+        if (data.result) {
+          dispatch(addFavorite(restaurant));
+        } else {
+          throw new Error("Failed to save favorite");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+  const handleChallenges = async () => {
+    if (!user.token) return navigation.navigate('Enter');
+
+    try {
+      // Envoi des défis relevés via la fonction dédiée
+      const data = await fetchPostHistory(user.token, _id, selectedChallenges);
+      if (data.result) {
+        // Si le fetch est réussi, on ajoute le CO2 économisé dans le store et redirection vers la home
+        dispatch(addSavedCo2(data.totalSavedCo2));
+        setSelectedChallenges([]);
+        navigation.navigate("Home");
+      } else {
+        throw new Error("Failed to save new quest");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   // Initialisation des défis
   useEffect(() => {
@@ -154,7 +160,7 @@ export default function RestaurantScreen({ navigation }) {
     <View style={styles.tabContentContainer}>
       <View style={{ width: "100%" }}>
         {/* La liste des challenges à relever sous forme de chexbox */}
-        <ChallengesChexBox
+        <ChallengesCheckBox
           options={challenges}
           checkedValues={selectedChallenges}
           onChange={(updatedValues) => setSelectedChallenges(updatedValues)}
@@ -165,23 +171,7 @@ export default function RestaurantScreen({ navigation }) {
         title={"Valider mes défis"}
         textSize={15}
         disabled={selectedChallenges.length ? false : true}
-        onPress={() => {
-          if (user.token) {
-            // Envoi des défis relevés via la fonction dédiée
-            fetchPostHistory(user.token, _id, selectedChallenges).then(
-              (data) => {
-                if (data.result) {
-                  // Si le fetch est réussi, on ajoute le CO2 économisé dans le store
-                  // et redirection vers la home
-                  dispatch(addSavedCo2(data.totalSavedCo2));
-                  navigation.navigate("Home");
-                }
-              }
-            );
-          } else {
-            navigation.navigate("Enter");
-          }
-        }}
+        onPress={() => handleChallenges()}
       />
     </View>
   );
@@ -198,8 +188,8 @@ export default function RestaurantScreen({ navigation }) {
           <Text style={{ fontSize: 23, fontWeight: 500 }}>{name}</Text>
         </View>
         <TouchableOpacity
-          onPress={() => setLiked(!liked)}
-          style={{ borderRadius: 50, padding: 8, backgroundColor: liked ? "#e5685c" : "#C4C4C4" }}
+          onPress={() => handleFavorite()}
+          style={{ borderRadius: 50, padding: 8, backgroundColor: isFavorite ? "#e5685c" : "#C4C4C4" }}
         >
           <Heart color="#FFFFFF" size={25} />
         </TouchableOpacity>
