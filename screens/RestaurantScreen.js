@@ -371,7 +371,5 @@ const styles = StyleSheet.create({
     marginTop: 15,
     alignItems: "center",
     gap: 10,
-    borderWidth: 1,
-    borderColor: "red"
   },
 });
