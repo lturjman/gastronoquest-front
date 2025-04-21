@@ -7,6 +7,7 @@ import {
   Dimensions,
   ScrollView,
   Linking,
+  Pressable
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import {
@@ -153,13 +154,6 @@ export default function RestaurantScreen({ navigation }) {
           </View>
         )}
       </View>
-      <View style={{ width: "100%" }}>
-        <CustomButton
-          title={"Site web du restaurant"}
-          textSize={15}
-          onPress={() => Linking.openURL(websiteUrl)}
-        />
-      </View>
     </View>
   );
 
@@ -194,7 +188,7 @@ export default function RestaurantScreen({ navigation }) {
           </TouchableOpacity>
           <Text style={{ fontSize: 23, fontWeight: 500 }}>{name}</Text>
         </View>
-        <TouchableOpacity
+        <Pressable
           onPress={() => handleFavorite()}
           style={{
             borderRadius: 50,
@@ -203,7 +197,7 @@ export default function RestaurantScreen({ navigation }) {
           }}
         >
           <Heart color="#FFFFFF" size={25} />
-        </TouchableOpacity>
+        </Pressable>
       </View>
 
       <ScrollView
@@ -235,45 +229,53 @@ export default function RestaurantScreen({ navigation }) {
               />
               <Text style={{ flex: 1 }}>{address}</Text>
             </View>
-            <View style={styles.itemContainer}>
-              <UtensilsCrossed
-                size={20}
-                color={"black"}
-                style={styles.presentationIcon}
-              />
-              <View style={styles.tagContainer}>
-                {badges.map((badge, i) => (
-                  <View
-                    key={i}
-                    style={{ ...styles.tag, backgroundColor: "#1C3B1D" }}
-                  >
-                    <Text style={styles.tagText}>{badge}</Text>
+
+            { badges.length > 0 && 
+              <View style={styles.itemContainer}>
+                <UtensilsCrossed
+                  size={20}
+                  color={"black"}
+                  style={styles.presentationIcon}
+                />
+                  <View style={styles.tagContainer}>
+                    {badges.map((badge, i) => (
+                      <View
+                        key={i}
+                        style={{ ...styles.tag, backgroundColor: "#1C3B1D" }}
+                      >
+                        <Text style={{ fontSize: 13, color: "#fff" }}>{badge}</Text>
+                      </View>
+                    ))}
                   </View>
-                ))}
               </View>
-            </View>
-            <View style={styles.itemContainer}>
-              <Store
-                size={20}
-                color={"black"}
-                style={styles.presentationIcon}
-              />
-              <View style={styles.tagContainer}>
-                {types.map((badge, i) => (
-                  <View
-                    key={i}
-                    style={{ ...styles.tag, backgroundColor: "#6AC46A" }}
-                  >
-                    <Text style={styles.tagText}>{badge}</Text>
-                  </View>
-                ))}
+            }
+
+            { types.length > 0 &&
+              <View style={styles.itemContainer}>
+                <Store
+                  size={20}
+                  color={"black"}
+                  style={styles.presentationIcon}
+                />
+                <View style={styles.tagContainer}>
+                  {types.map((type, i) => (
+                    <View
+                      key={i}
+                      style={{ ...styles.tag, backgroundColor: "#6AC46A" }}
+                    >
+                      <Text style={{ fontSize: 13, color: "#1C3B1D" }}>{type}</Text>
+                    </View>
+                  ))}
+                </View>
               </View>
-            </View>
+            }
+
             <View style={styles.itemContainer}>
               <Euro size={20} color={"black"} style={styles.presentationIcon} />
               <Text>{priceRange}</Text>
             </View>
-          </View>
+
+            </View>
         </View>
         {/* Barre avec les onglets */}
         <View style={styles.tabContainer}>
@@ -363,10 +365,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 11,
     paddingVertical: 3,
-  },
-  tagText: {
-    fontSize: 13,
-    color: "#fff",
   },
   presentationIcon: {
     marginTop: 3,

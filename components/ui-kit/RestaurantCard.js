@@ -1,9 +1,8 @@
-import { View, Text, StyleSheet, TouchableOpacity, Platform } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Platform, Pressable } from "react-native";
 import { Leaf, Heart } from "lucide-react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { addFavorite, removeFavorite } from "../../reducers/user";
-
 import { fetchPostFavorites } from "../../services/fetchPostFavorites";
 import { fetchDeleteFavorites } from "../../services/fetchDeleteFavorites";
 
@@ -68,12 +67,12 @@ export default function RestaurantCard({ restaurant }) {
         <TouchableOpacity style={{ flexShrink: 1 }} onPress={() => handleNavigation()}>
           <Text style={styles.name}>{restaurant.name}</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={{ marginTop: -5, borderRadius: 50, padding: 7, backgroundColor: isFavorite ? "#e5685c" : "#C4C4C4" }}
+        <Pressable
+          style={{ height: 37, marginTop: -5, borderRadius: 50, padding: 7, backgroundColor: isFavorite ? "#e5685c" : "#C4C4C4" }}
           onPress={() => handleFavorite()}
         >
           <Heart color="#FFFFFF" size={23} />
-        </TouchableOpacity>
+        </Pressable>
       </View>
 
       <View style={styles.row}>
@@ -81,25 +80,25 @@ export default function RestaurantCard({ restaurant }) {
         <View style={{ flexDirection: 'row' }}>{ leaves }</View>
         <Text> • </Text>
         {/* Gamme de prix */}
-        <Text style={styles.text}>{restaurant.priceRange}</Text>
+        <Text style={styles.priceText}>{restaurant.priceRange}</Text>
       </View>
 
       {/* Adresse */}
       <View style={styles.tagContainer}>
-        <Text style={styles.text}>{restaurant.address}</Text>
+        <Text style={{ fontSize: 13, color: "#333" }}>{restaurant.address}</Text>
       </View>
 
       <View style={styles.tagContainer}>
         {/* Badges */}
         { restaurant.badges.map((badge, i) => (
-          <View key={i} style={[styles.tag, styles.badge]}>
-            <Text style={styles.tagText}>{badge}</Text>
+          <View key={i} style={{ ...styles.tag, backgroundColor: "#1C3B1D" }}>
+            <Text style={{ fontSize: 10, color: "#FFFFFF"}}>{badge}</Text>
           </View>
         ))}
         {/* Types */}
         { restaurant.types.map((type, i) => (
-          <View key={i} style={[styles.tag, styles.type]}>
-            <Text style={styles.tagText}>{type}</Text>
+          <View key={i} style={{ ...styles.tag, backgroundColor: "#6ac46a" }}>
+            <Text style={{ fontSize: 10, color: "#1C3B1D"}}>{type}</Text>
           </View>
         ))}
       </View>
@@ -142,10 +141,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: -5
   },
-  text: {
-    fontSize: 13,
-    color: "#333",
-  },
   tagContainer: {
     flexDirection: "row",
     gap: 5,
@@ -156,14 +151,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 11,
     paddingVertical: 3,
   },
-  badge: {
-    backgroundColor: "#1C3B1D",
-  },
-  type: {
-    backgroundColor: "#6ac46a",
-  },
   tagText: {
     fontSize: 10,
     color: "#fff",
+  },
+  priceText: {
+    fontSize: 14,
+    color: "#173e19",
+    fontWeight: "600",
   }
 });
