@@ -66,7 +66,7 @@ const getNextLevelInfo = (co2) => {
       };
     }
   }
-  return null; // Déjà au niveau max
+  return null;
 };
 
 const getProgressPercentage = (co2) => {
@@ -99,52 +99,60 @@ export default function HomeScreen({ navigation }) {
 
   const co2Container = (
     <>
-      <View style={styles.co2Container}>
-        <Text style={{ fontSize: 20 }}>🌱</Text>
-        <View style={styles.co2Kpi}>
-          <Text style={{ fontSize: 26, fontWeight: "bold" }}>
-            {user.totalSavedCo2}
+      <View style={styles.co2ntextContainer}>
+        <View style={styles.plantContainer}>
+          <View style={styles.co2Container}>
+            <View style={styles.co2Kpi}>
+              <Text style={{ fontSize: 26, fontWeight: "bold" }}>
+                {user.totalSavedCo2}
+              </Text>
+              <Text style={{ fontSize: 20, fontWeight: "700" }}>kg</Text>
+            </View>
+            <Text
+              style={{
+                color: "#565656",
+                fontSize: 14,
+                width: "90%",
+                textAlign: "center",
+              }}
+            >
+              de CO2 économisés
+            </Text>
+          </View>
+          <Text
+            style={{
+              fontSize: 80,
+              textAlign: "center",
+              display: "flex",
+              backgroundColor: "#D3EAE5",
+              paddingVertical: 15,
+              borderRadius: 150,
+              marginLeft: -20,
+              height: 150,
+              width: 150,
+            }}
+          >
+            {" "}
+            {levelIcons[getUserLevel(user.totalSavedCo2)]}{" "}
           </Text>
-          <Text style={{ fontSize: 20, fontWeight: "700" }}>kg</Text>
         </View>
-        <Text
-          style={{
-            color: "#565656",
-            fontSize: 14,
-            width: "90%",
-            textAlign: "center",
-          }}
-        >
-          de CO2 économisés
-        </Text>
+
+        <View style={styles.textContainer}>
+          <Text style={styles.text}>
+            Relève des défis, collecte du CO₂ et regarde ta plante grandir à
+            chaque palier atteint !
+          </Text>
+        </View>
       </View>
+
       <View style={styles.levelContainer}>
-        <Text style={{ fontSize: 14, fontWeight: "bold" }}>Mon niveau</Text>
-        <Text>
-          {levelIcons[getUserLevel(user.totalSavedCo2)]}{" "}
-          {getUserLevel(user.totalSavedCo2)}
-        </Text>
-        {(() => {
-          const next = getNextLevelInfo(user.totalSavedCo2);
-          if (next) {
-            return (
-              <Text
-                style={{ fontSize: 12, color: "#565656", textAlign: "center" }}
-              >
-                Encore {next.remaining}kg pour atteindre {next.nextLevel}{" "}
-                {next.icon}
-              </Text>
-            );
-          } else {
-            return (
-              <Text
-                style={{ fontSize: 12, color: "#565656", textAlign: "center" }}
-              >
-                Niveau maximum atteint ! 🌟
-              </Text>
-            );
-          }
-        })()}
+        <View style={{ flexDirection: "row", gap: 5 }}>
+          <Text style={styles.levelText}>
+            <Text>Niveau :</Text>
+            {levelIcons[getUserLevel(user.totalSavedCo2)]}{" "}
+            {getUserLevel(user.totalSavedCo2)}
+          </Text>
+        </View>
 
         <View style={styles.progressBarBackground}>
           <Animated.View
@@ -159,7 +167,22 @@ export default function HomeScreen({ navigation }) {
             ]}
           />
         </View>
-
+        {(() => {
+          const next = getNextLevelInfo(user.totalSavedCo2);
+          if (next) {
+            return (
+              <Text
+                style={{ fontSize: 14, color: "#565656", textAlign: "center" }}
+              >
+                Plus que {next.remaining}kg pour atteindre {next.nextLevel}{" "}
+                {next.icon}
+              </Text>
+            );
+          }
+          return null;
+        })()}
+      </View>
+      <View style={styles.btnContainer}>
         <CustomButton
           title={"Historique de quêtes"}
           textSize={13}
@@ -245,6 +268,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-evenly",
   },
+
   carousel: { height: 182, width: "90%" },
   carouselImg: {
     width: width * 0.9,
@@ -292,20 +316,46 @@ const styles = StyleSheet.create({
     shadowRadius: 7,
     elevation: 7,
     backgroundColor: "#fff",
-    height: 350,
     width: "90%",
     justifyContent: "center",
     alignItems: "center",
-    gap: 25,
+    gap: 20,
+    padding: 20,
+    minHeight: 350,
+  },
+  plantContainer: {
+    flexDirection: "row",
   },
   co2Container: {
-    backgroundColor: "rgba(106, 196, 106, 0.5)",
+    borderColor: "#6AC46A",
+    borderWidth: 2,
     borderRadius: 75,
     width: 150,
     height: 150,
     justifyContent: "center",
     alignItems: "center",
     gap: 2,
+    padding: 20,
+  },
+  co2ntextContainer: {
+    alignItems: "center",
+    gap: 20,
+  },
+  text: {
+    fontSize: 12,
+    color: "#333333",
+    textAlign: "center",
+  },
+  textContainer: {
+    backgroundColor: "#E0E0E0",
+    borderRadius: 10,
+    padding: 10,
+  },
+  levelText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#333333",
+    textAlign: "center",
   },
   co2Kpi: {
     flexDirection: "row",
