@@ -59,7 +59,14 @@ const seriesLevelLabels = {
   Difficile: "🔴 Difficile",
 };
 
-const Serie = ({ serieTitle, serieLevel, variant, score = 0, onPress }) => {
+const Serie = ({
+  serieTitle,
+  serieLevel,
+  serieId,
+  variant,
+  score = 0,
+  onPress,
+}) => {
   // Récupération du style variable
   const selectedVariant = variantStyles[variant];
 
@@ -77,7 +84,7 @@ const Serie = ({ serieTitle, serieLevel, variant, score = 0, onPress }) => {
     <Pressable
       style={[styles.serieContainer, selectedVariant.backgroundSerie]}
       disabled={variant === "blocked" ? true : false}
-      onPress={onPress}
+      onPress={() => onPress(serieId)}
     >
       <View style={styles.presentationSerieContainer}>
         <Text style={[styles.serieTitle, selectedVariant.fontColor]}>

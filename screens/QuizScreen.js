@@ -6,8 +6,9 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Serie from "../components/Serie";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import { updateQuiz } from "../reducers/quiz";
 
 // Objet qui contient les icones à afficher en fonction du niveau
 const levelIcons = {
@@ -111,16 +112,37 @@ const getQuizWithConnection = async (token) => {
   });
 };
 
+// Fonction pour récupérer les données d'un quiz à partir d'un id
+const fetchQuizById = async (quizId) => {
+  try {
+    // Récupération des quiz
+    const response = await fetch(
+      `${process.env.EXPO_PUBLIC_BACKEND_URL}/quiz/${quizId}`
+    );
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export default function QuizScreen({ navigation }) {
   // Récupérer les données de l'utilisateur
   const user = useSelector((state) => state.user.value);
+  const dispatch = useDispatch();
 
   // State pour stocker les quizz et l'avancée
   const [quizzes, setQuizzes] = useState([]);
 
   // Redirection vers la page de question
-  const handlePress = () => {
-    navigation.navigate("QuestionScreen");
+  const handlePress = (quizId) => {
+    fetchQuizById(quizId).then((response) => {
+      if (response.result) {
+        dispatch(updateQuiz(response.data));
+        navigation.navigate("QuestionScreen");
+      }
+    });
   };
 
   // Chargement des quizz
@@ -131,9 +153,9 @@ export default function QuizScreen({ navigation }) {
       getQuizWithoutConnection().then((dataQuizzes) => setQuizzes(dataQuizzes));
     } else {
       // Sinon on appelle la fonction qui charge les quizz et les résultats de l'utilisateur
-      getQuizWithConnection(user.token).then((dataQuizzes) =>
-        setQuizzes(dataQuizzes)
-      );
+      getQuizWithConnection(user.token).then((dataQuizzes) => {
+        setQuizzes(dataQuizzes);
+      });
     }
   }, []);
 
@@ -174,11 +196,12 @@ export default function QuizScreen({ navigation }) {
         )}
       </View>
       <ScrollView style={styles.seriesContainer}>
-        {quizzes.map((quiz, i) => (
+        {quizzes.map((quiz) => (
           <Serie
-            key={i}
+            key={quiz._id}
             serieTitle={quiz.title}
             serieLevel={quiz.difficulty}
+            serieId={quiz._id}
             score={quiz.score}
             variant={quiz.status}
             onPress={handlePress}
