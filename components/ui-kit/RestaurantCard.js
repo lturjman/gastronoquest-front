@@ -4,6 +4,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { addFavorite, removeFavorite } from "../../reducers/user";
 
+import { deleteFavorite } from "../../services/deleteFavorite";
+import { saveFavorite } from "../../services/saveFavorite";
+
 export default function RestaurantCard({ restaurant }) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -19,72 +22,56 @@ export default function RestaurantCard({ restaurant }) {
   const handleFavorite = async () => {
     
     if (!token) {
-      navigation.navigate('EnterScreen');
+      navigation.navigate('Enter');
       return;
     }
 
     if (isFavorite) {
       try {
-        const response = await fetch(
-          `${process.env.EXPO_PUBLIC_BACKEND_URL}/favorites`,
-          {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json", authorization: token },
-            body: JSON.stringify({
-              restaurantId: restaurant._id,
-            }),
-          }
-        );
-        const data = await response.json();
+        const data = await deleteFavorite(token, restaurant._id);
         if (data.result) {
           dispatch(removeFavorite(restaurant));
         } else {
-          throw new Error("Failed to remove favorite");
+          throw new Error("Failed to delete favorite");
         }
       } catch (error) {
-        console.error("Error removing favorite:", error);
+        console.error(error);
       }
     } else {
       try {
-        const response = await fetch(
-          `${process.env.EXPO_PUBLIC_BACKEND_URL}/favorites`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json", authorization: token },
-            body: JSON.stringify({
-              restaurantId: restaurant._id,
-            }),
-          }
-        );
-        const data = await response.json();
+        const data = await saveFavorite(token, restaurant._id);
         if (data.result) {
           dispatch(addFavorite(restaurant));
         } else {
-          throw new Error("Failed to add favorite");
+          throw new Error("Failed to save favorite");
         }
       } catch (error) {
-        console.error("Error adding favorite:", error);
+        console.error(error);
       }
     }
   }
 
+
+
+
+
   return (
     <View style={styles.card}>
-      <View style={styles.content}>
+      <View style={{ gap: 8 }}>
 
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.nameContainer} onPress={() => navigation.navigate("RestaurantScreen", { restaurant })}>
+        <TouchableOpacity style={{ flexShrink: 1 }} onPress={() => navigation.navigate("RestaurantScreen", { restaurant })}>
           <Text style={styles.name}>{restaurant.name}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.favorite} onPress={() => handleFavorite()}>
-          <Heart color={isFavorite ? "#e53935" : "#173e19"} size={25} style={{ marginTop: 5 }} />
+        <TouchableOpacity style={{ marginTop: -5, borderRadius: 50, padding: 7, backgroundColor: isFavorite ? "#e5685c" : "#C4C4C4" }} onPress={() => handleFavorite()}>
+          <Heart color="#FFFFFF" size={23} />
         </TouchableOpacity>
       </View>
 
       <View style={styles.row}>
         {/* Score */}
-        <View style={styles.score}>{ leaves }</View>
+        <View style={{ flexDirection: 'row' }}>{ leaves }</View>
         <Text> • </Text>
         {/* Gamme de prix */}
         <Text style={styles.text}>{restaurant.priceRange}</Text>
@@ -131,9 +118,6 @@ const styles = StyleSheet.create({
       default: "System",
     }),
   },
-  content: {
-    gap: 8,
-  },
   header: {
     maxWidth: '100%',
     flexDirection: "row",
@@ -141,20 +125,15 @@ const styles = StyleSheet.create({
     alignItems: "start",
     gap: 15,
   },
-  nameContainer: {
-    flexShrink: 1,
-  },
   name: {
     fontSize: 16,
     fontWeight: "bold",
+    textDecorationLine: "underline",
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: -5
-  },
-  score: {
-    flexDirection: "row",
   },
   text: {
     fontSize: 13,
@@ -179,8 +158,5 @@ const styles = StyleSheet.create({
   tagText: {
     fontSize: 10,
     color: "#fff",
-  },
-  price: {
-    backgroundColor: "#eee", //gris
   }
 });
