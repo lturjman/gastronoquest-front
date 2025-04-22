@@ -27,11 +27,12 @@ export default function RestaurantCard({ restaurant }) {
   return (
     <View style={styles.card}>
       <View style={{ gap: 8 }}>
+
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity
             style={{ flexShrink: 1 }}
-            onPress={() => handleNavigation()}
+            onPress={() => navigation.navigate("RestaurantScreen", { restaurant })}
           >
             <Text style={styles.name}>{restaurant.name}</Text>
           </TouchableOpacity>
@@ -43,36 +44,21 @@ export default function RestaurantCard({ restaurant }) {
               padding: 7,
               backgroundColor: isFavorite ? "#e5685c" : "#C4C4C4",
             }}
-            onPress={() => handleFavorite()}
+            onPress={() => handleFavorite(dispatch, navigation, user.token, restaurant, restaurant._id, isFavorite)}
           >
             <Heart color="#FFFFFF" size={23} />
           </Pressable>
         </View>
 
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity style={{ flexShrink: 1 }} onPress={() => navigation.navigate("RestaurantScreen", { restaurant }) }>
-          <Text style={styles.name}>{restaurant.name}</Text>
-        </TouchableOpacity>
-        <Pressable
-          style={{ height: 37, marginTop: -5, borderRadius: 50, padding: 7, backgroundColor: isFavorite ? "#e5685c" : "#C4C4C4" }}
-          onPress={() => handleFavorite(dispatch, navigation, user.token, restaurant, restaurant._id, isFavorite)}
-        >
-          <Heart color="#FFFFFF" size={23} />
-        </Pressable>
-      </View>
-
+        {/* Score et gamme de prix */}
         <View style={styles.row}>
-          {/* Score */}
           <View style={{ flexDirection: "row" }}>{leaves}</View>
-          <Text> • </Text>
-          {/* Gamme de prix */}
-          <Text style={styles.priceText}>{restaurant.priceRange}</Text>
+          <Text style={styles.priceText}> • {restaurant.priceRange}</Text>
         </View>
 
         {/* Adresse */}
         <View style={styles.tagContainer}>
-          <Text style={{ fontSize: 13, color: "#333" }}>
+          <Text style={{ fontSize: 14, color: "#333" }}>
             {restaurant.address}
           </Text>
         </View>
@@ -81,13 +67,13 @@ export default function RestaurantCard({ restaurant }) {
           {/* Badges */}
           {restaurant.badges.map((badge, i) => (
             <View key={i} style={{ ...styles.tag, backgroundColor: "#1C3B1D" }}>
-              <Text style={{ fontSize: 10, color: "#FFFFFF" }}>{badge}</Text>
+              <Text style={{ fontSize: 12, color: "#FFFFFF" }}>{badge}</Text>
             </View>
           ))}
           {/* Types */}
           {restaurant.types.map((type, i) => (
             <View key={i} style={{ ...styles.tag, backgroundColor: "#6ac46a" }}>
-              <Text style={{ fontSize: 10, color: "#1C3B1D" }}>{type}</Text>
+              <Text style={{ fontSize: 12, color: "#1C3B1D" }}>{type}</Text>
             </View>
           ))}
         </View>
@@ -115,7 +101,7 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   name: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
     textDecorationLine: "underline",
   },
@@ -133,10 +119,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 11,
     paddingVertical: 3,
-  },
-  tagText: {
-    fontSize: 10,
-    color: "#fff",
   },
   priceText: {
     fontSize: 14,

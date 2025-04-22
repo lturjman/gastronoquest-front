@@ -220,7 +220,7 @@ export default function RestaurantScreen({ navigation }) {
                       key={i}
                       style={{ ...styles.tag, backgroundColor: "#1C3B1D" }}
                     >
-                      <Text style={{ fontSize: 13, color: "#fff" }}>
+                      <Text style={{ fontSize: 14, color: "#fff" }}>
                         {badge}
                       </Text>
                     </View>
@@ -242,7 +242,7 @@ export default function RestaurantScreen({ navigation }) {
                       key={i}
                       style={{ ...styles.tag, backgroundColor: "#6AC46A" }}
                     >
-                      <Text style={{ fontSize: 13, color: "#1C3B1D" }}>
+                      <Text style={{ fontSize: 14, color: "#1C3B1D" }}>
                         {type}
                       </Text>
                     </View>
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
   },
   presentationIcon: {
-    marginTop: 3,
+    //marginTop: 3,
   },
   tabContainer: {
     width: "90%",
@@ -357,10 +357,10 @@ const styles = StyleSheet.create({
   tabLabelSelected: {
     color: "#173e19",
     fontWeight: "bold",
-    fontSize: 17,
+    fontSize: 18,
   },
   tabLabelNotSelected: {
-    fontSize: 17,
+    fontSize: 18,
   },
   tabTitleContainerSelected: {
     borderBottomColor: "#173e19",
