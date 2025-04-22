@@ -30,12 +30,9 @@ export default function EnterScreen({ navigation }) {
           />
           <CustomButton
             title="Connexion"
-            variant="outline"
+            variant="dark"
             onPress={() => navigation.navigate("Login")}
           />
-        </View>
-        <View style={styles.googleBtnContainer}>
-          <CustomButton title="Continuer avec Google" variant="dark" />
         </View>
       </View>
     </View>
@@ -79,11 +76,5 @@ const styles = StyleSheet.create({
   },
   loginRegisterBtnContainer: {
     gap: 10,
-  },
-  googleBtnContainer: {
-    borderTopColor: "lightgray",
-    borderTopWidth: 1,
-    paddingTop: 30,
-    marginTop: 30,
   },
 });

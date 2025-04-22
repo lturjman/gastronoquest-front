@@ -9,11 +9,12 @@ import {
   ImageBackground,
 } from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
-import { Platform, Animated } from "react-native";
+import { Animated } from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
 import { useSelector } from "react-redux";
 
 import { useEffect, useRef } from "react";
+
 
 const news = [
   {
@@ -296,7 +297,7 @@ const styles = StyleSheet.create({
   },
   btn: {
     width: "48%",
-    flex: 1,
+    height: "80",
   },
   progressCard: {
     backgroundColor: "#FFFFFF",
@@ -306,12 +307,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 10,
     elevation: 3,
-    backgroundColor: "#fff",
     width: "90%",
     justifyContent: "center",
     alignItems: "center",
     gap: 20,
     padding: 20,
+    margin: 20,
     minHeight: 350,
   },
   plantContainer: {
