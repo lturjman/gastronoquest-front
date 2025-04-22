@@ -4,7 +4,6 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
 } from "react-native";
 import Serie from "../components/Serie";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,12 +12,15 @@ import { updateQuiz } from "../reducers/quiz";
 import { fetchGetQuizResults } from "../services/quizResultsServices";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // Fonction pour récupérer les quizz depuis le backend
 const fetchQuiz = async () => {
   try {
     // Récupération des quiz
-    const response = await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URL}/quizzes`);
+    const response = await fetch(
+      `${process.env.EXPO_PUBLIC_BACKEND_URL}/quizzes`
+    );
     const data = await response.json();
 
     return data;

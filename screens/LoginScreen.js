@@ -1,4 +1,4 @@
-import { StyleSheet, View, Image, Modal, SafeAreaView } from "react-native";
+import { StyleSheet, View, Image, Modal } from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
 import CustomInput from "../components/ui-kit/CustomInput";
 import ErrorModal from "../components/ErrorModal.js";
@@ -7,6 +7,7 @@ import { isValidEmail } from "../utils/emailValidation.js";
 import { isValidPassword } from "../utils/passwordValidation.js";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../reducers/user.js";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // Fetch la route login du backend
 const fetchLogin = async (email, password) => {

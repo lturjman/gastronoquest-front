@@ -3,10 +3,10 @@ import {
   Dimensions,
   Text,
   View,
-  SafeAreaView,
   ImageBackground,
   Image,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from "../components/ui-kit/CustomButton";
 
 export default function WelcomeScreen({ navigation }) {

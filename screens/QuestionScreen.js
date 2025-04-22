@@ -1,10 +1,10 @@
-
 import { StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { fetchPutQuizResults } from "../services/quizResultsServices";
 import QuizResult from "../components/QuizResult";
 import QuizQuestion from "../components/QuizQuestion";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function QuestionScreen({ navigation }) {
   // Récupération des données du quiz dans le store redux
@@ -31,7 +31,6 @@ export default function QuestionScreen({ navigation }) {
   };
 
   return (
-
     <SafeAreaView style={styles.container}>
       {/* Si le quiz est terminé, on affiche le composant de résultat, sinon une question */}
       {quiz.isFinished ? (
@@ -44,7 +43,6 @@ export default function QuestionScreen({ navigation }) {
         <QuizQuestion quiz={quiz} />
       )}
     </SafeAreaView>
-
   );
 }
 

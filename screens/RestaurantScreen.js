@@ -8,7 +8,6 @@ import {
   ScrollView,
   Linking,
   Pressable,
-  SafeAreaView,
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import {
@@ -28,6 +27,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchGetChallenges } from "../services/fetchGetChallenges";
 import { handleFavorite } from "../services/handleFavorite";
 import { handleQuest } from "../services/handleQuest";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function RestaurantScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -58,11 +58,19 @@ export default function RestaurantScreen({ navigation }) {
   // Récupération des données utilisateur
   const user = useSelector((state) => state.user.value);
 
-  const isFavorite = user.favorites.some((favorite) => favorite._id === restaurantId);
+  const isFavorite = user.favorites.some(
+    (favorite) => favorite._id === restaurantId
+  );
 
   const handleChallenges = async () => {
     try {
-      await handleQuest(dispatch, navigation, user.token, restaurantId, selectedChallenges);
+      await handleQuest(
+        dispatch,
+        navigation,
+        user.token,
+        restaurantId,
+        selectedChallenges
+      );
       setSelectedChallenges([]);
       console.log("Handled quest");
       navigation.navigate("Home");
@@ -150,7 +158,15 @@ export default function RestaurantScreen({ navigation }) {
           <Text style={{ fontSize: 23, fontWeight: 500 }}>{name}</Text>
         </View>
         <Pressable
-          onPress={() => handleFavorite(dispatch, user.token, restaurant, restaurantId, isFavorite)}
+          onPress={() =>
+            handleFavorite(
+              dispatch,
+              user.token,
+              restaurant,
+              restaurantId,
+              isFavorite
+            )
+          }
           style={{
             borderRadius: 50,
             padding: 8,
