@@ -31,7 +31,7 @@ const news = [
   },
 ];
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 const levelIcons = {
   "Jeune pousse": "🌱",
@@ -122,15 +122,15 @@ export default function HomeScreen({ navigation }) {
           </View>
           <Text
             style={{
-              fontSize: 80,
+              fontSize: 50,
               textAlign: "center",
-              display: "flex",
-              backgroundColor: "#D3EAE5",
+              textAlignVertical: "center",
+              backgroundColor: "#DBF2D6",
               paddingVertical: 15,
               borderRadius: 150,
               marginLeft: -20,
-              height: 150,
-              width: 150,
+              height: 130,
+              aspectRatio: 1,
             }}
           >
             {" "}
@@ -183,7 +183,7 @@ export default function HomeScreen({ navigation }) {
           return null;
         })()}
       </View>
-      <View style={styles.btnContainer}>
+      <View style={{ width: "90%" }}>
         <CustomButton
           title={"Historique de quêtes"}
           onPress={() =>
@@ -241,12 +241,14 @@ export default function HomeScreen({ navigation }) {
           <CustomButton
             title={"Renforcer ses connaissances"}
             variant={"light"}
+            fullHeight={true}
             onPress={() => navigation.navigate("Quiz")}
           />
         </View>
         <View style={styles.btn}>
           <CustomButton
             title={"Partir en quête d'un restaurant"}
+            fullHeight={true}
             onPress={() => navigation.navigate("Search")}
           />
         </View>
@@ -266,7 +268,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
   },
 
-  carousel: { height: 182, width: "90%" },
+  carousel: { height: height * 0.2, width: "90%" },
   carouselImg: {
     width: width * 0.9,
     height: "100%",
@@ -291,13 +293,14 @@ const styles = StyleSheet.create({
   btnContainer: {
     flexDirection: "row",
     width: "90%",
+    height: height * 0.1,
     justifyContent: "space-between",
     alignItems: "center",
     gap: 10,
   },
   btn: {
     width: "48%",
-    height: "80",
+    height: "100%",
   },
   progressCard: {
     backgroundColor: "#FFFFFF",
@@ -312,8 +315,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 20,
     padding: 20,
-    margin: 20,
     minHeight: 350,
+    height: height * 0.55,
   },
   plantContainer: {
     flexDirection: "row",
@@ -322,8 +325,8 @@ const styles = StyleSheet.create({
     borderColor: "#6AC46A",
     borderWidth: 2,
     borderRadius: 75,
-    width: 150,
-    height: 150,
+    aspectRatio: 1,
+    height: 130,
     justifyContent: "center",
     alignItems: "center",
     gap: 2,
