@@ -136,11 +136,6 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 3,
     padding: 20,
-    fontFamily: Platform.select({
-      ios: "Helvetica Neue",
-      android: "Roboto",
-      default: "System",
-    }),
   },
   header: {
     width: "100%",

@@ -21,14 +21,12 @@ export default function UserScreen({ navigation }) {
             onPress={() =>
               navigation.navigate("User", { screen: "FavoritesScreen" })
             }
-            textSize={14}
           />
           <CustomButton
             title={"✅  Mon historique"}
             onPress={() =>
               navigation.navigate("User", { screen: "HistoryScreen" })
             }
-            textSize={14}
           />
         </View>
       </View>
@@ -37,7 +35,6 @@ export default function UserScreen({ navigation }) {
           title={"⬅️  Se déconnecter"}
           onPress={handleLogout}
           variant="outline"
-          textSize={14}
         />
       </View>
     </View>

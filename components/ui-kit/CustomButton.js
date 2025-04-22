@@ -34,7 +34,7 @@ const variantStyles = {
 const CustomButton = ({
   title,
   variant = "dark",
-  textSize = 18,
+  textSize = 14,
   onPress,
   disabled = false,
 }) => {
@@ -57,8 +57,8 @@ const CustomButton = ({
 
 const styles = StyleSheet.create({
   baseButton: {
-    paddingVertical: 15,
-    paddingHorizontal: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
@@ -66,11 +66,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   baseText: {
-    fontFamily: Platform.select({
-      ios: "Helvetica Neue",
-      android: "Roboto",
-      default: "System",
-    }),
     fontWeight: "bold",
     textAlign: "center",
   },

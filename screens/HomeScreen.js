@@ -185,7 +185,6 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.btnContainer}>
         <CustomButton
           title={"Historique de quêtes"}
-          textSize={13}
           onPress={() =>
             navigation.navigate("User", { screen: "HistoryScreen" })
           }
@@ -201,7 +200,6 @@ export default function HomeScreen({ navigation }) {
       </Text>
       <CustomButton
         title={"Se connecter"}
-        textSize={13}
         onPress={() => navigation.navigate("Enter")}
       />
     </View>
@@ -242,14 +240,12 @@ export default function HomeScreen({ navigation }) {
           <CustomButton
             title={"Renforcer mes connaissances"}
             variant={"light"}
-            textSize={13}
             onPress={() => navigation.navigate("Quiz")}
           />
         </View>
         <View style={styles.btn}>
           <CustomButton
-            title={"En quête d'un restaurant"}
-            textSize={13}
+            title={"Partir en quête d'un restaurant"}
             onPress={() => navigation.navigate("Search")}
           />
         </View>
@@ -290,11 +286,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
     marginBottom: 10,
-    fontFamily: Platform.select({
-      ios: "Helvetica Neue",
-      android: "Roboto",
-      default: "System",
-    }),
   },
   btnContainer: {
     flexDirection: "row",
@@ -313,8 +304,8 @@ const styles = StyleSheet.create({
     shadowColor: "#000000",
     shadowOffset: { width: 4, height: 4 },
     shadowOpacity: 0.1,
-    shadowRadius: 7,
-    elevation: 7,
+    shadowRadius: 10,
+    elevation: 3,
     backgroundColor: "#fff",
     width: "90%",
     justifyContent: "center",

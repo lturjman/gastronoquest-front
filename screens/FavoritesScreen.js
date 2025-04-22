@@ -46,7 +46,6 @@ export default function FavoritesScreen({ navigation }) {
               onPress={() =>
                 navigation.navigate("Search", { screen: "SearchScreen" })
               }
-              textSize={13}
             />
           </View>
         </View>

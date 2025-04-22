@@ -26,22 +26,16 @@ export default function EnterScreen({ navigation }) {
           <CustomButton
             title="Inscription"
             variant="outline"
-            textSize={15}
             onPress={() => navigation.navigate("Register")}
           />
           <CustomButton
             title="Connexion"
             variant="outline"
-            textSize={15}
             onPress={() => navigation.navigate("Login")}
           />
         </View>
         <View style={styles.googleBtnContainer}>
-          <CustomButton
-            title="Continuer avec Google"
-            variant="dark"
-            textSize={15}
-          />
+          <CustomButton title="Continuer avec Google" variant="dark" />
         </View>
       </View>
     </View>
