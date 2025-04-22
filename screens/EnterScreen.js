@@ -27,7 +27,7 @@ export default function EnterScreen({ navigation }) {
         />
       </View>
       <Text style={styles.text}>
-        🚀 Prêt à relever de nouveaux défis à nos côtés ?
+        🚀 Prêt·e à relever de nouveaux défis à nos côtés ?
       </Text>
       <View style={styles.btnContainer}>
         <View style={styles.loginRegisterBtnContainer}>
