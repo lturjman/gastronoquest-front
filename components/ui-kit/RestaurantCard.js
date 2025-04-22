@@ -8,14 +8,12 @@ import {
 import { Leaf, Heart } from "lucide-react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import { addFavorite, removeFavorite } from "../../reducers/user";
-import { fetchPostFavorites } from "../../services/fetchPostFavorites";
-import { fetchDeleteFavorites } from "../../services/fetchDeleteFavorites";
+
+import { handleFavorite } from "../../services/handleFavorite";
 
 export default function RestaurantCard({ restaurant }) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-
   const user = useSelector((state) => state.user.value);
   const isFavorite = user.favorites.some(
     (favorite) => favorite._id === restaurant._id
@@ -25,46 +23,6 @@ export default function RestaurantCard({ restaurant }) {
   for (let i = 0; i < restaurant.score; i++) {
     leaves.push(<Leaf key={i} color="#173e19" size={20} />);
   }
-
-  const handleFavorite = async () => {
-    console.log("1");
-    if (!user.token) return navigation.navigate("Enter");
-
-    console.log("2");
-
-    if (isFavorite) {
-      console.log("3");
-      try {
-        const data = await fetchDeleteFavorites(user.token, restaurant._id);
-        console.log(data);
-        if (data.result) {
-          console.log("Removing from store");
-          dispatch(removeFavorite(restaurant));
-        } else {
-          throw new Error("Failed to delete favorite");
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    } else {
-      console.log("4");
-
-      try {
-        const data = await fetchPostFavorites(user.token, restaurant._id);
-        if (data.result) {
-          dispatch(addFavorite(restaurant));
-        } else {
-          throw new Error("Failed to save favorite");
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
-
-  const handleNavigation = () => {
-    navigation.navigate("RestaurantScreen", { restaurant });
-  };
 
   return (
     <View style={styles.card}>
@@ -90,6 +48,19 @@ export default function RestaurantCard({ restaurant }) {
             <Heart color="#FFFFFF" size={23} />
           </Pressable>
         </View>
+
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity style={{ flexShrink: 1 }} onPress={() => navigation.navigate("RestaurantScreen", { restaurant }) }>
+          <Text style={styles.name}>{restaurant.name}</Text>
+        </TouchableOpacity>
+        <Pressable
+          style={{ height: 37, marginTop: -5, borderRadius: 50, padding: 7, backgroundColor: isFavorite ? "#e5685c" : "#C4C4C4" }}
+          onPress={() => handleFavorite(dispatch, navigation, user.token, restaurant, restaurant._id, isFavorite)}
+        >
+          <Heart color="#FFFFFF" size={23} />
+        </Pressable>
+      </View>
 
         <View style={styles.row}>
           {/* Score */}

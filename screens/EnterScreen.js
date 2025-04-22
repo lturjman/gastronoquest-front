@@ -1,7 +1,15 @@
 import { StyleSheet, Text, View, Image } from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
 
+// Pour tests
+import { useSelector } from "react-redux";
+
 export default function EnterScreen({ navigation }) {
+
+  // Pour tests
+  const guest = useSelector((state) => state.guest.value); 
+  console.log(guest);
+
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
