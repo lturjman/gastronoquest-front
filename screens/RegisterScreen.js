@@ -1,4 +1,11 @@
-import { StyleSheet, View, Image, Modal } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  Modal,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
 import CustomInput from "../components/ui-kit/CustomInput";
 import { useState } from "react";
@@ -86,7 +93,10 @@ export default function RegisterScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      style={styles.container}
+    >
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <ErrorModal
           errorMessage={errors.join("\n")}
@@ -128,7 +138,7 @@ export default function RegisterScreen({ navigation }) {
       <View>
         <CustomButton title="Inscription" onPress={() => handleSubmit()} />
       </View>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 

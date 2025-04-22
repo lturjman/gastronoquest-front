@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
-import QuestionResultModal from "./questionResultModal";
+import QuestionResultModal from "./QuestionResultModal";
 import ProgressBar from "./ui-kit/ProgressBar";
 import { useDispatch } from "react-redux";
 import { badAnswer, goodAnswer } from "../reducers/quiz";
