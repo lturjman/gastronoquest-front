@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View, SafeAreaView } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
 import { useDispatch } from "react-redux";
 import { removeUser } from "../reducers/user";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function UserScreen({ navigation }) {
   const dispatch = useDispatch();

@@ -1,6 +1,6 @@
 import { StyleSheet, StatusBar } from "react-native";
 import { House, Utensils, Brain, CircleUserRound } from "lucide-react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 // Imports pour la tab navigation
 import { NavigationContainer } from "@react-navigation/native";

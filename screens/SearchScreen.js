@@ -1,7 +1,6 @@
 import {
   StyleSheet,
   Dimensions,
-  SafeAreaView,
   Text,
   View,
   TouchableOpacity,
@@ -31,6 +30,7 @@ import SearchFiltersCheckboxes from "../components/SearchFiltersCheckboxes";
 import SearchFiltersRadioInputs from "../components/SearchFiltersRadioInputs";
 import EcotableInfo from "../components/EcotableInfo";
 import SearchInputComponent from "../components/SearchInputComponent";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const badgesOptions = [
   "Bio",

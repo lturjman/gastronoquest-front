@@ -7,12 +7,12 @@ import {
   Linking,
   TouchableOpacity,
   ImageBackground,
-  SafeAreaView,
 } from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 import { Animated } from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
 import { useSelector } from "react-redux";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useEffect, useRef } from "react";
 
