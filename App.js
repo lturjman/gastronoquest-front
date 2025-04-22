@@ -26,6 +26,7 @@ import { Provider, useSelector } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import user from "./reducers/user";
 import quiz from "./reducers/quiz";
+import guest from "./reducers/guest";
 
 // Configuration de la naviguation
 // Création de "groupes d'écrans" pour garder l'icône active sur des sous-écrans
@@ -103,7 +104,7 @@ const TabNavigator = () => {
 
 // Configuration du store redux
 const store = configureStore({
-  reducer: { user, quiz },
+  reducer: { user, quiz, guest },
 });
 
 export default function App() {
