@@ -1,4 +1,11 @@
-import { StyleSheet, View, Image, Modal } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  Modal,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
 import CustomInput from "../components/ui-kit/CustomInput";
 import ErrorModal from "../components/ErrorModal.js";
@@ -81,7 +88,10 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      style={styles.container}
+    >
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <ErrorModal
           // errorMessage={errorMessage}
@@ -118,7 +128,7 @@ export default function LoginScreen({ navigation }) {
       <View>
         <CustomButton title="Connexion" onPress={() => handleSubmit()} />
       </View>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 

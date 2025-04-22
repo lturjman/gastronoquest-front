@@ -5,9 +5,8 @@ import CustomButton from "../components/ui-kit/CustomButton";
 import { useSelector } from "react-redux";
 
 export default function EnterScreen({ navigation }) {
-
   // Pour tests
-  const guest = useSelector((state) => state.guest.value); 
+  const guest = useSelector((state) => state.guest.value);
   console.log(guest);
 
   return (
@@ -27,7 +26,7 @@ export default function EnterScreen({ navigation }) {
         />
       </View>
       <Text style={styles.text}>
-        🚀 Prêt à relever de nouveaux défis à nos côtés ?
+        🚀 Prêt.e à relever de nouveaux défis à nos côtés ?
       </Text>
       <View style={styles.btnContainer}>
         <View style={styles.loginRegisterBtnContainer}>
