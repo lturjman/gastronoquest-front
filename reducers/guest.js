@@ -10,7 +10,6 @@ const initialState = {
 
 export const UserSlice = createSlice({
   name: "guest",
-
   initialState,
   reducers: {
     saveGuestFavorite: (state, action) => {

@@ -23,11 +23,10 @@ import { useEffect, useState } from "react";
 import CustomButton from "../components/ui-kit/CustomButton";
 import ChallengesCheckBox from "../components/ChallengesCheckbox";
 import { useSelector, useDispatch } from "react-redux";
-import { addSavedCo2, addFavorite, removeFavorite } from "../reducers/user";
-import { fetchPostFavorites } from "../services/fetchPostFavorites";
-import { fetchDeleteFavorites } from "../services/fetchDeleteFavorites";
+
 import { fetchGetChallenges } from "../services/fetchGetChallenges";
-import { fetchPostHistory } from "../services/fetchPostHistory";
+import { handleFavorite } from "../services/handleFavorite";
+import { handleQuest } from "../services/handleQuest";
 
 export default function RestaurantScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -36,7 +35,7 @@ export default function RestaurantScreen({ navigation }) {
   const route = useRoute();
   const restaurant = route.params.restaurant;
   const {
-    _id,
+    _id: restaurantId,
     name,
     desc,
     longDesc,
@@ -48,7 +47,7 @@ export default function RestaurantScreen({ navigation }) {
     imageUrl,
     websiteUrl,
     bookingUrl,
-  } = route.params.restaurant;
+  } = restaurant;
 
   // State pour l'onglet sélectionné (soit challenges, soit description)
   const [selectedTab, setSelectedTab] = useState("description");
@@ -58,50 +57,14 @@ export default function RestaurantScreen({ navigation }) {
   // Récupération des données utilisateur
   const user = useSelector((state) => state.user.value);
 
-  const isFavorite = user.favorites.some((favorite) => favorite._id === _id);
-
-  const handleFavorite = async () => {
-    if (!user.token) return navigation.navigate("Enter");
-
-    if (isFavorite) {
-      try {
-        const data = await fetchDeleteFavorites(user.token, restaurant._id);
-        if (data.result) {
-          dispatch(removeFavorite(restaurant));
-        } else {
-          throw new Error("Failed to delete favorite");
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    } else {
-      try {
-        const data = await fetchPostFavorites(user.token, restaurant._id);
-        if (data.result) {
-          dispatch(addFavorite(restaurant));
-        } else {
-          throw new Error("Failed to save favorite");
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
+  const isFavorite = user.favorites.some((favorite) => favorite._id === restaurantId);
 
   const handleChallenges = async () => {
-    if (!user.token) return navigation.navigate("Enter");
-
     try {
-      // Envoi des défis relevés via la fonction dédiée
-      const data = await fetchPostHistory(user.token, _id, selectedChallenges);
-      if (data.result) {
-        // Si le fetch est réussi, on ajoute le CO2 économisé dans le store et redirection vers la home
-        dispatch(addSavedCo2(data.totalSavedCo2));
-        setSelectedChallenges([]);
-        navigation.navigate("Home");
-      } else {
-        throw new Error("Failed to save new quest");
-      }
+      await handleQuest(dispatch, navigation, user.token, restaurantId, selectedChallenges);
+      setSelectedChallenges([]);
+      console.log("Handled quest");
+      navigation.navigate("Home");
     } catch (error) {
       console.error(error);
     }
@@ -161,14 +124,14 @@ export default function RestaurantScreen({ navigation }) {
   const challengesList = (
     <View style={styles.tabContentContainer}>
       <View style={{ width: "100%" }}>
-        {/* La liste des challenges à relever sous forme de chexbox */}
+        {/* La liste des défis à relever sous forme de checkboxes */}
         <ChallengesCheckBox
           options={challenges}
           checkedValues={selectedChallenges}
           onChange={(updatedValues) => setSelectedChallenges(updatedValues)}
         />
       </View>
-      {/* Le bouton de validation, qui redirige vers enter screen si le user n'est pas connecté */}
+      {/* Le bouton de validation, qui redirige vers EnterScreen si l'utilisateur n'est pas connecté */}
       <CustomButton
         title={"Valider mes défis"}
         textSize={15}
@@ -189,7 +152,7 @@ export default function RestaurantScreen({ navigation }) {
           <Text style={{ fontSize: 23, fontWeight: 500 }}>{name}</Text>
         </View>
         <Pressable
-          onPress={() => handleFavorite()}
+          onPress={() => handleFavorite(dispatch, user.token, restaurant, restaurantId, isFavorite)}
           style={{
             borderRadius: 50,
             padding: 8,
