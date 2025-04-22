@@ -111,22 +111,20 @@ export default function App() {
   return (
     <Provider store={store}>
       <SafeAreaProvider>
-        <SafeAreaView style={styles.container}>
-          <StatusBar
-            backgroundColor="transparent"
-            translucent={true}
-            barStyle="dark-content"
-          />
-          <NavigationContainer>
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="Welcome" component={WelcomeScreen} />
-              <Stack.Screen name="Register" component={RegisterScreen} />
-              <Stack.Screen name="Login" component={LoginScreen} />
-              <Stack.Screen name="Enter" component={EnterScreen} />
-              <Stack.Screen name="TabNavigator" component={TabNavigator} />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </SafeAreaView>
+        <StatusBar
+          backgroundColor="transparent"
+          translucent={true}
+          barStyle="dark-content"
+        />
+        <NavigationContainer>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Welcome" component={WelcomeScreen} />
+            <Stack.Screen name="Register" component={RegisterScreen} />
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Enter" component={EnterScreen} />
+            <Stack.Screen name="TabNavigator" component={TabNavigator} />
+          </Stack.Navigator>
+        </NavigationContainer>
       </SafeAreaProvider>
     </Provider>
   );

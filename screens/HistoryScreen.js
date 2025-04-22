@@ -4,13 +4,13 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
 } from "react-native";
 import HistoryCard from "../components/HistoryCard";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { ArrowLeft } from "lucide-react-native";
 import { useFocusEffect } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HistoryScreen({ navigation }) {
   const token = useSelector((state) => state.user.value.token);
