@@ -14,13 +14,13 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
 
 // Objet qui contient les icones à afficher en fonction du niveau
-const levelIcons = {
-  "jeune pousse": "🌱",
-  curieux: "🍪",
-  padawan: "🧑‍🎓",
-  "maître jedi": "✨",
-  "vieille branche": "🌳",
-};
+// const levelIcons = {
+//   "jeune pousse": "🌱",
+//   curieux: "🍪",
+//   padawan: "🧑‍🎓",
+//   "maître jedi": "✨",
+//   "vieille branche": "🌳",
+// };
 
 // Fonction pour récupérer les quizz depuis le backend
 const fetchQuiz = async () => {
