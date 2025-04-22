@@ -1,9 +1,28 @@
-import { StyleSheet, Platform, Dimensions, SafeAreaView, Text, View, TouchableOpacity, ScrollView, Modal, TouchableWithoutFeedback } from "react-native";
-import { Search, List, Map, ChevronsUpDown, Info, MapPin, Store } from "lucide-react-native";
-import SelectDropdown from 'react-native-select-dropdown';
-import { useState, useRef, useEffect } from 'react';
+import {
+  StyleSheet,
+  Platform,
+  Dimensions,
+  SafeAreaView,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Modal,
+  TouchableWithoutFeedback,
+} from "react-native";
+import {
+  Search,
+  List,
+  Map,
+  ChevronsUpDown,
+  Info,
+  MapPin,
+  Store,
+} from "lucide-react-native";
+import SelectDropdown from "react-native-select-dropdown";
+import { useState, useRef, useEffect } from "react";
 import MapView, { Marker, Callout } from "react-native-maps";
-import * as Location from 'expo-location';
+import * as Location from "expo-location";
 
 import { getMapRegionForRadius } from "../utils/getMapRegionForRadius";
 import { getMapRegionForBounds } from "../utils/getMapRegionForBounds";
@@ -14,10 +33,47 @@ import SearchFiltersRadioInputs from "../components/SearchFiltersRadioInputs";
 import EcotableInfo from "../components/EcotableInfo";
 import SearchInputComponent from "../components/SearchInputComponent";
 
-const badgesOptions = ['Bio', 'Circuit court', 'Locavore', 'Pêche durable', 'Vegan', 'Viande durable', 'Zéro-déchet', '100% Veggie', 'Contenant accepté'];
-const distanceOptions = ['Lieu exact', '2 km', '5 km', '10 km', '20 km', '30 km', '50 km'];
-const priceRangeOptions = ['Tous les prix', 'Moins de 15€', 'Entre 15€ et 30€', 'Entre 30€ et 50€', 'Entre 50€ et 100€', 'Plus de 100€'];
-const typesOptions = ['Bistronomique', 'Café-restaurant', 'Traiteurs', 'Food truck', 'Gastronomique', 'Sur le pouce', 'Sandwicherie', 'Street-food', 'Salon de thé', 'Bar à vin', 'Européen'];
+const badgesOptions = [
+  "Bio",
+  "Circuit court",
+  "Locavore",
+  "Pêche durable",
+  "Vegan",
+  "Viande durable",
+  "Zéro-déchet",
+  "100% Veggie",
+  "Contenant accepté",
+];
+const distanceOptions = [
+  "Lieu exact",
+  "2 km",
+  "5 km",
+  "10 km",
+  "20 km",
+  "30 km",
+  "50 km",
+];
+const priceRangeOptions = [
+  "Tous les prix",
+  "Moins de 15€",
+  "Entre 15€ et 30€",
+  "Entre 30€ et 50€",
+  "Entre 50€ et 100€",
+  "Plus de 100€",
+];
+const typesOptions = [
+  "Bistronomique",
+  "Café-restaurant",
+  "Traiteurs",
+  "Food truck",
+  "Gastronomique",
+  "Sur le pouce",
+  "Sandwicherie",
+  "Street-food",
+  "Salon de thé",
+  "Bar à vin",
+  "Européen",
+];
 
 // Constantes
 const ANIMATION_TIME = 1500;
@@ -25,9 +81,8 @@ const INITIAL_REGION = {
   latitude: 46.603354,
   longitude: 1.888334,
   latitudeDelta: 9.8,
-  longitudeDelta: 14.8
+  longitudeDelta: 14.8,
 };
-
 
 export default function SearchScreen() {
   // Affichage et gestion des modales
@@ -55,7 +110,7 @@ export default function SearchScreen() {
   const displayRestaurantCard = (restaurant) => {
     setSelectedRestaurant(restaurant);
     setCardVisible(true);
-  }
+  };
 
   // Réinitialiser les filtres de recherche
   const resetFilters = () => {
@@ -69,31 +124,31 @@ export default function SearchScreen() {
     setSelectedRestaurant({});
     if (selectDistanceRef.current) selectDistanceRef.current.reset();
     if (selectPriceRangeRef.current) selectPriceRangeRef.current.reset();
-  }
+  };
 
   // Recentrer la carte sur la région initiale
   const resetMapRegion = () => {
     if (userLocation) {
-      mapRef.current && mapRef.current.animateToRegion({
-          latitude: userLocation.latitude,
-          longitude: userLocation.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        },
-        ANIMATION_TIME
-      );
+      mapRef.current &&
+        mapRef.current.animateToRegion(
+          {
+            latitude: userLocation.latitude,
+            longitude: userLocation.longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
+          },
+          ANIMATION_TIME
+        );
     } else {
-      mapRef.current && mapRef.current.animateToRegion(
-        INITIAL_REGION,
-        ANIMATION_TIME
-      );
+      mapRef.current &&
+        mapRef.current.animateToRegion(INITIAL_REGION, ANIMATION_TIME);
     }
   };
 
   // Chercher des restaurants
   const fetchResults = async () => {
     console.log("fetchResults()");
-    
+
     startedSearch === false && setStartedSearch(true);
     setSearchResults([]);
 
@@ -103,7 +158,7 @@ export default function SearchScreen() {
       badges,
       types,
       priceRange,
-      distance: distance.replace(" km", "")
+      distance: distance.replace(" km", ""),
     };
     console.log("body:", reqBody);
 
@@ -115,17 +170,23 @@ export default function SearchScreen() {
     } else if (searchType === "restaurant") {
       route = "restaurant";
     } else if (searchType === "ville") {
-      route = (distance === "Lieu exact" || distance === "") ? "address" : "coordinates" ;
+      route =
+        distance === "Lieu exact" || distance === ""
+          ? "address"
+          : "coordinates";
     }
     console.log("route:", route);
 
     // FETCH BACKEND
     try {
-      const response = await fetch(process.env.EXPO_PUBLIC_BACKEND_URL + '/search/' + route, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(reqBody)
-      });
+      const response = await fetch(
+        process.env.EXPO_PUBLIC_BACKEND_URL + "/search/" + route,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(reqBody),
+        }
+      );
       const data = await response.json();
 
       // Si aucun résultat
@@ -135,15 +196,25 @@ export default function SearchScreen() {
           resetMapRegion();
         } else if (route === "geolocation" && distance !== "Lieu exact") {
           const radius = parseInt(distance.replace(" km", ""));
-          mapRef.current && mapRef.current.animateToRegion(
-            getMapRegionForRadius(userLocation.latitude, userLocation.longitude, radius),
-            ANIMATION_TIME
-          );
+          mapRef.current &&
+            mapRef.current.animateToRegion(
+              getMapRegionForRadius(
+                userLocation.latitude,
+                userLocation.longitude,
+                radius
+              ),
+              ANIMATION_TIME
+            );
         } else if (route === "geolocation") {
-          mapRef.current && mapRef.current.animateToRegion(
-            getMapRegionForRadius(userLocation.latitude, userLocation.longitude, 5),
-            ANIMATION_TIME
-          );
+          mapRef.current &&
+            mapRef.current.animateToRegion(
+              getMapRegionForRadius(
+                userLocation.latitude,
+                userLocation.longitude,
+                5
+              ),
+              ANIMATION_TIME
+            );
         }
         return setFiltersVisible(false);
       }
@@ -153,44 +224,51 @@ export default function SearchScreen() {
 
       // Affichage des résultats sur la carte
 
-      if (result && restaurants.length === 1) {   // Un résultat
+      if (result && restaurants.length === 1) {
+        // Un résultat
         console.log("1 résultat");
 
-        mapRef.current && mapRef.current.animateToRegion({
-          latitude: restaurants[0].coordinates.latitude,
-          longitude: restaurants[0].coordinates.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        }, ANIMATION_TIME);
+        mapRef.current &&
+          mapRef.current.animateToRegion(
+            {
+              latitude: restaurants[0].coordinates.latitude,
+              longitude: restaurants[0].coordinates.longitude,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
+            },
+            ANIMATION_TIME
+          );
       }
-      
-      if (result && restaurants.length > 1) {   // Plusieurs résultats
+
+      if (result && restaurants.length > 1) {
+        // Plusieurs résultats
         console.log("Plusieurs résultats");
 
-        mapRef.current && mapRef.current.animateToRegion(
-          getMapRegionForBounds(restaurants),
-          ANIMATION_TIME
-        );
+        mapRef.current &&
+          mapRef.current.animateToRegion(
+            getMapRegionForBounds(restaurants),
+            ANIMATION_TIME
+          );
       }
-      
+
       // Fermer la modale SearchFilters
       console.log("Fin de fetchResults()");
       setFiltersVisible(false);
     } catch (error) {
       console.log(error);
-  }
+    }
   };
 
   // Alterner entre vue Map/List et changement de l'icône
-  const switchView = () => {   
-    setView(view => view === 'map' ? 'list' : 'map');
-  }
+  const switchView = () => {
+    setView((view) => (view === "map" ? "list" : "map"));
+  };
 
   useEffect(() => {
     (async () => {
       console.log("Initiation du composant SearchScreen");
       const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status === 'granted') {
+      if (status === "granted") {
         const location = await Location.getCurrentPositionAsync({});
         console.log("Localisation acceptée et enregistrée");
         setUserLocation(location.coords);
@@ -198,38 +276,51 @@ export default function SearchScreen() {
         // Fetch les restaurants autour de l'utilisateur (5 km de radius)
         try {
           console.log("Envoi de la requête au backend");
-          const response = await fetch(process.env.EXPO_PUBLIC_BACKEND_URL + "/search/geolocation", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ geolocation: location, distance: 5 })
-          });
+          const response = await fetch(
+            process.env.EXPO_PUBLIC_BACKEND_URL + "/search/geolocation",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ geolocation: location, distance: 5 }),
+            }
+          );
           const data = await response.json();
 
           // Affichage de la map en fonction des résultats
-          if (data.result) {   // Si restaurants trouvés
+          if (data.result) {
+            // Si restaurants trouvés
             console.log("Restaurants trouvés");
             setSearchResults(data.restaurants);
             setStartedSearch(true);
-            mapRef.current && mapRef.current.animateToRegion(
-              getMapRegionForRadius(location.coords.latitude, location.coords.longitude, 5),
-              ANIMATION_TIME
-            );
+            mapRef.current &&
+              mapRef.current.animateToRegion(
+                getMapRegionForRadius(
+                  location.coords.latitude,
+                  location.coords.longitude,
+                  5
+                ),
+                ANIMATION_TIME
+              );
             console.log("Affichage des restaurants trouvés");
-          } else {   // Si pas de restaurants trouvés
+          } else {
+            // Si pas de restaurants trouvés
             console.log("Pas de restaurants trouvés");
-            mapRef.current && mapRef.current.animateToRegion({
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            }, ANIMATION_TIME);
+            mapRef.current &&
+              mapRef.current.animateToRegion(
+                {
+                  latitude: location.coords.latitude,
+                  longitude: location.coords.longitude,
+                  latitudeDelta: 0.01,
+                  longitudeDelta: 0.01,
+                },
+                ANIMATION_TIME
+              );
             console.log("Affichage de la position de l'utilisateur");
           }
         } catch (error) {
           console.error(error);
         }
       }
-      
     })();
 
     return () => {
@@ -241,15 +332,21 @@ export default function SearchScreen() {
   let searchButton;
   if (searchInput.length > 0) {
     searchButton = (
-      <TouchableOpacity style={{ ...styles.searchButton, justifyContent: "flex-start" }} onPress={() => setFiltersVisible(true)}>
-        { searchType === "ville" && <MapPin size={20} color={"#173e19"} /> }
-        { searchType === "restaurant" && <Store size={20} color={"#173e19"} /> }
+      <TouchableOpacity
+        style={{ ...styles.searchButton, justifyContent: "flex-start" }}
+        onPress={() => setFiltersVisible(true)}
+      >
+        {searchType === "ville" && <MapPin size={20} color={"#173e19"} />}
+        {searchType === "restaurant" && <Store size={20} color={"#173e19"} />}
         <Text style={styles.buttonText}>{searchInput}</Text>
       </TouchableOpacity>
     );
   } else {
     searchButton = (
-      <TouchableOpacity style={{ ...styles.searchButton, justifyContent: "space-between" }} onPress={() => setFiltersVisible(true)}>
+      <TouchableOpacity
+        style={{ ...styles.searchButton, justifyContent: "space-between" }}
+        onPress={() => setFiltersVisible(true)}
+      >
         <Text style={styles.buttonText}>Chercher un restaurant</Text>
         <Search size={20} color={"#173e19"} />
       </TouchableOpacity>
@@ -259,49 +356,71 @@ export default function SearchScreen() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
-        
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.options}>
-            { searchButton }
-            { view === "map" && (<List size={40} color="#173e19" onPress={switchView} />) }
-            { view === "list" && (<Map size={40} color="#173e19" onPress={switchView} />) }
+            {searchButton}
+            {view === "map" && (
+              <List size={40} color="#173e19" onPress={switchView} />
+            )}
+            {view === "list" && (
+              <Map size={40} color="#173e19" onPress={switchView} />
+            )}
           </View>
-          { startedSearch && (
-            <View style={{ width: '90%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
-              <Text>{searchResults.length} {searchResults.length > 1 ? "résultats" : "résultat"}</Text>
+          {startedSearch && (
+            <View
+              style={{
+                width: "90%",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginTop: 10,
+              }}
+            >
+              <Text>
+                {searchResults.length}{" "}
+                {searchResults.length > 1 ? "résultats" : "résultat"}
+              </Text>
               <TouchableOpacity onPress={() => setInfoVisible(true)}>
                 <Info size={20} color="#173e19" />
               </TouchableOpacity>
             </View>
-          ) }
+          )}
         </View>
 
         <View style={styles.results}>
-
           {/* Map */}
-          { view === 'map' && (
-            <MapView
-              ref={mapRef}
-              style={{ flex: 1 }}
-              region={INITIAL_REGION}
-            >
-              { searchResults.map((restaurant, i) => (
-                <Marker key={i} coordinate={restaurant.coordinates} onPress={() => displayRestaurantCard(restaurant)}>
-                  <Callout tooltip><>{/* Pour iOS */}</></Callout>
+          {view === "map" && (
+            <MapView ref={mapRef} style={{ flex: 1 }} region={INITIAL_REGION}>
+              {searchResults.map((restaurant, i) => (
+                <Marker
+                  key={i}
+                  coordinate={restaurant.coordinates}
+                  onPress={() => displayRestaurantCard(restaurant)}
+                >
+                  <Callout tooltip>
+                    <>{/* Pour iOS */}</>
+                  </Callout>
                 </Marker>
               ))}
             </MapView>
           )}
 
           {/* List */}
-          { view === 'list' && (
-            <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 10, gap: 20 }}>
-              { searchResults.map((restaurant, i) => <RestaurantCard key={i} restaurant={restaurant} />) }
-            </ScrollView>            
+          {view === "list" && (
+            <ScrollView
+              contentContainerStyle={{
+                paddingHorizontal: 20,
+                paddingVertical: 10,
+                gap: 20,
+              }}
+            >
+              {searchResults.map((restaurant, i) => (
+                <RestaurantCard key={i} restaurant={restaurant} />
+              ))}
+            </ScrollView>
           )}
         </View>
-
       </View>
 
       {/* Modale SearchFilters */}
@@ -310,7 +429,11 @@ export default function SearchScreen() {
           <ScrollView contentContainerStyle={styles.scrollView}>
             <View style={styles.modalContent}>
               <SearchInputComponent
-                placeholder={ searchType === "ville" ? "Chercher une ville" : "Chercher un restaurant" }
+                placeholder={
+                  searchType === "ville"
+                    ? "Chercher une ville"
+                    : "Chercher un restaurant"
+                }
                 value={searchInput}
                 onChangeText={(value) => setSearchInput(value)}
               />
@@ -323,9 +446,7 @@ export default function SearchScreen() {
                 />
               </View>
               <View style={{ width: "100%", alignItems: "start" }}>
-                <Text style={styles.filterCategory}>
-                  Distance
-                </Text>
+                <Text style={styles.filterCategory}>Distance</Text>
                 <SelectDropdown
                   ref={selectDistanceRef}
                   data={distanceOptions}
@@ -353,9 +474,7 @@ export default function SearchScreen() {
                   showsVerticalScrollIndicator={false}
                   dropdownStyle={styles.dropdownMenuStyle}
                 />
-                <Text style={styles.filterCategory}>
-                  Prix
-                </Text>
+                <Text style={styles.filterCategory}>Prix</Text>
                 <SelectDropdown
                   ref={selectPriceRangeRef}
                   data={priceRangeOptions}
@@ -383,17 +502,13 @@ export default function SearchScreen() {
                   showsVerticalScrollIndicator={false}
                   dropdownStyle={styles.dropdownMenuStyle}
                 />
-                <Text style={styles.filterCategory}>
-                  Badges
-                </Text>
+                <Text style={styles.filterCategory}>Badges</Text>
                 <SearchFiltersCheckboxes
                   options={badgesOptions}
                   checkedValues={badges}
                   onChange={setBadges}
                 />
-                <Text style={styles.filterCategory}>
-                  Types d'établissement
-                </Text>
+                <Text style={styles.filterCategory}>Types d'établissement</Text>
                 <SearchFiltersCheckboxes
                   options={typesOptions}
                   checkedValues={types}
@@ -401,7 +516,12 @@ export default function SearchScreen() {
                 />
               </View>
               <View style={{ paddingVertical: 10 }}>
-                <CustomButton variant="outline" textSize={12} title="Réinitialiser les filtres" onPress={resetFilters} />
+                <CustomButton
+                  variant="outline"
+                  textSize={12}
+                  title="Réinitialiser les filtres"
+                  onPress={resetFilters}
+                />
               </View>
             </View>
           </ScrollView>
@@ -410,7 +530,6 @@ export default function SearchScreen() {
               <CustomButton
                 title="Afficher les résultats"
                 variant="light"
-                textSize={14}
                 onPress={() => fetchResults()}
               />
             </View>
@@ -423,16 +542,30 @@ export default function SearchScreen() {
 
       {/* Modale SelectedRestaurant */}
       <Modal visible={cardVisible} animationType="fade" transparent>
-          <View style={{ flex: 1, justifyContent: "flex-end", paddingHorizontal: 15, paddingBottom: 65 }}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "flex-end",
+            paddingHorizontal: 15,
+            paddingBottom: 65,
+          }}
+        >
           <TouchableWithoutFeedback onPress={() => setCardVisible(false)}>
-            <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
+            <View
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+            />
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback onPress={() => {}}>
             <RestaurantCard restaurant={selectedRestaurant} />
           </TouchableWithoutFeedback>
         </View>
       </Modal>
-
     </SafeAreaView>
   );
 }
@@ -454,9 +587,9 @@ const styles = StyleSheet.create({
   options: {
     width: "90%",
     marginTop: 40,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     gap: 10,
   },
   searchButton: {
@@ -470,7 +603,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 15,
     elevation: 3,
-    width: '85%'
+    width: "85%",
   },
   buttonText: {
     fontFamily: Platform.select({
@@ -520,6 +653,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: "80%",
     maxWidth: "80%",
+    paddingVertical: 5,
   },
   dropdownButtonStyle: {
     width: 200,
@@ -557,5 +691,5 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginVertical: 10,
     fontSize: 16,
-  }
+  },
 });

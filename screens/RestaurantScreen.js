@@ -7,7 +7,7 @@ import {
   Dimensions,
   ScrollView,
   Linking,
-  Pressable
+  Pressable,
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import {
@@ -102,7 +102,6 @@ export default function RestaurantScreen({ navigation }) {
           <CustomButton
             title={"Site web"}
             variant="dark"
-            textSize={14}
             onPress={() => Linking.openURL(websiteUrl)}
           />
         </View>
@@ -111,7 +110,6 @@ export default function RestaurantScreen({ navigation }) {
             <CustomButton
               title={"Réserver"}
               variant="light"
-              textSize={14}
               onPress={() => Linking.openURL(bookingUrl)}
             />
           </View>
@@ -134,7 +132,6 @@ export default function RestaurantScreen({ navigation }) {
       {/* Le bouton de validation, qui redirige vers EnterScreen si l'utilisateur n'est pas connecté */}
       <CustomButton
         title={"Valider mes défis"}
-        textSize={15}
         disabled={selectedChallenges.length ? false : true}
         onPress={() => handleChallenges()}
       />
@@ -193,27 +190,29 @@ export default function RestaurantScreen({ navigation }) {
               <Text style={{ flex: 1 }}>{address}</Text>
             </View>
 
-            { badges.length > 0 && 
+            {badges.length > 0 && (
               <View style={styles.itemContainer}>
                 <UtensilsCrossed
                   size={20}
                   color={"black"}
                   style={styles.presentationIcon}
                 />
-                  <View style={styles.tagContainer}>
-                    {badges.map((badge, i) => (
-                      <View
-                        key={i}
-                        style={{ ...styles.tag, backgroundColor: "#1C3B1D" }}
-                      >
-                        <Text style={{ fontSize: 13, color: "#fff" }}>{badge}</Text>
-                      </View>
-                    ))}
-                  </View>
+                <View style={styles.tagContainer}>
+                  {badges.map((badge, i) => (
+                    <View
+                      key={i}
+                      style={{ ...styles.tag, backgroundColor: "#1C3B1D" }}
+                    >
+                      <Text style={{ fontSize: 13, color: "#fff" }}>
+                        {badge}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
               </View>
-            }
+            )}
 
-            { types.length > 0 &&
+            {types.length > 0 && (
               <View style={styles.itemContainer}>
                 <Store
                   size={20}
@@ -226,19 +225,20 @@ export default function RestaurantScreen({ navigation }) {
                       key={i}
                       style={{ ...styles.tag, backgroundColor: "#6AC46A" }}
                     >
-                      <Text style={{ fontSize: 13, color: "#1C3B1D" }}>{type}</Text>
+                      <Text style={{ fontSize: 13, color: "#1C3B1D" }}>
+                        {type}
+                      </Text>
                     </View>
                   ))}
                 </View>
               </View>
-            }
+            )}
 
             <View style={styles.itemContainer}>
               <Euro size={20} color={"black"} style={styles.presentationIcon} />
               <Text>{priceRange}</Text>
             </View>
-
-            </View>
+          </View>
         </View>
         {/* Barre avec les onglets */}
         <View style={styles.tabContainer}>

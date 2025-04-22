@@ -47,7 +47,6 @@ const QuestionResultModal = ({
               title="Question suivante"
               onPress={() => onPress(isGoodAnswer)}
               variant="light"
-              textSize={13}
             />
           </View>
         </View>

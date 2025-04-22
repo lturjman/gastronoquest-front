@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, TouchableOpacity, Platform, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,
+  Pressable,
+} from "react-native";
 import { Leaf, Heart } from "lucide-react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
@@ -9,7 +16,9 @@ export default function RestaurantCard({ restaurant }) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
-  const isFavorite = user.favorites.some(favorite => favorite._id === restaurant._id);
+  const isFavorite = user.favorites.some(
+    (favorite) => favorite._id === restaurant._id
+  );
 
   const leaves = [];
   for (let i = 0; i < restaurant.score; i++) {
@@ -19,6 +28,27 @@ export default function RestaurantCard({ restaurant }) {
   return (
     <View style={styles.card}>
       <View style={{ gap: 8 }}>
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={{ flexShrink: 1 }}
+            onPress={() => handleNavigation()}
+          >
+            <Text style={styles.name}>{restaurant.name}</Text>
+          </TouchableOpacity>
+          <Pressable
+            style={{
+              height: 37,
+              marginTop: -5,
+              borderRadius: 50,
+              padding: 7,
+              backgroundColor: isFavorite ? "#e5685c" : "#C4C4C4",
+            }}
+            onPress={() => handleFavorite()}
+          >
+            <Heart color="#FFFFFF" size={23} />
+          </Pressable>
+        </View>
 
       {/* Header */}
       <View style={styles.header}>
@@ -33,38 +63,39 @@ export default function RestaurantCard({ restaurant }) {
         </Pressable>
       </View>
 
-      <View style={styles.row}>
-        {/* Score */}
-        <View style={{ flexDirection: 'row' }}>{ leaves }</View>
-        <Text> • </Text>
-        {/* Gamme de prix */}
-        <Text style={styles.priceText}>{restaurant.priceRange}</Text>
-      </View>
+        <View style={styles.row}>
+          {/* Score */}
+          <View style={{ flexDirection: "row" }}>{leaves}</View>
+          <Text> • </Text>
+          {/* Gamme de prix */}
+          <Text style={styles.priceText}>{restaurant.priceRange}</Text>
+        </View>
 
-      {/* Adresse */}
-      <View style={styles.tagContainer}>
-        <Text style={{ fontSize: 13, color: "#333" }}>{restaurant.address}</Text>
-      </View>
+        {/* Adresse */}
+        <View style={styles.tagContainer}>
+          <Text style={{ fontSize: 13, color: "#333" }}>
+            {restaurant.address}
+          </Text>
+        </View>
 
-      <View style={styles.tagContainer}>
-        {/* Badges */}
-        { restaurant.badges.map((badge, i) => (
-          <View key={i} style={{ ...styles.tag, backgroundColor: "#1C3B1D" }}>
-            <Text style={{ fontSize: 10, color: "#FFFFFF"}}>{badge}</Text>
-          </View>
-        ))}
-        {/* Types */}
-        { restaurant.types.map((type, i) => (
-          <View key={i} style={{ ...styles.tag, backgroundColor: "#6ac46a" }}>
-            <Text style={{ fontSize: 10, color: "#1C3B1D"}}>{type}</Text>
-          </View>
-        ))}
-      </View>
-
+        <View style={styles.tagContainer}>
+          {/* Badges */}
+          {restaurant.badges.map((badge, i) => (
+            <View key={i} style={{ ...styles.tag, backgroundColor: "#1C3B1D" }}>
+              <Text style={{ fontSize: 10, color: "#FFFFFF" }}>{badge}</Text>
+            </View>
+          ))}
+          {/* Types */}
+          {restaurant.types.map((type, i) => (
+            <View key={i} style={{ ...styles.tag, backgroundColor: "#6ac46a" }}>
+              <Text style={{ fontSize: 10, color: "#1C3B1D" }}>{type}</Text>
+            </View>
+          ))}
+        </View>
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   card: {
@@ -76,14 +107,9 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 3,
     padding: 20,
-    fontFamily: Platform.select({
-      ios: "Helvetica Neue",
-      android: "Roboto",
-      default: "System",
-    }),
   },
   header: {
-    maxWidth: '100%',
+    width: "100%",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "start",
@@ -95,14 +121,14 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: -5
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: -5,
   },
   tagContainer: {
     flexDirection: "row",
     gap: 5,
-    flexWrap: 'wrap'
+    flexWrap: "wrap",
   },
   tag: {
     borderRadius: 20,
@@ -117,5 +143,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#173e19",
     fontWeight: "600",
-  }
+  },
 });

@@ -19,12 +19,7 @@ const ErrorModal = ({ errorMessage, onPress, visible = true }) => {
             ))}
 
             <View style={styles.buttonSpacing} />
-            <CustomButton
-              title="Compris"
-              onPress={onPress}
-              variant="light"
-              textSize={13}
-            />
+            <CustomButton title="Compris" onPress={onPress} variant="light" />
           </View>
         </View>
       </View>

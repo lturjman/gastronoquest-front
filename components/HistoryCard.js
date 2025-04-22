@@ -2,12 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Check } from "lucide-react-native";
 
-const CustomHistoryCard = ({
-  restaurant,
-  achievedChallenges,
-  index,
-  navigation,
-}) => {
+const HistoryCard = ({ restaurant, achievedChallenges, index, navigation }) => {
   const totalCo2 = (achievedChallenges ?? []).reduce(
     (acc, quest) => acc + (quest.savedCo2 ?? 0),
     0
@@ -152,4 +147,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CustomHistoryCard;
+export default HistoryCard;

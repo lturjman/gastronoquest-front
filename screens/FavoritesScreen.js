@@ -6,44 +6,15 @@ import {
   TouchableOpacity,
 } from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
-import CustomCard from "../components/ui-kit/CustomCard";
-import user from "../reducers/user";
-import { useState, useEffect } from "react";
+import RestaurantCard from "../components/ui-kit/RestaurantCard";
+
 import { useSelector } from "react-redux";
 
-import { useDispatch } from "react-redux";
-import { removeFavorite } from "../reducers/user";
 import { ArrowLeft } from "lucide-react-native";
 
 export default function FavoritesScreen({ navigation }) {
-  const dispatch = useDispatch();
   const favorites = useSelector((state) => state.user.value.favorites);
-  const token = useSelector((state) => state.user.value.token);
-
   const hasFavorites = favorites && favorites.length > 0;
-
-  const handleRemoveFromFavorites = async (restaurant) => {
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_BACKEND_URL}/favorites`,
-        {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json", authorization: token },
-          body: JSON.stringify({
-            restaurantId: restaurant._id,
-          }),
-        }
-      );
-      const data = await response.json();
-      if (data.result) {
-        dispatch(removeFavorite(restaurant));
-      } else {
-        throw new Error("Failed to remove favorite");
-      }
-    } catch (error) {
-      console.error("Error removing favorite:", error);
-    }
-  };
 
   return (
     <View>
@@ -63,14 +34,9 @@ export default function FavoritesScreen({ navigation }) {
               Aucun restaurant n'a encore été ajouté aux favoris
             </Text>
           ) : (
-            favorites.map((restaurant, index) => (
-              <View key={index} style={styles.card}>
-                <CustomCard
-                  restaurant={restaurant}
-                  navigation={navigation}
-                  favorites={favorites}
-                  onPress={handleRemoveFromFavorites}
-                />
+            favorites.map((restaurant) => (
+              <View key={restaurant._id} style={styles.card}>
+                <RestaurantCard restaurant={restaurant} />
               </View>
             ))
           )}
@@ -80,7 +46,6 @@ export default function FavoritesScreen({ navigation }) {
               onPress={() =>
                 navigation.navigate("Search", { screen: "SearchScreen" })
               }
-              textSize={13}
             />
           </View>
         </View>
@@ -128,5 +93,9 @@ const styles = StyleSheet.create({
     color: "grey",
     alignItems: "center",
     flex: 1,
+  },
+  card: {
+    width: "90%",
+    marginBottom: 20,
   },
 });

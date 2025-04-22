@@ -32,7 +32,7 @@ export const UserSlice = createSlice({
       );
     },
     addSavedCo2: (state, action) => {
-      state.value.totalSavedCo2 += action.payload;
+      state.value.totalSavedCo2 = action.payload;
     },
   },
 });

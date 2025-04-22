@@ -36,13 +36,12 @@ const CustomInput = ({
 
 const styles = StyleSheet.create({
   inputContainer: {
-    width: width * 0.8, // 80% de la largeur de l'écran
-    borderWidth: 1.5,
-    borderRadius: 8,
+    width: width * 0.9, // 90% de la largeur de l'écran
+    borderWidth: 1,
+    borderRadius: 10,
     paddingHorizontal: 14,
-    paddingVertical: 10,
-    marginVertical: 10,
-    alignItems: "left",
+    paddingVertical: 2,
+    marginVertical: 5,
   },
   inputContainerDefault: {
     borderColor: "#E0E0E0", // gris
@@ -51,7 +50,7 @@ const styles = StyleSheet.create({
     borderColor: "#6ac46a", // vert
   },
   input: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#333",
   },
 });
