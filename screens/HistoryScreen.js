@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
-import CustomHistoryCard from "../components/ui-kit/CustomHistoryCard";
+import HistoryCard from "../components/HistoryCard";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { ArrowLeft } from "lucide-react-native";
@@ -100,7 +100,7 @@ export default function HistoryScreen({ navigation }) {
                 quest,
                 index //Affiche les quêtes actuelles sur la page
               ) => (
-                <CustomHistoryCard
+                <HistoryCard
                   key={index}
                   index={index}
                   restaurant={quest.restaurant}
