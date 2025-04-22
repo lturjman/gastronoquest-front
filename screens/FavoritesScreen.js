@@ -4,10 +4,10 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
 } from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
 import RestaurantCard from "../components/ui-kit/RestaurantCard";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useSelector } from "react-redux";
 
