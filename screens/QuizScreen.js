@@ -4,6 +4,7 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  SafeAreaView,
 } from "react-native";
 import Serie from "../components/Serie";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,15 +13,6 @@ import { updateQuiz } from "../reducers/quiz";
 import { fetchGetQuizResults } from "../services/quizResultsServices";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
-
-// Objet qui contient les icones à afficher en fonction du niveau
-// const levelIcons = {
-//   "jeune pousse": "🌱",
-//   curieux: "🍪",
-//   padawan: "🧑‍🎓",
-//   "maître jedi": "✨",
-//   "vieille branche": "🌳",
-// };
 
 // Fonction pour récupérer les quizz depuis le backend
 const fetchQuiz = async () => {
@@ -156,7 +148,8 @@ export default function QuizScreen({ navigation }) {
   ).length;
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>Mes séries</Text>
       <View style={styles.presentationContainer}>
         <View style={styles.seriesNumberContainer}>
           <Text style={{ fontSize: 20 }}>✅</Text>
@@ -173,9 +166,9 @@ export default function QuizScreen({ navigation }) {
           </View>
         </View>
         {user.token ? (
-          <Text style={{ fontSize: 15 }}>
+          <Text style={{ fontSize: 15, textAlign: "center" }}>
             {/* {levelIcons[user.level]} {user.level} */}
-            Renforcer mes connaissances
+            Faire une série pour renforcer ses connaissances
           </Text>
         ) : (
           <TouchableOpacity onPress={() => navigation.navigate("Enter")}>
@@ -200,7 +193,7 @@ export default function QuizScreen({ navigation }) {
           />
         ))}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -211,9 +204,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
   },
+  title: {
+    maxWidth: "100%",
+    fontSize: 30,
+    fontWeight: "bold",
+    margin: 10,
+    textAlign: "center",
+  },
   presentationContainer: {
     width: "70%",
-    paddingTop: 30,
     paddingBottom: 30,
     marginBottom: 30,
     borderBottomColor: "#E0E0E0",

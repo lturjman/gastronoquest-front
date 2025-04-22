@@ -4,7 +4,6 @@ import {
   View,
   Text,
   StyleSheet,
-  Platform,
   Modal,
   TouchableOpacity,
   Linking,
@@ -72,11 +71,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 10,
     margin: 20,
-    fontFamily: Platform.select({
-      ios: "Helvetica Neue",
-      android: "Roboto",
-      default: "System",
-    }),
   },
   content: {
     justifyContent: "center",

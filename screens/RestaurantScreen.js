@@ -8,6 +8,7 @@ import {
   ScrollView,
   Linking,
   Pressable,
+  SafeAreaView,
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import {
@@ -139,7 +140,7 @@ export default function RestaurantScreen({ navigation }) {
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.headerContainer}>
         <View style={styles.headerLeft}>
@@ -280,7 +281,7 @@ export default function RestaurantScreen({ navigation }) {
           ? restaurantDescContainer
           : challengesList}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 

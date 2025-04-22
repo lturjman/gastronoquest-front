@@ -1,3 +1,4 @@
+
 import { StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -30,7 +31,8 @@ export default function QuestionScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+
+    <SafeAreaView style={styles.container}>
       {/* Si le quiz est terminé, on affiche le composant de résultat, sinon une question */}
       {quiz.isFinished ? (
         <QuizResult
@@ -41,7 +43,8 @@ export default function QuestionScreen({ navigation }) {
       ) : (
         <QuizQuestion quiz={quiz} />
       )}
-    </View>
+    </SafeAreaView>
+
   );
 }
 

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView } from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
 import { useDispatch } from "react-redux";
 import { removeUser } from "../reducers/user";
@@ -12,7 +12,7 @@ export default function UserScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}> Mes informations</Text>
       <View style={styles.buttonContainer}>
         <View style={styles.customContainer}>
@@ -37,13 +37,14 @@ export default function UserScreen({ navigation }) {
           variant="outline"
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#F9F9F9",
     alignItems: "center",
   },
   title: {

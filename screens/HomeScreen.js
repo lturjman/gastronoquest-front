@@ -7,6 +7,7 @@ import {
   Linking,
   TouchableOpacity,
   ImageBackground,
+  SafeAreaView,
 } from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 import { Animated } from "react-native";
@@ -14,7 +15,6 @@ import CustomButton from "../components/ui-kit/CustomButton";
 import { useSelector } from "react-redux";
 
 import { useEffect, useRef } from "react";
-
 
 const news = [
   {
@@ -140,8 +140,8 @@ export default function HomeScreen({ navigation }) {
 
         <View style={styles.textContainer}>
           <Text style={styles.text}>
-            Relève des défis, collecte du CO₂ et fais grandir ta plante à chaque
-            palier atteint !
+            Relever des défis, collecter du CO₂ et faire grandir sa plante à
+            chaque palier atteint !
           </Text>
         </View>
       </View>
@@ -197,7 +197,7 @@ export default function HomeScreen({ navigation }) {
   const connectionContainer = (
     <View style={{ width: "90%", gap: 20 }}>
       <Text style={{ textAlign: "center", fontWeight: "600" }}>
-        Connectez-vous pour consulter votre progression
+        Se connecter pour consulter sa progression
       </Text>
       <CustomButton
         title={"Se connecter"}
@@ -207,7 +207,7 @@ export default function HomeScreen({ navigation }) {
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.carousel}>
         <SwiperFlatList
           autoplay
@@ -239,7 +239,7 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.btnContainer}>
         <View style={styles.btn}>
           <CustomButton
-            title={"Renforcer mes connaissances"}
+            title={"Renforcer ses connaissances"}
             variant={"light"}
             onPress={() => navigation.navigate("Quiz")}
           />
@@ -254,7 +254,7 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.progressCard}>
         {user.token ? co2Container : connectionContainer}
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
