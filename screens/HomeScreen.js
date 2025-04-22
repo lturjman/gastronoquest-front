@@ -128,7 +128,7 @@ export default function HomeScreen({ navigation }) {
               backgroundColor: "#DBF2D6",
               paddingVertical: 15,
               borderRadius: 150,
-              marginLeft: -20,
+              marginLeft: -15,
               height: 130,
               aspectRatio: 1,
             }}
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     width: "90%",
     justifyContent: "center",
     alignItems: "center",
-    gap: 20,
+    gap: "6%",
     padding: 20,
     minHeight: 350,
     height: height * 0.55,
