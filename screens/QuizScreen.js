@@ -26,7 +26,7 @@ import { useCallback } from "react";
 const fetchQuiz = async () => {
   try {
     // Récupération des quiz
-    const response = await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URL}/quiz`);
+    const response = await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URL}/quizzes`);
     const data = await response.json();
 
     return data;
