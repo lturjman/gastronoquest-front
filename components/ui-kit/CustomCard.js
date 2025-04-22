@@ -44,7 +44,9 @@ export default function CustomCard({ restaurant, onPress }) {
           <Text> • </Text>
           {/* Gamme de prix */}
           <View style={styles.priceTag}>
-            <Text style={{ ...styles.tagText, color: "#173e19" }}>{restaurant.priceRange}</Text>
+            <Text style={{ ...styles.tagText, color: "#173e19" }}>
+              {restaurant.priceRange}
+            </Text>
           </View>
         </View>
 
@@ -54,7 +56,10 @@ export default function CustomCard({ restaurant, onPress }) {
         {/* Badges */}
         <View style={styles.tagContainer}>
           {restaurant.badges.map((badge, index) => (
-            <View key={index} style={{ ...styles.tag, backgroundColor: "#1C3B1D" }}>
+            <View
+              key={index}
+              style={{ ...styles.tag, backgroundColor: "#1C3B1D" }}
+            >
               <Text style={{ ...styles.tagText, color: "#fff" }}>{badge}</Text>
             </View>
           ))}
@@ -63,8 +68,13 @@ export default function CustomCard({ restaurant, onPress }) {
         {/* Types */}
         <View style={styles.tagContainer}>
           {restaurant.types.map((type, index) => (
-            <View key={index} style={{ ...styles.tag, backgroundColor: "#6ac46a" }}>
-              <Text style={{ ...styles.tagText, color: "#1C3B1D" }}>{type}</Text>
+            <View
+              key={index}
+              style={{ ...styles.tag, backgroundColor: "#6ac46a" }}
+            >
+              <Text style={{ ...styles.tagText, color: "#1C3B1D" }}>
+                {type}
+              </Text>
             </View>
           ))}
         </View>
