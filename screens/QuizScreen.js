@@ -1,5 +1,6 @@
 import {
   StyleSheet,
+  Dimensions,
   Text,
   View,
   ScrollView,
@@ -7,7 +8,7 @@ import {
 } from "react-native";
 import Serie from "../components/Serie";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { updateQuiz } from "../reducers/quiz";
 import { fetchGetQuizResults } from "../services/quizResultsServices";
 import { useFocusEffect } from "@react-navigation/native";
@@ -96,7 +97,7 @@ const getQuizWithConnection = async (token) => {
 // Fonction pour récupérer les données d'un quiz à partir d'un id
 const fetchQuizById = async (quizId) => {
   try {
-    // Récupération des quiz
+    // Récupération des quizz
     const response = await fetch(
       `${process.env.EXPO_PUBLIC_BACKEND_URL}/quiz/${quizId}`
     );
@@ -182,7 +183,8 @@ export default function QuizScreen({ navigation }) {
           </TouchableOpacity>
         )}
       </View>
-      <ScrollView style={styles.seriesContainer}>
+      <ScrollView contentContainerStyle={{ width: Dimensions.get("window").width, alignItems: "center" }}>
+        <View style={styles.seriesContainer}>
         {quizzes.map((quiz) => (
           <Serie
             key={quiz._id}
@@ -194,6 +196,7 @@ export default function QuizScreen({ navigation }) {
             onPress={handlePress}
           />
         ))}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -224,8 +227,7 @@ const styles = StyleSheet.create({
   },
   seriesContainer: {
     width: "90%",
-    paddingLeft: 1,
-    paddingRight: 1,
+    paddingBottom: 20
   },
   seriesNumberContainer: {
     flexDirection: "row",
