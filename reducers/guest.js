@@ -8,7 +8,7 @@ const initialState = {
   },
 };
 
-export const UserSlice = createSlice({
+export const GuestSlice = createSlice({
   name: "guest",
   initialState,
   reducers: {
@@ -28,5 +28,5 @@ export const {
   saveGuestFavorite,
   saveGuestQuest,
   saveGuestQuiz
-} = UserSlice.actions;
-export default UserSlice.reducer;
+} = GuestSlice.actions;
+export default GuestSlice.reducer;

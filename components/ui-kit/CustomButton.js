@@ -36,12 +36,14 @@ const CustomButton = ({
   textSize = 14,
   onPress,
   disabled = false,
+  fullHeight = false,
 }) => {
   const selectedVariant = variantStyles[variant] || variantStyles.dark;
 
+  const height = fullHeight ? { height: "100%" } : { height: undefined };
   return (
     <TouchableOpacity
-      style={[styles.baseButton, selectedVariant.button]}
+      style={[styles.baseButton, selectedVariant.button, height]}
       onPress={onPress}
       disabled={disabled}
     >
