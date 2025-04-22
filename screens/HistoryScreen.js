@@ -74,7 +74,7 @@ export default function HistoryScreen({ navigation }) {
   };
 
   return (
-    <View>
+    <SafeAreaView style={styles.container}>
       <View style={styles.headerLeft}>
         <TouchableOpacity
           onPress={() => navigation.navigate("User", { screen: "UserScreen" })}
@@ -88,7 +88,7 @@ export default function HistoryScreen({ navigation }) {
         ref={scrollViewRef}
         contentContainerStyle={{
           alignItems: "center",
-          paddingBottom: 100,
+          paddingBottom: 20,
         }}
       >
         <View style={styles.cardContainer}>
@@ -144,11 +144,15 @@ export default function HistoryScreen({ navigation }) {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#F9F9F9",
+  },
   headerLeft: {
     flexDirection: "row",
     alignItems: "center",

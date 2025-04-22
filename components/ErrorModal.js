@@ -1,6 +1,6 @@
 import React from "react";
 
-import { View, Text, StyleSheet, Platform, Modal } from "react-native";
+import { View, Text, StyleSheet, Modal } from "react-native";
 
 import CustomButton from "./ui-kit/CustomButton";
 
@@ -45,11 +45,6 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     margin: 20,
     gap: 30,
-    fontFamily: Platform.select({
-      ios: "Helvetica Neue",
-      android: "Roboto",
-      default: "System",
-    }),
   },
   content: {
     justifyContent: "center",

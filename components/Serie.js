@@ -1,6 +1,6 @@
 import React from "react";
 
-import { View, Text, StyleSheet, Platform, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 
 import { Lock, ArrowRight } from "lucide-react-native";
 

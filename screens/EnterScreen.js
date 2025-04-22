@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Platform } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
 
 export default function EnterScreen({ navigation }) {
@@ -64,11 +64,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     width: "80%",
     textAlign: "center",
-    fontFamily: Platform.select({
-      ios: "Helvetica Neue",
-      android: "Roboto",
-      default: "System",
-    }),
   },
   btnContainer: {
     justifyContent: "center",

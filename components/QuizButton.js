@@ -1,6 +1,5 @@
 import React from "react";
 import { Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Platform } from "react-native";
 
 const variantStyles = {
   selected: {
@@ -23,7 +22,7 @@ const variantStyles = {
   },
 };
 
-const QuizButton = ({ title, variant, textSize = 18, onPress }) => {
+const QuizButton = ({ title, variant, textSize = 14, onPress }) => {
   const selectedVariant = variantStyles[variant];
 
   return (
@@ -42,8 +41,8 @@ const QuizButton = ({ title, variant, textSize = 18, onPress }) => {
 
 const styles = StyleSheet.create({
   baseButton: {
-    paddingVertical: 15,
-    paddingHorizontal: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
@@ -51,11 +50,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   baseText: {
-    fontFamily: Platform.select({
-      ios: "Helvetica Neue",
-      android: "Roboto",
-      default: "System",
-    }),
     fontWeight: "bold",
     textAlign: "center",
   },

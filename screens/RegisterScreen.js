@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Modal } from "react-native";
+import { StyleSheet, View, Image, Modal, SafeAreaView } from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
 import CustomInput from "../components/ui-kit/CustomInput";
 import { useState } from "react";
@@ -85,7 +85,7 @@ export default function RegisterScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <ErrorModal
           errorMessage={errors.join("\n")}
@@ -127,7 +127,7 @@ export default function RegisterScreen({ navigation }) {
       <View>
         <CustomButton title="Inscription" onPress={() => handleSubmit()} />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

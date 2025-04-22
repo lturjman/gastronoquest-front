@@ -4,6 +4,7 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  SafeAreaView,
 } from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
 import RestaurantCard from "../components/ui-kit/RestaurantCard";
@@ -17,7 +18,7 @@ export default function FavoritesScreen({ navigation }) {
   const hasFavorites = favorites && favorites.length > 0;
 
   return (
-    <View>
+    <SafeAreaView style={styles.container}>
       <View style={styles.headerLeft}>
         <TouchableOpacity
           onPress={() => navigation.navigate("User", { screen: "UserScreen" })}
@@ -50,7 +51,7 @@ export default function FavoritesScreen({ navigation }) {
           </View>
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
@@ -60,8 +61,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: "#F9F9F9",
   },
   headerLeft: {
     flexDirection: "row",

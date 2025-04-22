@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import CustomButton from "../components/ui-kit/CustomButton";
 import QuizButton from "../components/QuizButton";
@@ -120,9 +120,9 @@ export default function QuestionScreen({ navigation }) {
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {quiz.isFinished ? quizResultContainer : questionContainer}
-    </View>
+    </SafeAreaView>
   );
 }
 

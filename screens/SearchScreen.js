@@ -1,6 +1,5 @@
 import {
   StyleSheet,
-  Platform,
   Dimensions,
   SafeAreaView,
   Text,
@@ -573,7 +572,7 @@ export default function SearchScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#F9F9F9",
     alignItems: "center",
     justifyContent: "start",
   },
@@ -606,11 +605,6 @@ const styles = StyleSheet.create({
     width: "85%",
   },
   buttonText: {
-    fontFamily: Platform.select({
-      ios: "Helvetica Neue",
-      android: "Roboto",
-      default: "System",
-    }),
     fontWeight: "bold",
     textAlign: "center",
     color: "#173e19",

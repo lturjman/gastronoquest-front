@@ -3,7 +3,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Platform,
   Pressable,
 } from "react-native";
 import { Leaf, Heart } from "lucide-react-native";
