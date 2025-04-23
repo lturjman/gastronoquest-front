@@ -68,9 +68,12 @@ const UserStackScreens = () => (
   </UserStack.Navigator>
 );
 
-// Liste des écrans que l'on met dans la TabNavigator
-const TabNavigator = () => {
-  const user = useSelector((state) => state.user.value);
+/*
+La tab navigation n'est pas la même si on est connecté ou non
+On est obligé créer deux tab nav différentes car si on met une condition qui dépend du store redux à l'intérieur de la tab nav,
+toute la navigation ne s'actualise pas, ce qui cause des comportements non voulus
+*/
+const TabNavigatorConnected = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -83,6 +86,36 @@ const TabNavigator = () => {
             return <Brain size={size} color={color} />;
           } else if (route.name === "User") {
             return <CircleUserRound size={size} color={color} />;
+          }
+        },
+        tabBarActiveTintColor: "#6ac46a",
+        tabBarInactiveTintColor: "#173e19",
+        tabBarShowLabel: false, // Enlever l'affichage des labels
+        tabBarItemStyle: {
+          paddingTop: 5, // Ajout de padding pour centrer les icônes (le flex n'a pas l'air de fonctionner...)
+        },
+        headerShown: false,
+      })}
+    >
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Search" component={SearchStackScreens} />
+      <Tab.Screen name="Quiz" component={QuizStackScreens} />
+      <Tab.Screen name="User" component={UserStackScreens} />
+    </Tab.Navigator>
+  );
+};
+
+const TabNavigatorNotConnected = () => {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color, size }) => {
+          if (route.name === "Home") {
+            return <House size={size} color={color} />;
+          } else if (route.name === "Search") {
+            return <Utensils size={size} color={color} />;
+          } else if (route.name === "Quiz") {
+            return <Brain size={size} color={color} />;
           } else if (route.name === "Enter") {
             return <CircleUserRound size={size} color={color} />;
           }
@@ -99,17 +132,34 @@ const TabNavigator = () => {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Search" component={SearchStackScreens} />
       <Tab.Screen name="Quiz" component={QuizStackScreens} />
-      {/* Si l'utilisateur n'est pas connecté, le quatrième écran est enterScreen */}
-      {user.token === null ? (
-        <Tab.Screen
-          name="Enter"
-          component={EnterScreen}
-          options={{ tabBarStyle: { display: "none" } }}
-        />
-      ) : (
-        <Tab.Screen name="User" component={UserStackScreens} />
-      )}
+      <Tab.Screen
+        name="Enter"
+        component={EnterScreen}
+        options={{ tabBarStyle: { display: "none" } }}
+      />
     </Tab.Navigator>
+  );
+};
+
+// La naviguation finale qui sera insérée dans App
+// on passe par un RootNavigator car le useSelector ne peut pas être mis dans App car il ne peut pas être lu avant le provider store
+const RootNavigator = () => {
+  const user = useSelector((state) => state.user.value);
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Welcome" component={WelcomeScreen} />
+      <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Enter" component={EnterScreen} />
+      {user.token ? (
+        <Stack.Screen name="TabNavigator" component={TabNavigatorConnected} />
+      ) : (
+        <Stack.Screen
+          name="TabNavigator"
+          component={TabNavigatorNotConnected}
+        />
+      )}
+    </Stack.Navigator>
   );
 };
 
@@ -141,13 +191,7 @@ export default function App() {
             barStyle="dark-content"
           />
           <NavigationContainer>
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="Welcome" component={WelcomeScreen} />
-              <Stack.Screen name="Register" component={RegisterScreen} />
-              <Stack.Screen name="Login" component={LoginScreen} />
-              <Stack.Screen name="Enter" component={EnterScreen} />
-              <Stack.Screen name="TabNavigator" component={TabNavigator} />
-            </Stack.Navigator>
+            <RootNavigator />
           </NavigationContainer>
         </SafeAreaProvider>
       </PersistGate>
