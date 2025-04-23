@@ -9,7 +9,7 @@ export default function UserScreen({ navigation }) {
 
   const handleLogout = () => {
     dispatch(removeUser()); // Réinitialise les informations de l'utilisateur
-    navigation.navigate("User", { screen: "HomeScreen" }); // Redirige vers l'écran de connexion
+    navigation.navigate("Home"); // Redirige vers l'écran de connexion
   };
 
   return (
