@@ -1,6 +1,6 @@
 import { getCenter, getBounds } from 'geolib';
 
-// #todo
+// Calcul de la région vers laquelle naviguer sur MapView pour afficher tous les résultats de la recherche de restaurant
 
 export const getMapRegionForBounds = (restaurants) => {
   const coordinates = restaurants.map(restaurant => restaurant.coordinates);
@@ -12,4 +12,4 @@ export const getMapRegionForBounds = (restaurants) => {
     latitudeDelta: Math.abs(bounds.maxLat - bounds.minLat) * 1.5,
     longitudeDelta: Math.abs(bounds.maxLng - bounds.minLng) * 1.5
   };
-}
+};
