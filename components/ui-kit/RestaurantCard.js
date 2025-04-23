@@ -27,12 +27,16 @@ export default function RestaurantCard({ restaurant }) {
   return (
     <View style={styles.card}>
       <View style={{ gap: 8 }}>
-
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity
             style={{ flexShrink: 1 }}
-            onPress={() => navigation.navigate("RestaurantScreen", { restaurant })}
+            onPress={() =>
+              navigation.navigate("Search", {
+                screen: "RestaurantScreen",
+                params: { restaurant },
+              })
+            }
           >
             <Text style={styles.name}>{restaurant.name}</Text>
           </TouchableOpacity>
@@ -44,7 +48,16 @@ export default function RestaurantCard({ restaurant }) {
               padding: 7,
               backgroundColor: isFavorite ? "#e5685c" : "#C4C4C4",
             }}
-            onPress={() => handleFavorite(dispatch, navigation, user.token, restaurant, restaurant._id, isFavorite)}
+            onPress={() =>
+              handleFavorite(
+                dispatch,
+                navigation,
+                user.token,
+                restaurant,
+                restaurant._id,
+                isFavorite
+              )
+            }
           >
             <Heart color="#FFFFFF" size={23} />
           </Pressable>

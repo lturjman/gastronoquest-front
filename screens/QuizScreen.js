@@ -152,7 +152,7 @@ export default function QuizScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Mes séries</Text>
+      <Text style={styles.title}>Mes Quiz</Text>
       <View style={styles.presentationContainer}>
         <View style={styles.seriesNumberContainer}>
           <Text style={{ fontSize: 20 }}>✅</Text>
@@ -178,24 +178,29 @@ export default function QuizScreen({ navigation }) {
             <Text
               style={{ textAlign: "center", textDecorationLine: "underline" }}
             >
-              Connectez-vous pour sauvegarder votre avancée
+              Se connecter pour sauvegarder son avancée
             </Text>
           </TouchableOpacity>
         )}
       </View>
-      <ScrollView contentContainerStyle={{ width: Dimensions.get("window").width, alignItems: "center" }}>
+      <ScrollView
+        contentContainerStyle={{
+          width: Dimensions.get("window").width,
+          alignItems: "center",
+        }}
+      >
         <View style={styles.seriesContainer}>
-        {quizzes.map((quiz) => (
-          <Serie
-            key={quiz._id}
-            serieTitle={quiz.title}
-            serieLevel={quiz.difficulty}
-            serieId={quiz._id}
-            score={quiz.score}
-            variant={quiz.status}
-            onPress={handlePress}
-          />
-        ))}
+          {quizzes.map((quiz) => (
+            <Serie
+              key={quiz._id}
+              serieTitle={quiz.title}
+              serieLevel={quiz.difficulty}
+              serieId={quiz._id}
+              score={quiz.score}
+              variant={quiz.status}
+              onPress={handlePress}
+            />
+          ))}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -227,7 +232,7 @@ const styles = StyleSheet.create({
   },
   seriesContainer: {
     width: "90%",
-    paddingBottom: 20
+    paddingBottom: 20,
   },
   seriesNumberContainer: {
     flexDirection: "row",

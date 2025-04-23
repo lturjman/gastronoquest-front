@@ -11,6 +11,7 @@ import {
 
 import CustomButton from "./ui-kit/CustomButton";
 
+// Modale que l'on affiche une fois qu'on a répondu à une question sur un quizz
 const QuestionResultModal = ({
   comment,
   rightAnswer,
@@ -24,17 +25,21 @@ const QuestionResultModal = ({
       <View style={styles.overlay}>
         <View style={styles.modalContainer}>
           <View style={styles.content}>
+            {/* Phrase qui annonce si la réponse est bonne */}
             <Text
               style={{ fontWeight: "bold", fontSize: 18, color: "#173e19" }}
             >
               {isGoodAnswer ? "Bonne réponse 🥳" : "Mauvaise Réponse ☹️"}
             </Text>
+            {/* On affiche la bonne réponse si l'utilisateur s'est trompé */}
             {!isGoodAnswer && (
               <Text style={{ textAlign: "center" }}>
                 La bonne réponse était : {rightAnswer}
               </Text>
             )}
+            {/* Explication de la réponse */}
             <Text style={{ textAlign: "center" }}>{comment}</Text>
+            {/* Lien cliquable vers la ressource web */}
             <TouchableOpacity onPress={() => Linking.openURL(articleUrl)}>
               <Text
                 style={{ textDecorationLine: "underline", color: "#173e19" }}
@@ -42,6 +47,7 @@ const QuestionResultModal = ({
                 En savoir plus
               </Text>
             </TouchableOpacity>
+            {/* Bouton pour passer à la question suivante */}
             <CustomButton
               title="Question suivante"
               onPress={() => onPress(isGoodAnswer)}

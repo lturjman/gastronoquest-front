@@ -105,7 +105,6 @@ const styles = StyleSheet.create({
   },
   checkItem: {
     flexDirection: "row",
-    alignItems: "center",
     margin: 4,
   },
   checkText: {
@@ -113,20 +112,13 @@ const styles = StyleSheet.create({
     color: "#37474f",
     fontSize: 14,
   },
-  messageContainer: {
-    position: "relative",
-    bottom: 0,
-    left: 110,
-    right: 10,
-  },
-  message: {
-    fontSize: 18,
-    fontWeight: "600",
-    margin: 5,
-  },
   check: {
     backgroundColor: "#6ac46a",
+    width: 15,
+    height: 15,
     borderRadius: 50,
+    textAlign: "center",
+    alignItems: "center",
     padding: 2,
   },
   nonCheck: {
@@ -134,7 +126,15 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     padding: 2,
   },
-
+  messageContainer: {
+    position: "relative",
+    left: "50%",
+  },
+  message: {
+    fontSize: 18,
+    fontWeight: "600",
+    margin: 5,
+  },
   liked: {
     backgroundColor: "#e5685c",
     borderRadius: 50,

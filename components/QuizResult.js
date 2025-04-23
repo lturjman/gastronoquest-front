@@ -3,6 +3,7 @@ import QuizResultChart from "./QuizResultChart";
 import CustomButton from "./ui-kit/CustomButton";
 import LottieView from "lottie-react-native";
 
+// Composant pour afficher les résultats du quizz
 export default function QuizResult({
   correctAnswersNumber,
   totalQuestionsNumber,
@@ -65,7 +66,6 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   scoreContainer: {
-    backgroundColor: "#e5685c",
     width: "50%",
     aspectRatio: 1,
     borderRadius: "50%",
