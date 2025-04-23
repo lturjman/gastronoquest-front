@@ -42,14 +42,16 @@ const levelIcons = {
   "Chêne centenaire": "🌳",
 };
 
+// Fonction pour récupérer le niveau selon les kg de CO2 économisés
 const getUserLevel = (co2) => {
-  if (co2 >= 100) return "Chêne centenaire";
+  if (co2 > 100) return "Chêne centenaire";
   if (co2 >= 75) return "Grand arbre";
   if (co2 >= 50) return "Arbre fruitier";
   if (co2 >= 20) return "Petit arbuste";
   return "Jeune pousse";
 };
 
+// Niveaux + seuils pour progression
 const levelThresholds = [
   { level: "jeune pousse", icon: "🌱", co2: 10 },
   { level: "Petit arbuste", icon: "🪴", co2: 20 },
@@ -58,103 +60,97 @@ const levelThresholds = [
   { level: "Chêne centenaire", icon: "🌳", co2: 100 },
 ];
 
+// Fonction pour trouver le prochain niveau et combien il reste pour l'atteindre
 const getNextLevelInfo = (co2) => {
   for (let i = 0; i < levelThresholds.length; i++) {
+    // On parcourt tous les paliers définis dans levelThresholds
     if (co2 < levelThresholds[i].co2) {
+      // Si le CO2 actuel est inférieur à celui du palier courant
       return {
-        nextLevel: levelThresholds[i].level,
+        nextLevel: levelThresholds[i].level, // On retourne un objet contenant :
         icon: levelThresholds[i].icon,
-        remaining: levelThresholds[i].co2 - co2,
+        remaining: levelThresholds[i].co2 - co2, // le nombre de kg restants pour y arriver
       };
     }
   }
-  return null;
 };
 
+// Calcule le pourcentage d'avancement vers le prochain niveau
 const getProgressPercentage = (co2) => {
-  let previous = 0;
+  let previous = 0; // Valeur seuil du niveau précédent (initialisé à 0)
   for (let i = 0; i < levelThresholds.length; i++) {
     if (co2 < levelThresholds[i].co2) {
-      const currentThreshold = levelThresholds[i].co2;
+      // Si l'utilisateur est en dessous de ce palier
+      const currentThreshold = levelThresholds[i].co2; // Valeur du palier actuel
       const percentage =
-        ((co2 - previous) / (currentThreshold - previous)) * 100;
-      return Math.min(Math.max(percentage, 0), 100);
+        ((co2 - previous) / (currentThreshold - previous)) * 100; // Calcul du pourcentage de progression dans l'intervalle [previous, currentThreshold]
+      return Math.min(Math.max(percentage, 0), 100); // On limite le pourcentage entre 0 et 100
     }
-    previous = levelThresholds[i].co2;
+    previous = levelThresholds[i].co2; // Sinon on passe au prochain palier, en mettant à jour la valeur de previous
   }
-  return 100; // max atteint
+  return 100; // Si tous les paliers sont dépassés, on retourne 100% (niveau max atteint)
 };
 
 export default function HomeScreen({ navigation }) {
-  const user = useSelector((state) => state.user.value);
+  const user = useSelector((state) => state.user.value); // Récupère l'utilisateur depuis Redux
+  const progress = useRef(new Animated.Value(0)).current; // Animation du niveau de progression
 
-  const progress = useRef(new Animated.Value(0)).current;
+  const totalSaved = user.totalSavedCo2; // total CO2 éonomisé par l'utilisateur
+  const userLevel = getUserLevel(totalSaved); // Niveau actuel
+  const levelIcon = levelIcons[userLevel]; // Icône correspondante
+  const nextLevelInfo = getNextLevelInfo(totalSaved); // Prochain niveau
+  const progressPercentage = getProgressPercentage(totalSaved); // Pourcentage progression
 
+  // À chaque changement de CO2 économisé, anime la barre de progression
   useEffect(() => {
-    const percentage = getProgressPercentage(user.totalSavedCo2);
     Animated.timing(progress, {
-      toValue: percentage,
+      toValue: progressPercentage,
       duration: 800,
       useNativeDriver: false,
     }).start();
-  }, [user.totalSavedCo2]);
+  }, [progressPercentage]);
 
+  // Contenu affiché si l'utilisateur est connecté
   const co2Container = (
     <>
-      <View style={styles.co2ntextContainer}>
-        <View style={styles.plantContainer}>
-          <View style={styles.co2Container}>
-            <View style={styles.co2Kpi}>
+      {/* Infos CO2 + icône de niveau */}
+      <View style={styles.co2Section}>
+        <View style={styles.roundWrapper}>
+          <View style={styles.co2StatsWrapper}>
+            <View style={styles.co2ValueText}>
               <Text style={{ fontSize: 26, fontWeight: "bold" }}>
-                {user.totalSavedCo2}
+                {totalSaved}
               </Text>
               <Text style={{ fontSize: 20, fontWeight: "700" }}>kg</Text>
             </View>
-            <Text
-              style={{
-                color: "#565656",
-                fontSize: 14,
-                width: "90%",
-                textAlign: "center",
-              }}
-            >
-              de CO2 économisés
-            </Text>
+            <Text style={styles.co2SavedTextInRound}>de CO2 économisés</Text>
           </View>
-          <Text
-            style={{
-              fontSize: 50,
-              textAlign: "center",
-              textAlignVertical: "center",
-              backgroundColor: "#DBF2D6",
-              paddingVertical: 15,
-              borderRadius: 150,
-              marginLeft: -15,
-              height: 130,
-              aspectRatio: 1,
-            }}
-          >
-            {" "}
-            {levelIcons[getUserLevel(user.totalSavedCo2)]}{" "}
-          </Text>
+
+          {/* Icone plante */}
+
+          <Text style={styles.bigPlantLevelIcon}>{levelIcon}</Text>
         </View>
 
-        <View style={styles.textContainer}>
-          <Text style={styles.text}>
+        {/* Texte explicatif */}
+
+        <View style={styles.descriptionContainer}>
+          <Text style={styles.description}>
             Relever des défis, collecter du CO₂ et faire grandir sa plante à
             chaque palier atteint !
           </Text>
         </View>
       </View>
 
-      <View style={styles.levelContainer}>
+      {/* Affichage du niveau + barre de progression */}
+
+      <View style={styles.levelLabelSection}>
         <View style={{ flexDirection: "row", gap: 5 }}>
-          <Text style={styles.levelText}>
-            <Text>Niveau :</Text>
-            {levelIcons[getUserLevel(user.totalSavedCo2)]}{" "}
-            {getUserLevel(user.totalSavedCo2)}
+          <Text style={styles.levelLabel}>
+            Niveau : {levelIcon} {userLevel}
           </Text>
         </View>
+
+        {/* Barre animée */}
 
         <View style={styles.progressBarBackground}>
           <Animated.View
@@ -169,24 +165,30 @@ export default function HomeScreen({ navigation }) {
             ]}
           />
         </View>
-        {(() => {
-          const next = getNextLevelInfo(user.totalSavedCo2);
-          if (next) {
-            return (
-              <Text
-                style={{ fontSize: 14, color: "#565656", textAlign: "center" }}
-              >
-                Plus que {next.remaining}kg pour atteindre {next.nextLevel}{" "}
-                {next.icon}
-              </Text>
-            );
+
+        {/* Message pour prochain niveau */}
+        {nextLevelInfo && (
+          <Text style={styles.nextLevelLabel}>
+            Plus que {nextLevelInfo.remaining}kg pour atteindre{" "}
+            {nextLevelInfo.nextLevel} {nextLevelInfo.icon}
+          </Text>
+        )}
+      </View>
+
+      {/* Bouton vers l'historique */}
+
+      <View style={{ width: "90%" }}>
+        <CustomButton
+          title={"Historique de quêtes"}
+          onPress={() =>
+            navigation.navigate("User", { screen: "HistoryScreen" })
           }
-          return null;
-        })()}
+        />
       </View>
     </>
   );
 
+  // Contenu si l'utilisateur n'est pas connecté
   const connectionContainer = (
     <View style={{ width: "90%", gap: 20 }}>
       <Text style={{ textAlign: "center", fontWeight: "600" }}>
@@ -201,6 +203,8 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Carrousel d'actus */}
+
       <View style={styles.carousel}>
         <SwiperFlatList
           autoplay
@@ -231,6 +235,8 @@ export default function HomeScreen({ navigation }) {
           )}
         />
       </View>
+
+      {/* Deux boutons : quiz + recherche */}
       <View style={styles.btnContainer}>
         <View style={styles.btn}>
           <CustomButton
@@ -248,6 +254,9 @@ export default function HomeScreen({ navigation }) {
           />
         </View>
       </View>
+
+      {/* Progression ou connexion selon état utilisateur */}
+
       <View style={styles.progressCard}>
         {user.token ? co2Container : connectionContainer}
       </View>
@@ -263,6 +272,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
   },
 
+  //CARROUSEL
   carousel: { height: height * 0.2, width: "90%" },
   carouselImg: {
     width: width * 0.9,
@@ -285,6 +295,8 @@ const styles = StyleSheet.create({
     color: "white",
     marginBottom: 10,
   },
+
+  //BOUTONS QUIZ + RECHERCHER
   btnContainer: {
     flexDirection: "row",
     width: "90%",
@@ -297,6 +309,7 @@ const styles = StyleSheet.create({
     width: "48%",
     height: "100%",
   },
+  // CARD DE PROGESSION COMPLÈTE
   progressCard: {
     backgroundColor: "#FFFFFF",
     borderRadius: 10,
@@ -313,10 +326,16 @@ const styles = StyleSheet.create({
     minHeight: 350,
     height: height * 0.55,
   },
-  plantContainer: {
+
+  co2Section: {
+    alignItems: "center",
+    gap: 20,
+  },
+  // alignement horizontal des deux ronds (C02 + plante)
+  roundWrapper: {
     flexDirection: "row",
   },
-  co2Container: {
+  co2StatsWrapper: {
     borderColor: "#6AC46A",
     borderWidth: 2,
     borderRadius: 75,
@@ -327,36 +346,61 @@ const styles = StyleSheet.create({
     gap: 2,
     padding: 20,
   },
-  co2ntextContainer: {
-    alignItems: "center",
-    gap: 20,
+
+  co2ValueText: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: 3,
   },
-  text: {
+  co2SavedTextInRound: {
+    color: "#565656",
+    fontSize: 14,
+    width: "90%",
+    textAlign: "center",
+  },
+
+  // icon de la grande plante à faire pousser (icon niveau actuel)
+  bigPlantLevelIcon: {
+    fontSize: 50,
+    textAlign: "center",
+    textAlignVertical: "center",
+    backgroundColor: "#DBF2D6",
+    paddingVertical: 15,
+    borderRadius: 150,
+    marginLeft: -15,
+    height: 130,
+    aspectRatio: 1,
+  },
+  // encars gris de description
+  description: {
     fontSize: 13,
     color: "#333333",
     textAlign: "center",
   },
-  textContainer: {
+  descriptionContainer: {
     backgroundColor: "#E0E0E0",
     borderRadius: 10,
     padding: 10,
   },
-  levelText: {
+
+  // Niveau actuel
+  levelLabelSection: {
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 13,
+  },
+  levelLabel: {
     fontSize: 20,
     fontWeight: "bold",
     color: "#333333",
     textAlign: "center",
   },
-  co2Kpi: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    gap: 3,
+  nextLevelLabel: {
+    fontSize: 14,
+    color: "#565656",
+    textAlign: "center",
   },
-  levelContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 13,
-  },
+  // BAR DE PROGRESSION DYNAMIQUE
   progressBarBackground: {
     width: 200,
     height: 10,
@@ -365,7 +409,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginTop: 5,
   },
-
   progressBarFill: {
     height: "100%",
     backgroundColor: "#6AC46A",
