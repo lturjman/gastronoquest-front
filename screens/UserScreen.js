@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
 import { useDispatch, useSelector } from "react-redux";
 import { removeUser } from "../reducers/user";
@@ -28,14 +28,14 @@ export default function UserScreen({ navigation }) {
         <View style={styles.circleUser}>
           <UserRound size={40} color={"#173e19"} />
         </View>
-        <Text style={styles.name}>{user.username}</Text>
+        <Text style={styles.name}>{name}</Text>
       </View>
 
       <View style={styles.userContainer}>
         <View style={styles.infoContainer}>
           <Mail size={15} color={"#173e19"} />
           <Text style={styles.infoTitle}> Email : </Text>{" "}
-          <Text style={styles.info}>{email}</Text>
+          <Text style={styles.info}> {email}</Text>
         </View>
         <View style={styles.infoContainer}>
           <Bookmark size={15} color={"#173e19"} />
