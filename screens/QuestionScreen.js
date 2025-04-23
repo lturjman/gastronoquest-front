@@ -19,7 +19,15 @@ export default function QuestionScreen({ navigation }) {
         <QuizResult
           correctAnswersNumber={quiz.correctAnswers}
           totalQuestionsNumber={10}
-          onPress={() => handleSubmitQuiz(dispatch, navigation, user.token, quiz.quizData._id, quiz.correctAnswers)}
+          onPress={() =>
+            handleSubmitQuiz(
+              dispatch,
+              navigation,
+              user.token,
+              quiz.quizData._id,
+              quiz.correctAnswers
+            )
+          }
         />
       ) : (
         <QuizQuestion quiz={quiz} />
@@ -32,5 +40,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F9F9F9",
-  }
+  },
 });

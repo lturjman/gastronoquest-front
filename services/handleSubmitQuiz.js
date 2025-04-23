@@ -1,19 +1,24 @@
 import { saveGuestQuiz } from "../reducers/guest";
 
-export const handleSubmitQuiz = async (dispatch, navigation, token, quizId, score) => {
-
+export const handleSubmitQuiz = async (
+  dispatch,
+  navigation,
+  token,
+  quizId,
+  score
+) => {
   // Si 70% de bonnes réponses, la série est réussie
   const passed = score >= 7;
 
   // Si l'utilisateur n'est pas connecté
-  if (token === null) {
+  if (!token || token === null) {
     console.log("Utilisateur pas connecté");
     // Sauvegarde du résultat dans le reducer guest
     const quizResult = {
       quizId,
       score,
       passed,
-      passedAt: Date.now()
+      passedAt: Date.now(),
     };
     dispatch(saveGuestQuiz(quizResult));
     // Redirection vers la page EnterScreen
@@ -32,7 +37,7 @@ export const handleSubmitQuiz = async (dispatch, navigation, token, quizId, scor
     );
 
     const data = await response.json();
-    
+
     // Si l'ajout s'est bien passé
     if (data.result) {
       // Redirection vers la page QuizScreen
@@ -40,7 +45,6 @@ export const handleSubmitQuiz = async (dispatch, navigation, token, quizId, scor
     } else {
       throw new Error("Failed to save quiz result");
     }
-
   } catch (error) {
     console.error(error);
   }
