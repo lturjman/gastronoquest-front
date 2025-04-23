@@ -15,6 +15,8 @@ export default function UserScreen({ navigation }) {
   const level = user.level.currentLevel.level;
   const levelIcon = user.level.currentLevel.icon;
 
+  console.log(user);
+
   const handleLogout = () => {
     dispatch(removeUser()); // Réinitialise les informations de l'utilisateur
     navigation.navigate("Home"); // Redirige vers l'écran de connexion
@@ -41,9 +43,7 @@ export default function UserScreen({ navigation }) {
           <Bookmark size={15} color={"#173e19"} />
 
           <Text style={styles.infoTitle}> Niveau : </Text>
-          <Text style={styles.info}>
-            {level} {levelIcon}
-          </Text>
+          <Text style={styles.info}>{`${level} ${levelIcon}`}</Text>
         </View>
       </View>
 
