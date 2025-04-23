@@ -9,25 +9,25 @@ import {
   ImageBackground,
 } from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
-import { Animated } from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
 import { useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useEffect, useRef } from "react";
+import HomeCo2Container from "../components/HomeCo2Container";
 
 const news = [
   {
-    title: "Comment épaissir une sauce ?",
-    url: "https://www.cuisineaz.com/articles/comment-epaissir-une-sauce-10235.aspx",
+    title:
+      "Les légumineuses, une solution pour l’agriculture, la santé et l’environnement",
+    url: "https://www.rfi.fr/fr/podcasts/reportage-france/20250226-les-l%C3%A9gumineuses-une-solution-pour-l-agriculture-la-sant%C3%A9-et-l-environnement",
     imageUrl:
-      "https://img.cuisineaz.com/1200x675/2013/12/20/i107529-sauce-roquefort.webp",
+      "https://s.rfi.fr/media/display/f72840ae-f46a-11ef-97ec-005056bf30b7/w:980/p:16x9/GettyImages-2198849515.webp",
   },
   {
-    title: "What is Fairtrade?",
-    url: "https://www.fairtrade.net/en/why-fairtrade/what-we-do/what-is-fairtrade.html",
+    title: "L’intelligence artificielle au secours du gaspillage alimentaire",
+    url: "https://www.ladepeche.fr/2025/04/22/lintelligence-artificielle-au-secours-du-gaspillage-alimentaire-12651967.php",
     imageUrl:
-      "https://www.fairtrade.net/content/dam/fairtrade/global/what-is-fairtrade/Karen%20Roses%2C%20Ravine%20Roses%20Kenya%202020_edited.jpg/_jcr_content/renditions/21x9_1920w.webp",
+      "https://images.ladepeche.fr/api/v1/images/view/6807bd47eaea538c260a92b7/large/image.jpg?v=1",
   },
 ];
 
@@ -35,89 +35,6 @@ const { width, height } = Dimensions.get("window");
 
 export default function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value); // Récupère l'utilisateur depuis Redux
-  const progress = useRef(new Animated.Value(0)).current; // Animation du niveau de progression
-
-  const totalSaved = user.totalSavedCo2;
-  const userLevel = user.level.currentLevel.level;
-  const levelIcon = user.level.currentLevel.icon;
-  const nextLevelInfo = user.level.nextLevel;
-  const progressPercentage = user.level.progressPercentage;
-
-  // À chaque changement de CO2 économisé, anime la barre de progression
-  useEffect(() => {
-    Animated.timing(progress, {
-      toValue: progressPercentage,
-      duration: 800,
-      useNativeDriver: false,
-    }).start();
-  }, [progressPercentage]);
-
-  // Contenu affiché si l'utilisateur est connecté
-  const co2Container = (
-    <>
-      {/* Infos CO2 + icône de niveau */}
-      <View style={styles.co2Section}>
-        <View style={styles.roundWrapper}>
-          <View style={styles.co2StatsWrapper}>
-            <View style={styles.co2ValueText}>
-              <Text style={{ fontSize: 26, fontWeight: "bold" }}>
-                {totalSaved}
-              </Text>
-              <Text style={{ fontSize: 20, fontWeight: "700" }}>kg</Text>
-            </View>
-            <Text style={styles.co2SavedTextInRound}>de CO2 économisés</Text>
-          </View>
-
-          {/* Icone plante */}
-
-          <Text style={styles.bigPlantLevelIcon}>{levelIcon}</Text>
-        </View>
-
-        {/* Texte explicatif */}
-
-        <View style={styles.descriptionContainer}>
-          <Text style={styles.description}>
-            Relever des défis, collecter du CO₂ et faire grandir sa plante à
-            chaque palier atteint !
-          </Text>
-        </View>
-      </View>
-
-      {/* Affichage du niveau + barre de progression */}
-
-      <View style={styles.levelLabelSection}>
-        <View style={{ flexDirection: "row", gap: 5 }}>
-          <Text style={styles.levelLabel}>
-            Niveau : {levelIcon} {userLevel}
-          </Text>
-        </View>
-
-        {/* Barre animée */}
-
-        <View style={styles.progressBarBackground}>
-          <Animated.View
-            style={[
-              styles.progressBarFill,
-              {
-                width: progress.interpolate({
-                  inputRange: [0, 100],
-                  outputRange: ["0%", "100%"],
-                }),
-              },
-            ]}
-          />
-        </View>
-
-        {/* Message pour prochain niveau */}
-        {nextLevelInfo && (
-          <Text style={styles.nextLevelLabel}>
-            Plus que {nextLevelInfo.remaining}kg pour atteindre{" "}
-            {nextLevelInfo.nextLevel} {nextLevelInfo.icon}
-          </Text>
-        )}
-      </View>
-    </>
-  );
 
   // Contenu si l'utilisateur n'est pas connecté
   const connectionContainer = (
@@ -144,8 +61,10 @@ export default function HomeScreen({ navigation }) {
           showPagination
           paginationStyleItem={{ height: 8, width: 8 }}
           data={news}
+          keyExtractor={(item) => item.url}
           renderItem={({ item }) => (
             <ImageBackground
+              key={item.url}
               source={{ uri: item.imageUrl }}
               style={styles.carouselImg}
               imageStyle={{ borderRadius: 10 }}
@@ -187,7 +106,7 @@ export default function HomeScreen({ navigation }) {
       {/* Progression ou connexion selon état utilisateur */}
 
       <View style={styles.progressCard}>
-        {user.token ? co2Container : connectionContainer}
+        {user.token ? <HomeCo2Container user={user} /> : connectionContainer}
       </View>
     </SafeAreaView>
   );
@@ -254,93 +173,5 @@ const styles = StyleSheet.create({
     padding: 20,
     minHeight: 350,
     height: height * 0.55,
-  },
-
-  co2Section: {
-    alignItems: "center",
-    gap: 20,
-  },
-  // alignement horizontal des deux ronds (C02 + plante)
-  roundWrapper: {
-    flexDirection: "row",
-  },
-  co2StatsWrapper: {
-    borderColor: "#6AC46A",
-    borderWidth: 2,
-    borderRadius: 75,
-    aspectRatio: 1,
-    height: 130,
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 2,
-    padding: 20,
-  },
-
-  co2ValueText: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    gap: 3,
-  },
-  co2SavedTextInRound: {
-    color: "#565656",
-    fontSize: 14,
-    width: "90%",
-    textAlign: "center",
-  },
-
-  // icon de la grande plante à faire pousser (icon niveau actuel)
-  bigPlantLevelIcon: {
-    fontSize: 50,
-    textAlign: "center",
-    textAlignVertical: "center",
-    backgroundColor: "#DBF2D6",
-    paddingVertical: 15,
-    borderRadius: 150,
-    marginLeft: -15,
-    height: 130,
-    aspectRatio: 1,
-  },
-  // encars gris de description
-  description: {
-    fontSize: 13,
-    color: "#333333",
-    textAlign: "center",
-  },
-  descriptionContainer: {
-    backgroundColor: "#E0E0E0",
-    borderRadius: 10,
-    padding: 10,
-  },
-
-  // Niveau actuel
-  levelLabelSection: {
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 13,
-  },
-  levelLabel: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333333",
-    textAlign: "center",
-  },
-  nextLevelLabel: {
-    fontSize: 14,
-    color: "#565656",
-    textAlign: "center",
-  },
-  // BAR DE PROGRESSION DYNAMIQUE
-  progressBarBackground: {
-    width: 200,
-    height: 10,
-    backgroundColor: "#e0e0e0",
-    borderRadius: 10,
-    overflow: "hidden",
-    marginTop: 5,
-  },
-  progressBarFill: {
-    height: "100%",
-    backgroundColor: "#6AC46A",
-    borderRadius: 10,
   },
 });
