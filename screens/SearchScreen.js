@@ -224,8 +224,8 @@ export default function SearchScreen() {
 
       // Affichage des résultats sur la carte
 
+      // Un résultat
       if (result && restaurants.length === 1) {
-        // Un résultat
         console.log("1 résultat");
 
         mapRef.current &&
@@ -240,8 +240,8 @@ export default function SearchScreen() {
           );
       }
 
+      // Plusieurs résultats
       if (result && restaurants.length > 1) {
-        // Plusieurs résultats
         console.log("Plusieurs résultats");
 
         mapRef.current &&
@@ -323,6 +323,7 @@ export default function SearchScreen() {
       }
     })();
 
+    // #todo
     return () => {
       setCardVisible(false);
     };

@@ -5,73 +5,55 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import HistoryCard from "../components/HistoryCard";
-import { useState, useEffect, useCallback, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { ArrowLeft } from "lucide-react-native";
-import { useFocusEffect } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import HistoryCard from "../components/HistoryCard";
+import { useState, useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
+import { fetchHistory } from "../services/fetchHistory";
 
 export default function HistoryScreen({ navigation }) {
   const token = useSelector((state) => state.user.value.token);
-
   const [quests, setQuests] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1); // État pour la page actuelle
-  const questsPerPage = 3; // Nombre de quêtes à afficher par Page
-
-  const scrollViewRef = useRef(null); // prépare la référence du scrollView pour afficher le haut de la page lors du clic sur le bouton de pagination
-
-  const fetchQuests = async () => {
-    try {
-      const res = await fetch(
-        `${process.env.EXPO_PUBLIC_BACKEND_URL}/history`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            authorization: token,
-          },
-        }
-      );
-
-      const data = await res.json();
-      return data;
-    } catch (error) {
-      console.error("Erreur lors du chargement des quêtes", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchQuests().then((data) => {
-      if (data.result && data.data) {
-        // Tri des quêtes du plus récent au plus ancien
-        setQuests(data.data.reverse());
-      }
-    });
-  }, []);
-
   const hasQuest = quests && quests.length > 0;
 
-  // Pagination: Calcul des quêtes à afficher
-  const indexOfLastQuest = currentPage * questsPerPage; //calcule l'index de la dernière quête de la page actuelle
-  const indexOfFirstQuest = indexOfLastQuest - questsPerPage; //calcule l'index de la première quête de la page actuelle
-  const currentQuests = quests.slice(indexOfFirstQuest, indexOfLastQuest); //extrait les quêtes à afficher sur la page actuelle
+  const [currentPage, setCurrentPage] = useState(1);   // État pour la page actuelle
+  const questsPerPage = 3;   // Nombre de quêtes à afficher par Page
+  const scrollViewRef = useRef(null);   // prépare la référence du scrollView pour afficher le haut de la page lors du clic sur le bouton de pagination
 
-  // Fonction pour naviguer entre les pages
+  // Pagination : calcul des quêtes à afficher
+  const indexOfLastQuest = currentPage * questsPerPage;   // calcule l'index de la dernière quête de la page actuelle
+  const indexOfFirstQuest = indexOfLastQuest - questsPerPage;   // calcule l'index de la première quête de la page actuelle
+  const currentQuests = quests.slice(indexOfFirstQuest, indexOfLastQuest);   // extrait les quêtes à afficher sur la page actuelle
+
+  // Fonctions pour naviguer entre les pages
   const goToNextPage = () => {
-    //passe à la page suivante si la page actuelle n'affiche pas déjà les dernières quêtes.
+    // Passer à la page suivante si la page actuelle n'affiche pas déjà les dernières quêtes
     if (currentPage * questsPerPage < quests.length) {
       setCurrentPage(currentPage + 1);
-      scrollViewRef.current?.scrollTo({ y: 0, animated: true }); //fait défiler la vue vers le haut
+      scrollViewRef.current?.scrollTo({ y: 0, animated: true });   // fait défiler la vue vers le haut
     }
   };
 
   const goToPreviousPage = () => {
-    //revient à la page précédente si la page actuelle n'est pas la première.
+    // Revenir à la page précédente si la page actuelle n'est pas la première
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
-      scrollViewRef.current?.scrollTo({ y: 0, animated: true }); //fait défiler la vue vers le haut
+      scrollViewRef.current?.scrollTo({ y: 0, animated: true });   // fait défiler la vue vers le haut
     }
   };
+
+  // Récupération de l'historique à l'initialisation du composant
+  useEffect(() => {
+    fetchHistory()
+    .then((data) => {
+      if (data.result && data.data) {
+        // Tri des quêtes de la plus récente à la plus ancienne
+        setQuests(data.data.reverse());
+      }
+    })
+    .catch((error) => console.error(error));
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

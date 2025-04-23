@@ -36,6 +36,8 @@ const fetchLogin = async (email, password) => {
 };
 
 export default function LoginScreen({ navigation }) {
+  const dispatch = useDispatch();
+
   // States pour synchroniser les inputs
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -43,11 +45,11 @@ export default function LoginScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [errors, setErrors] = useState([]);
 
-  const dispatch = useDispatch();
 
   // Gérer la demande de connexion
-  const handleSubmit = () => {
+  const handleLogin = () => {
     const newErrors = [];
+    
     // Afficher la modale si email invalide
     if (!email || !isValidEmail(email)) {
       newErrors.push("Veuillez saisir un email valide");
@@ -95,7 +97,6 @@ export default function LoginScreen({ navigation }) {
       >
         <Modal animationType="slide" transparent={true} visible={modalVisible}>
           <ErrorModal
-            // errorMessage={errorMessage}
             errorMessage={errors.join("\n")}
             onPress={() => setModalVisible(false)}
           />
@@ -127,7 +128,7 @@ export default function LoginScreen({ navigation }) {
           />
         </View>
         <View>
-          <CustomButton title="Connexion" onPress={() => handleSubmit()} />
+          <CustomButton title="Connexion" onPress={() => handleLogin()} />
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>

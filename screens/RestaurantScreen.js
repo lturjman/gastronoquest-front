@@ -9,7 +9,6 @@ import {
   Linking,
   Pressable,
 } from "react-native";
-import { useRoute } from "@react-navigation/native";
 import {
   ArrowLeft,
   Heart,
@@ -19,15 +18,16 @@ import {
   Store,
   Euro,
 } from "lucide-react-native";
-import { useEffect, useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from "../components/ui-kit/CustomButton";
 import ChallengesCheckBox from "../components/ChallengesCheckbox";
+import { useRoute } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import { fetchGetChallenges } from "../services/fetchGetChallenges";
 import { handleFavorite } from "../services/handleFavorite";
 import { handleQuest } from "../services/handleQuest";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function RestaurantScreen({ navigation }) {
   const dispatch = useDispatch();

@@ -14,20 +14,21 @@ export default function WelcomeScreen({ navigation }) {
     <SafeAreaView style={{ flex: 1 }}>
       <ImageBackground
         source={require("../assets/welcomescreen-background.jpg")}
+        alt="Photo de restaurant"
         resizeMode="cover"
         style={styles.container}
       >
         <View style={styles.innerContainer}>
-          <View style={styles.inside}>
+          <View style={styles.content}>
             <Image
               source={require("../assets/logo-light.png")}
-              alt="Logo GastronoQuest"
+              alt="Logo"
               resizeMode="contain"
               style={styles.logo}
             />
             <Image
               source={require("../assets/gastronoquest-duo.png")}
-              alt="Logo GastronoQuest"
+              alt="GastronoQuest"
               resizeMode="contain"
               style={styles.title}
             />
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  inside: {
+  content: {
     height: "80%",
     width: "80%",
     alignItems: "center",

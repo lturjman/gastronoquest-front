@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, Image } from "react-native";
-import CustomButton from "../components/ui-kit/CustomButton";
 import { SafeAreaView } from "react-native-safe-area-context";
+import CustomButton from "../components/ui-kit/CustomButton";
 
 export default function EnterScreen({ navigation }) {
   return (
@@ -8,13 +8,13 @@ export default function EnterScreen({ navigation }) {
       <View style={styles.logoContainer}>
         <Image
           source={require("../assets/logo-dark.png")}
-          alt="Logo GastronoQuest"
+          alt="Logo"
           resizeMode="contain"
           style={styles.logo}
         />
         <Image
           source={require("../assets/gastronoquest-darkgreen.png")}
-          alt="Logo GastronoQuest"
+          alt="GastronoQuest"
           resizeMode="contain"
           style={styles.title}
         />
