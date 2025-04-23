@@ -105,13 +105,26 @@ const styles = StyleSheet.create({
   },
   checkItem: {
     flexDirection: "row",
-    alignItems: "center",
     margin: 4,
   },
   checkText: {
     marginLeft: 10,
     color: "#37474f",
     fontSize: 14,
+  },
+  check: {
+    backgroundColor: "#6ac46a",
+    width: 15,
+    height: 15,
+    borderRadius: 50,
+    textAlign: "center",
+    alignItems: "center",
+    padding: 2,
+  },
+  nonCheck: {
+    backgroundColor: "#e5685c",
+    borderRadius: 50,
+    padding: 2,
   },
   messageContainer: {
     position: "relative",
@@ -122,17 +135,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     margin: 5,
   },
-  check: {
-    backgroundColor: "#6ac46a",
-    borderRadius: 50,
-    padding: 2,
-  },
-  nonCheck: {
-    backgroundColor: "#e5685c",
-    borderRadius: 50,
-    padding: 2,
-  },
-
   liked: {
     backgroundColor: "#e5685c",
     borderRadius: 50,
