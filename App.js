@@ -1,4 +1,4 @@
-import { StyleSheet, StatusBar } from "react-native";
+import { StatusBar } from "react-native";
 import { House, Utensils, Brain, CircleUserRound } from "lucide-react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
@@ -23,19 +23,26 @@ import WelcomeScreen from "./screens/WelcomeScreen";
 
 // Imports pour le store redux
 import { Provider, useSelector } from "react-redux";
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import user from "./reducers/user";
 import quiz from "./reducers/quiz";
 import guest from "./reducers/guest";
 
+// Imports pour la persistance du store
+import { persistStore, persistReducer } from "redux-persist";
+import { PersistGate } from "redux-persist/integration/react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 // Configuration de la naviguation
-// Création de "groupes d'écrans" pour garder l'icône active sur des sous-écrans
+// Création de "groupes d'écrans" pour garder l'icône active (avec sa couleur vert clair) sur des sous-écrans
+// L'application est basée sur une nested naviguation, et la partie Tab navigation est découpée par groupe d'écrans pour la raison évoquée ci-dessus
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const SearchStack = createNativeStackNavigator();
 const QuizStack = createNativeStackNavigator();
 const UserStack = createNativeStackNavigator();
 
+// Groupe d'écrans lié à la recherche de restaurants
 const SearchStackScreens = () => (
   <SearchStack.Navigator screenOptions={{ headerShown: false }}>
     <SearchStack.Screen name="SearchScreen" component={SearchScreen} />
@@ -43,6 +50,7 @@ const SearchStackScreens = () => (
   </SearchStack.Navigator>
 );
 
+// Groupe d'écrans lié aux quizz
 const QuizStackScreens = () => (
   <QuizStack.Navigator screenOptions={{ headerShown: false }}>
     <QuizStack.Screen name="QuizScreen" component={QuizScreen} />
@@ -50,6 +58,7 @@ const QuizStackScreens = () => (
   </QuizStack.Navigator>
 );
 
+// Groupe d'écrans utilisateurs
 const UserStackScreens = () => (
   <UserStack.Navigator screenOptions={{ headerShown: false }}>
     <UserStack.Screen name="UserScreen" component={UserScreen} />
@@ -59,6 +68,7 @@ const UserStackScreens = () => (
   </UserStack.Navigator>
 );
 
+// Liste des écrans que l'on met dans la TabNavigator
 const TabNavigator = () => {
   const user = useSelector((state) => state.user.value);
   return (
@@ -89,6 +99,7 @@ const TabNavigator = () => {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Search" component={SearchStackScreens} />
       <Tab.Screen name="Quiz" component={QuizStackScreens} />
+      {/* Si l'utilisateur n'est pas connecté, le quatrième écran est enterScreen */}
       {user.token === null ? (
         <Tab.Screen
           name="Enter"
@@ -103,36 +114,43 @@ const TabNavigator = () => {
 };
 
 // Configuration du store redux
+// Les 3 reducers sont persistants pour éviter d'avoir un persistedReducer + un rootReducer (ce qui demanderait de personnaliser certains useSelector par la suite)
+const reducers = combineReducers({ user, quiz, guest });
+
+const persistConfig = {
+  key: "gastronoquest",
+  storage: AsyncStorage,
+};
+
 const store = configureStore({
-  reducer: { user, quiz, guest },
+  reducer: persistReducer(persistConfig, reducers),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }),
 });
+
+const persistor = persistStore(store);
 
 export default function App() {
   return (
     <Provider store={store}>
-      <SafeAreaProvider>
-        <StatusBar
-          backgroundColor="transparent"
-          translucent={true}
-          barStyle="dark-content"
-        />
-        <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="Welcome" component={WelcomeScreen} />
-            <Stack.Screen name="Register" component={RegisterScreen} />
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Enter" component={EnterScreen} />
-            <Stack.Screen name="TabNavigator" component={TabNavigator} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </SafeAreaProvider>
+      <PersistGate persistor={persistor}>
+        <SafeAreaProvider>
+          <StatusBar
+            backgroundColor="transparent"
+            translucent={true}
+            barStyle="dark-content"
+          />
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="Welcome" component={WelcomeScreen} />
+              <Stack.Screen name="Register" component={RegisterScreen} />
+              <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="Enter" component={EnterScreen} />
+              <Stack.Screen name="TabNavigator" component={TabNavigator} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </PersistGate>
     </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F9F9F9",
-  },
-});
