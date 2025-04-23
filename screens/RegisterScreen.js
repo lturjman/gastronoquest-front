@@ -12,18 +12,18 @@ import { useState } from "react";
 import ErrorModal from "../components/ErrorModal.js";
 import { isValidEmail } from "../utils/emailValidation.js";
 import { isValidPassword } from "../utils/passwordValidation.js";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { updateUser } from "../reducers/user.js";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const fetchRegister = async (username, email, password) => {
+const fetchRegister = async (username, email, password, guest) => {
   try {
     const response = await fetch(
       `${process.env.EXPO_PUBLIC_BACKEND_URL}/users/register`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify({ username, email, password, guest }),
       }
     );
 
@@ -35,6 +35,9 @@ const fetchRegister = async (username, email, password) => {
 };
 
 export default function RegisterScreen({ navigation }) {
+  const dispatch = useDispatch();
+  const guest = useSelector((state) => state.guest.value);
+
   // States pour synchroniser les inputs
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -42,8 +45,6 @@ export default function RegisterScreen({ navigation }) {
   // States pour afficher ou non les messages d'erreur de connexion
   const [modalVisible, setModalVisible] = useState(false);
   const [errors, setErrors] = useState([]);
-
-  const dispatch = useDispatch();
 
   // Gérer la demande d'inscription
   const handleSubmit = () => {
@@ -60,26 +61,14 @@ export default function RegisterScreen({ navigation }) {
         "Veuillez saisir un mot de passe contenant au moins 8 caractères, une majuscule, une minuscule et un caractère spécial"
       );
     }
-
     if (newErrors.length > 0) {
       setErrors(newErrors);
       setModalVisible(true);
       return;
     }
-    const handleApiErrors = (responseError) => {
-      const apiErrors = [];
-
-      if (responseError === "Email already exists") {
-        apiErrors.push("Cette adresse email est déjà utilisée");
-      } else {
-        apiErrors.push("Une erreur est survenue lors de l'inscription");
-      }
-
-      return apiErrors;
-    };
 
     // Appel de la fonction pour fetch vers le back
-    fetchRegister(username, email, password).then((response) => {
+    fetchRegister(username, email, password, guest).then((response) => {
       if (response.result) {
         // Envoi des données en réponse dans le store redux
         dispatch(updateUser(response.data));
@@ -93,52 +82,54 @@ export default function RegisterScreen({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      style={styles.container}
-    >
-      <Modal animationType="slide" transparent={true} visible={modalVisible}>
-        <ErrorModal
-          errorMessage={errors.join("\n")}
-          onPress={() => setModalVisible(false)}
-          visible={modalVisible}
-        />
-      </Modal>
-      <View style={styles.logoContainer}>
-        <Image
-          source={require("../assets/logo-dark.png")}
-          alt="Logo GastronoQuest"
-          resizeMode="contain"
-          style={styles.logo}
-        />
-        <Image
-          source={require("../assets/gastronoquest-darkgreen.png")}
-          alt="Logo GastronoQuest"
-          resizeMode="contain"
-          style={styles.title}
-        />
-      </View>
-      <View>
-        <CustomInput
-          placeholder="Nom d'utilisateur"
-          type="username"
-          onChangeText={(value) => setUsername(value)}
-        />
-        <CustomInput
-          placeholder="Email"
-          type="email"
-          onChangeText={(value) => setEmail(value)}
-        />
-        <CustomInput
-          placeholder="Mot de passe"
-          password={true}
-          onChangeText={(value) => setPassword(value)}
-        />
-      </View>
-      <View>
-        <CustomButton title="Inscription" onPress={() => handleSubmit()} />
-      </View>
-    </KeyboardAvoidingView>
+    <SafeAreaView style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={styles.container}
+      >
+        <Modal animationType="slide" transparent={true} visible={modalVisible}>
+          <ErrorModal
+            errorMessage={errors.join("\n")}
+            onPress={() => setModalVisible(false)}
+            visible={modalVisible}
+          />
+        </Modal>
+        <View style={styles.logoContainer}>
+          <Image
+            source={require("../assets/logo-dark.png")}
+            alt="Logo GastronoQuest"
+            resizeMode="contain"
+            style={styles.logo}
+          />
+          <Image
+            source={require("../assets/gastronoquest-darkgreen.png")}
+            alt="Logo GastronoQuest"
+            resizeMode="contain"
+            style={styles.title}
+          />
+        </View>
+        <View>
+          <CustomInput
+            placeholder="Nom d'utilisateur"
+            type="username"
+            onChangeText={(value) => setUsername(value)}
+          />
+          <CustomInput
+            placeholder="Email"
+            type="email"
+            onChangeText={(value) => setEmail(value)}
+          />
+          <CustomInput
+            placeholder="Mot de passe"
+            password={true}
+            onChangeText={(value) => setPassword(value)}
+          />
+        </View>
+        <View>
+          <CustomButton title="Inscription" onPress={() => handleSubmit()} />
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
