@@ -21,12 +21,16 @@ export const GuestSlice = createSlice({
     saveGuestQuiz: (state, action) => {
       state.value.quiz = action.payload;
     },
+    clearGuestData: (state, action) => {
+      state.value = initialState;
+    },
   },
 });
 
 export const {
   saveGuestFavorite,
   saveGuestQuest,
-  saveGuestQuiz
+  saveGuestQuiz,
+  clearGuestData
 } = GuestSlice.actions;
 export default GuestSlice.reducer;

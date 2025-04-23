@@ -6,15 +6,16 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from "../components/ui-kit/CustomButton";
 import CustomInput from "../components/ui-kit/CustomInput";
-import { useState } from "react";
 import ErrorModal from "../components/ErrorModal.js";
+import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { isValidEmail } from "../utils/emailValidation.js";
 import { isValidPassword } from "../utils/passwordValidation.js";
-import { useSelector, useDispatch } from "react-redux";
 import { updateUser } from "../reducers/user.js";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { clearGuestData } from "../reducers/guest.js";
 
 const fetchRegister = async (username, email, password, guest) => {
   try {
@@ -72,6 +73,7 @@ export default function RegisterScreen({ navigation }) {
       if (response.result) {
         // Envoi des données en réponse dans le store redux
         dispatch(updateUser(response.data));
+        dispatch(clearGuestData());
         // Redirection vers la home
         navigation.navigate("TabNavigator");
       } else if (response.error) {
