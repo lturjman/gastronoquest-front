@@ -33,72 +33,15 @@ const news = [
 
 const { width, height } = Dimensions.get("window");
 
-const levelIcons = {
-  "Jeune pousse": "🌱",
-  "Petit arbuste": "🪴",
-  "Arbre fruitier": "🍎",
-  "Grand arbre": "🌴",
-  "Chêne centenaire": "🌳",
-};
-
-// Fonction pour récupérer le niveau selon les kg de CO2 économisés
-const getUserLevel = (co2) => {
-  if (co2 > 100) return "Chêne centenaire";
-  if (co2 >= 75) return "Grand arbre";
-  if (co2 >= 50) return "Arbre fruitier";
-  if (co2 >= 20) return "Petit arbuste";
-  return "Jeune pousse";
-};
-
-// Niveaux + seuils pour progression
-const levelThresholds = [
-  { level: "jeune pousse", icon: "🌱", co2: 10 },
-  { level: "Petit arbuste", icon: "🪴", co2: 20 },
-  { level: "Arbre fruitier", icon: "🍎", co2: 50 },
-  { level: "Grand arbre", icon: "🌴", co2: 75 },
-  { level: "Chêne centenaire", icon: "🌳", co2: 100 },
-];
-
-// Fonction pour trouver le prochain niveau et combien il reste pour l'atteindre
-const getNextLevelInfo = (co2) => {
-  for (let i = 0; i < levelThresholds.length; i++) {
-    // On parcourt tous les paliers définis dans levelThresholds
-    if (co2 < levelThresholds[i].co2) {
-      // Si le CO2 actuel est inférieur à celui du palier courant
-      return {
-        nextLevel: levelThresholds[i].level, // On retourne un objet contenant :
-        icon: levelThresholds[i].icon,
-        remaining: levelThresholds[i].co2 - co2, // le nombre de kg restants pour y arriver
-      };
-    }
-  }
-};
-
-// Calcule le pourcentage d'avancement vers le prochain niveau
-const getProgressPercentage = (co2) => {
-  let previous = 0; // Valeur seuil du niveau précédent (initialisé à 0)
-  for (let i = 0; i < levelThresholds.length; i++) {
-    if (co2 < levelThresholds[i].co2) {
-      // Si l'utilisateur est en dessous de ce palier
-      const currentThreshold = levelThresholds[i].co2; // Valeur du palier actuel
-      const percentage =
-        ((co2 - previous) / (currentThreshold - previous)) * 100; // Calcul du pourcentage de progression dans l'intervalle [previous, currentThreshold]
-      return Math.min(Math.max(percentage, 0), 100); // On limite le pourcentage entre 0 et 100
-    }
-    previous = levelThresholds[i].co2; // Sinon on passe au prochain palier, en mettant à jour la valeur de previous
-  }
-  return 100; // Si tous les paliers sont dépassés, on retourne 100% (niveau max atteint)
-};
-
 export default function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value); // Récupère l'utilisateur depuis Redux
   const progress = useRef(new Animated.Value(0)).current; // Animation du niveau de progression
 
-  const totalSaved = user.totalSavedCo2; // total CO2 éonomisé par l'utilisateur
-  const userLevel = getUserLevel(totalSaved); // Niveau actuel
-  const levelIcon = levelIcons[userLevel]; // Icône correspondante
-  const nextLevelInfo = getNextLevelInfo(totalSaved); // Prochain niveau
-  const progressPercentage = getProgressPercentage(totalSaved); // Pourcentage progression
+  const totalSaved = user.totalSavedCo2;
+  const userLevel = user.level.currentLevel.level;
+  const levelIcon = user.level.currentLevel.icon;
+  const nextLevelInfo = user.level.nextLevel;
+  const progressPercentage = user.level.progressPercentage;
 
   // À chaque changement de CO2 économisé, anime la barre de progression
   useEffect(() => {
@@ -172,17 +115,6 @@ export default function HomeScreen({ navigation }) {
             {nextLevelInfo.nextLevel} {nextLevelInfo.icon}
           </Text>
         )}
-      </View>
-
-      {/* Bouton vers l'historique */}
-
-      <View style={{ width: "90%" }}>
-        <CustomButton
-          title={"Historique de quêtes"}
-          onPress={() =>
-            navigation.navigate("User", { screen: "HistoryScreen" })
-          }
-        />
       </View>
     </>
   );
