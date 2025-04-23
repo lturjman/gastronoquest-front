@@ -1,16 +1,10 @@
 import { StyleSheet, Text, View, Image } from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
-
-// Pour tests
-import { useSelector } from "react-redux";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function EnterScreen({ navigation }) {
-  // Pour tests
-  const guest = useSelector((state) => state.guest.value);
-  console.log(guest);
-
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.logoContainer}>
         <Image
           source={require("../assets/logo-dark.png")}
@@ -26,9 +20,7 @@ export default function EnterScreen({ navigation }) {
         />
       </View>
       <Text style={styles.text}>
-
         🚀 Prêt·e à relever de nouveaux défis à nos côtés ?
-
       </Text>
       <View style={styles.btnContainer}>
         <View style={styles.loginRegisterBtnContainer}>
@@ -44,7 +36,7 @@ export default function EnterScreen({ navigation }) {
           />
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
