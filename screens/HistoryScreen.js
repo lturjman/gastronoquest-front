@@ -75,7 +75,9 @@ export default function HistoryScreen({ navigation }) {
       >
         <View style={styles.cardContainer}>
           {!hasQuest ? (
-            <Text style={styles.message}>Pas encore d’historique !</Text>
+            <Text style={styles.noHistoryMessage}>
+              Pas encore d’historique !
+            </Text>
           ) : (
             currentQuests.map(
               (
@@ -175,5 +177,11 @@ const styles = StyleSheet.create({
   },
   pageIndicator: {
     marginHorizontal: 10,
+  },
+  noHistoryMessage: {
+    fontSize: 16,
+    color: "#888",
+    textAlign: "center",
+    marginTop: 20,
   },
 });

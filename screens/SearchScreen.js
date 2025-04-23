@@ -418,9 +418,15 @@ export default function SearchScreen() {
                 gap: 20,
               }}
             >
-              {searchResults.map((restaurant, i) => (
-                <RestaurantCard key={i} restaurant={restaurant} />
-              ))}
+              {searchResults.length === 0 ? (
+                <Text style={styles.noSearchMessage}>
+                  Aucune recherche n'a encore été effectuée
+                </Text>
+              ) : (
+                searchResults.map((restaurant, i) => (
+                  <RestaurantCard key={i} restaurant={restaurant} />
+                ))
+              )}
             </ScrollView>
           )}
         </View>
@@ -689,5 +695,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginVertical: 10,
     fontSize: 16,
+  },
+  noSearchMessage: {
+    fontSize: 16,
+    color: "#888",
+    textAlign: "center",
+    marginTop: 20,
   },
 });
