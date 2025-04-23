@@ -115,9 +115,7 @@ const styles = StyleSheet.create({
   },
   messageContainer: {
     position: "relative",
-    bottom: 0,
-    left: 110,
-    right: 10,
+    left: "50%",
   },
   message: {
     fontSize: 18,

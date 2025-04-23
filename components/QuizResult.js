@@ -65,7 +65,6 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   scoreContainer: {
-    backgroundColor: "#e5685c",
     width: "50%",
     aspectRatio: 1,
     borderRadius: "50%",
