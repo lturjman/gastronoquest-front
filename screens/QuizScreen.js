@@ -152,7 +152,7 @@ export default function QuizScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Mes Quiz</Text>
+      <Text style={styles.title}>Mes Quizz</Text>
       <View style={styles.presentationContainer}>
         <View style={styles.seriesNumberContainer}>
           <Text style={{ fontSize: 20 }}>✅</Text>

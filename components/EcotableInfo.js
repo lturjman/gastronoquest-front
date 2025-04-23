@@ -5,6 +5,7 @@ import {
   Modal,
   TouchableWithoutFeedback,
   Linking,
+  Image,
 } from "react-native";
 
 import CustomButton from "../components/ui-kit/CustomButton";
@@ -20,6 +21,21 @@ export default function SearchScreen({ infoVisible, setInfoVisible }) {
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={() => {}}>
           <View style={styles.card}>
+            <Image
+              source={{
+                uri: "https://cdn.jaimelesstartups.fr/wp-content/uploads/2023/04/logo-ecotable-1500x300.png",
+              }}
+              style={{
+                width: "80%",
+                height: 30,
+                alignSelf: "center",
+                marginVertical: 15,
+              }}
+              resizeMode="contain"
+            />
+            <Text style={styles.title}>
+              Comment sont sélectionnés les restaurants ?
+            </Text>
             <Text style={styles.text}>
               Écotable est un label français qui valorise les restaurants
               engagés dans une démarche écoresponsable.
@@ -66,11 +82,11 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.5)",
   },
   card: {
-    width: "80%",
+    width: "90%",
+    gap: 5,
     backgroundColor: "white",
-    borderRadius: 20,
+    borderRadius: 10,
     padding: 25,
-    alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -79,6 +95,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 3,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "#1C3B1D",
   },
   text: {
     fontSize: 13,
@@ -90,5 +112,6 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
     marginBottom: 10,
     color: "#1C3B1D",
+    textAlign: "right",
   },
 });
