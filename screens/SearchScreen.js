@@ -7,6 +7,7 @@ import {
   ScrollView,
   Modal,
   TouchableWithoutFeedback,
+  StatusBar,
 } from "react-native";
 import {
   Search,
@@ -354,6 +355,8 @@ export default function SearchScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      {/* On force la statusbar sur cette page car sinon le composant MapView affecte sa couleur */}
+      <StatusBar backgroundColor="#F9F9F9" barStyle="dark-content" />
       <View style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
@@ -585,7 +588,7 @@ const styles = StyleSheet.create({
   },
   options: {
     width: "90%",
-    marginTop: 40,
+    marginTop: 20,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -624,7 +627,7 @@ const styles = StyleSheet.create({
   modalView: {
     height: Dimensions.get("window").height,
     width: Dimensions.get("window").width,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#F9F9F9",
   },
   scrollView: {
     width: Dimensions.get("window").width,
