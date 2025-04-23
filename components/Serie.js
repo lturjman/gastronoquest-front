@@ -59,14 +59,15 @@ const seriesLevelLabels = {
   Difficile: "🔴 Difficile",
 };
 
-const Serie = ({
+// Composant pour afficher un quizz
+function Serie({
   serieTitle,
   serieLevel,
   serieId,
   variant,
   score = 0,
   onPress,
-}) => {
+}) {
   // Récupération du style variable
   const selectedVariant = variantStyles[variant];
 
@@ -80,6 +81,7 @@ const Serie = ({
       return <Text style={styles.serieScore}>{score}/10</Text>;
     }
   };
+  // Pressable plutôt que touchableOpacity car moins d'effets de bord sur le scroll
   return (
     <Pressable
       style={[styles.serieContainer, selectedVariant.backgroundSerie]}
@@ -87,13 +89,16 @@ const Serie = ({
       onPress={() => onPress(serieId)}
     >
       <View style={styles.presentationSerieContainer}>
+        {/* Titre de la série */}
         <Text style={[styles.serieTitle, selectedVariant.fontColor]}>
           {serieTitle}
         </Text>
+        {/* Niveau de la série */}
         <Text style={selectedVariant.fontColor}>
           {seriesLevelLabels[serieLevel]}
         </Text>
       </View>
+      {/* Score ou icone si à faire/vérouillé */}
       <View
         style={[styles.scoreSerieContainer, selectedVariant.backgroundScore]}
       >
@@ -101,7 +106,7 @@ const Serie = ({
       </View>
     </Pressable>
   );
-};
+}
 
 const styles = StyleSheet.create({
   serieContainer: {

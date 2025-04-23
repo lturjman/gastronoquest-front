@@ -18,16 +18,17 @@ import { useEffect, useRef } from "react";
 
 const news = [
   {
-    title: "Comment épaissir une sauce ?",
-    url: "https://www.cuisineaz.com/articles/comment-epaissir-une-sauce-10235.aspx",
+    title:
+      "Les légumineuses, une solution pour l’agriculture, la santé et l’environnement",
+    url: "https://www.rfi.fr/fr/podcasts/reportage-france/20250226-les-l%C3%A9gumineuses-une-solution-pour-l-agriculture-la-sant%C3%A9-et-l-environnement",
     imageUrl:
-      "https://img.cuisineaz.com/1200x675/2013/12/20/i107529-sauce-roquefort.webp",
+      "https://s.rfi.fr/media/display/f72840ae-f46a-11ef-97ec-005056bf30b7/w:980/p:16x9/GettyImages-2198849515.webp",
   },
   {
-    title: "What is Fairtrade?",
-    url: "https://www.fairtrade.net/en/why-fairtrade/what-we-do/what-is-fairtrade.html",
+    title: "L’intelligence artificielle au secours du gaspillage alimentaire",
+    url: "https://www.ladepeche.fr/2025/04/22/lintelligence-artificielle-au-secours-du-gaspillage-alimentaire-12651967.php",
     imageUrl:
-      "https://www.fairtrade.net/content/dam/fairtrade/global/what-is-fairtrade/Karen%20Roses%2C%20Ravine%20Roses%20Kenya%202020_edited.jpg/_jcr_content/renditions/21x9_1920w.webp",
+      "https://images.ladepeche.fr/api/v1/images/view/6807bd47eaea538c260a92b7/large/image.jpg?v=1",
   },
 ];
 
@@ -212,8 +213,10 @@ export default function HomeScreen({ navigation }) {
           showPagination
           paginationStyleItem={{ height: 8, width: 8 }}
           data={news}
+          keyExtractor={(item) => item.url}
           renderItem={({ item }) => (
             <ImageBackground
+              key={item.url}
               source={{ uri: item.imageUrl }}
               style={styles.carouselImg}
               imageStyle={{ borderRadius: 10 }}

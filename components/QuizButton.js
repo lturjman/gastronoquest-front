@@ -22,7 +22,9 @@ const variantStyles = {
   },
 };
 
+// Composant bouton utilisé sur chaque question du quizz
 const QuizButton = ({ title, variant, textSize = 14, onPress }) => {
+  // Style variable en fonction de la sélection du bouton ou non
   const selectedVariant = variantStyles[variant];
 
   return (

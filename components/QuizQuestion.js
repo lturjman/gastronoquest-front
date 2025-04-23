@@ -7,6 +7,7 @@ import { useState } from "react";
 import CustomButton from "../components/ui-kit/CustomButton";
 import QuizButton from "../components/QuizButton";
 
+// Composant qui affiche une question du quizz
 export default function QuizQuestion({ quiz }) {
   const dispatch = useDispatch();
   // Récupérer les données de la question actuelle
@@ -17,18 +18,21 @@ export default function QuizQuestion({ quiz }) {
   // State pour stocker la réponse actuelle
   const [currentAnswer, setCurrentAnswer] = useState("");
 
-  // States pour l'affichage de la modale de résultat
+  // State pour l'affichage de la modale de résultat
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  // Fonction pour afficher la modal dès qu'une réponse est validée
+  // Fonction pour afficher la modale dès qu'une réponse est validée
   const handleSubmitAnswer = () => {
     currentAnswer && setIsModalVisible(!isModalVisible);
   };
 
   // Fonction pour passer à la question suivante une fois qu'on clique sur "question suivante" dans la modale
   const handleNextQuestion = (isGoodAnswer) => {
+    // Envoi de la réponse dans le store redux (passe automatiquement à la question suivante)
     isGoodAnswer ? dispatch(goodAnswer()) : dispatch(badAnswer());
+    // Réinisialisation de la réponse
     setCurrentAnswer("");
+    // Cacher la modale
     setIsModalVisible(!isModalVisible);
   };
 

@@ -1,7 +1,8 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-const ProgressBar = ({ currentNumber, total }) => {
+// Composant barre de progression affichée dans le quizz
+function ProgressBar({ currentNumber, total }) {
   const steps = [];
 
   for (let i = 1; i <= total; i++) {
@@ -16,7 +17,7 @@ const ProgressBar = ({ currentNumber, total }) => {
   }
 
   return <View style={styles.ProgressBarContainer}>{steps}</View>;
-};
+}
 
 const styles = StyleSheet.create({
   ProgressBarContainer: {
