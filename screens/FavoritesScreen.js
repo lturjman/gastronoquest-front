@@ -5,13 +5,11 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ArrowLeft } from "lucide-react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
 import RestaurantCard from "../components/ui-kit/RestaurantCard";
-import { SafeAreaView } from "react-native-safe-area-context";
-
 import { useSelector } from "react-redux";
-
-import { ArrowLeft } from "lucide-react-native";
 
 export default function FavoritesScreen({ navigation }) {
   const favorites = useSelector((state) => state.user.value.favorites);

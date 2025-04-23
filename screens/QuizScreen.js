@@ -6,14 +6,13 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Serie from "../components/Serie";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { updateQuiz } from "../reducers/quiz";
 import { fetchGetQuizResults } from "../services/quizResultsServices";
 import { useFocusEffect } from "@react-navigation/native";
-import { useCallback } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 // Fonction pour récupérer les quizz depuis le backend
 const fetchQuiz = async () => {
