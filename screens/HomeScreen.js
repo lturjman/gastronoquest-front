@@ -183,14 +183,6 @@ export default function HomeScreen({ navigation }) {
           return null;
         })()}
       </View>
-      <View style={{ width: "90%" }}>
-        <CustomButton
-          title={"Historique de quêtes"}
-          onPress={() =>
-            navigation.navigate("User", { screen: "HistoryScreen" })
-          }
-        />
-      </View>
     </>
   );
 
