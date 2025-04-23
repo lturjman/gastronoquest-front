@@ -82,10 +82,14 @@ export default function HomeCo2Container({ user }) {
 
         {/* Message pour prochain niveau */}
         {nextLevelInfo && (
-          <Text style={styles.nextLevelLabel}>
-            Plus que {nextLevelInfo.remaining}kg pour atteindre{" "}
-            {nextLevelInfo.nextLevel} {nextLevelInfo.icon}
-          </Text>
+          <View>
+            <Text style={styles.nextLevelLabel}>
+              Plus que {nextLevelInfo.remaining}kg{" "}
+            </Text>
+            <Text style={styles.nextLevelLabel}>
+              pour atteindre {nextLevelInfo.nextLevel} {nextLevelInfo.icon}
+            </Text>
+          </View>
         )}
       </View>
     </>

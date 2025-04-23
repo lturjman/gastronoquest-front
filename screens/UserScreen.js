@@ -1,11 +1,19 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { removeUser } from "../reducers/user";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { UserRound, Mail, Bookmark } from "lucide-react-native";
 
 export default function UserScreen({ navigation }) {
   const dispatch = useDispatch();
+
+  const user = useSelector((state) => state.user.value);
+
+  const name = user.username;
+  const email = user.email;
+  const level = user.level.currentLevel.level;
+  const levelIcon = user.level.currentLevel.icon;
 
   const handleLogout = () => {
     dispatch(removeUser()); // Réinitialise les informations de l'utilisateur
@@ -15,6 +23,30 @@ export default function UserScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}> Mes informations</Text>
+
+      <View style={styles.header}>
+        <View style={styles.circleUser}>
+          <UserRound size={40} color={"#173e19"} />
+        </View>
+        <Text style={styles.name}>{user.username}</Text>
+      </View>
+
+      <View style={styles.userContainer}>
+        <View style={styles.infoContainer}>
+          <Mail size={15} color={"#173e19"} />
+          <Text style={styles.infoTitle}> Email : </Text>{" "}
+          <Text style={styles.info}>{email}</Text>
+        </View>
+        <View style={styles.infoContainer}>
+          <Bookmark size={15} color={"#173e19"} />
+
+          <Text style={styles.infoTitle}> Niveau : </Text>
+          <Text style={styles.info}>
+            {level} {levelIcon}
+          </Text>
+        </View>
+      </View>
+
       <View style={styles.buttonContainer}>
         <View style={styles.customContainer}>
           <CustomButton
@@ -31,6 +63,7 @@ export default function UserScreen({ navigation }) {
           />
         </View>
       </View>
+
       <View style={styles.logoutContainer}>
         <CustomButton
           title={"⬅️  Se déconnecter"}
@@ -47,6 +80,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F9F9F9",
     alignItems: "center",
+    gap: 10,
   },
   title: {
     maxWidth: "100%",
@@ -55,14 +89,60 @@ const styles = StyleSheet.create({
     margin: 20,
     textAlign: "center",
   },
+  circleUser: {
+    borderColor: "#6AC46A",
+    borderWidth: 2,
+    borderRadius: 50,
+    aspectRatio: 1,
+    height: 75,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 2,
+    padding: 20,
+  },
+  header: {
+    alignItems: "center",
+  },
+  name: {
+    fontSize: 22,
+    fontWeight: "bold",
+  },
   buttonContainer: {
     width: "90%",
   },
   customContainer: {
     alignItems: "center",
     justifyContent: "center",
-    gap: 20,
+    gap: 10,
   },
+  userContainer: {
+    width: "90%",
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  infoContainer: {
+    flexDirection: "row",
+    textAlign: "center",
+    alignItems: "center",
+  },
+  infoTitle: {
+    fontSize: 14,
+    fontWeight: "bold",
+    padding: 2,
+  },
+  info: {
+    fontSize: 14,
+  },
+
   logoutContainer: {
     position: "absolute",
     bottom: 20,
