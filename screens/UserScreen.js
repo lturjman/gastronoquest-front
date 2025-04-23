@@ -3,7 +3,7 @@ import CustomButton from "../components/ui-kit/CustomButton";
 import { useDispatch, useSelector } from "react-redux";
 import { removeUser } from "../reducers/user";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { UserRound, Mail, Bookmark } from "lucide-react-native";
+import { UserRound, Mail, Star } from "lucide-react-native";
 
 export default function UserScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -34,16 +34,22 @@ export default function UserScreen({ navigation }) {
       </View>
 
       <View style={styles.userContainer}>
-        <View style={styles.infoContainer}>
-          <Mail size={15} color={"#173e19"} />
-          <Text style={styles.infoTitle}> Email : </Text>{" "}
-          <Text style={styles.info}> {email}</Text>
-        </View>
-        <View style={styles.infoContainer}>
-          <Bookmark size={15} color={"#173e19"} />
+        <View style={styles.infoSection}>
+          <View style={styles.infoContainer}>
+            <Mail size={15} color={"#173e19"} />
+            <Text>
+              <Text style={styles.infoTitle}> Email : </Text>{" "}
+              <Text style={styles.info}> {email}</Text>
+            </Text>
+          </View>
 
-          <Text style={styles.infoTitle}> Niveau : </Text>
-          <Text style={styles.info}>{`${level} ${levelIcon}`}</Text>
+          <View style={styles.infoContainer}>
+            <Star size={15} color={"#173e19"} />
+            <Text>
+              <Text style={styles.infoTitle}> Niveau : </Text>
+              <Text style={styles.info}>{`${level} ${levelIcon}`}</Text>
+            </Text>
+          </View>
         </View>
       </View>
 
@@ -131,13 +137,14 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     flexDirection: "row",
-    textAlign: "center",
     alignItems: "center",
+  },
+  infoSection: {
+    gap: 5,
   },
   infoTitle: {
     fontSize: 14,
     fontWeight: "bold",
-    padding: 2,
   },
   info: {
     fontSize: 14,
