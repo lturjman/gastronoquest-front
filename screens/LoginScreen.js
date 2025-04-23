@@ -88,52 +88,57 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      style={styles.container}
-    >
-      <Modal animationType="slide" transparent={true} visible={modalVisible}>
-        <ErrorModal
-          // errorMessage={errorMessage}
-          errorMessage={errors.join("\n")}
-          onPress={() => setModalVisible(false)}
-        />
-      </Modal>
-      <View style={styles.logoContainer}>
-        <Image
-          source={require("../assets/logo-dark.png")}
-          alt="Logo GastronoQuest"
-          resizeMode="contain"
-          style={styles.logo}
-        />
-        <Image
-          source={require("../assets/gastronoquest-darkgreen.png")}
-          alt="Logo GastronoQuest"
-          resizeMode="contain"
-          style={styles.title}
-        />
-      </View>
-      <View>
-        <CustomInput
-          placeholder="Email"
-          type="email"
-          onChangeText={(value) => setEmail(value)}
-        />
-        <CustomInput
-          placeholder="Mot de passe"
-          password={true}
-          onChangeText={(value) => setPassword(value)}
-        />
-      </View>
-      <View>
-        <CustomButton title="Connexion" onPress={() => handleSubmit()} />
-      </View>
-    </KeyboardAvoidingView>
+    <SafeAreaView style={styles.screenContainer}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={styles.mainContainer}
+      >
+        <Modal animationType="slide" transparent={true} visible={modalVisible}>
+          <ErrorModal
+            // errorMessage={errorMessage}
+            errorMessage={errors.join("\n")}
+            onPress={() => setModalVisible(false)}
+          />
+        </Modal>
+        <View style={styles.logoContainer}>
+          <Image
+            source={require("../assets/logo-dark.png")}
+            alt="Logo GastronoQuest"
+            resizeMode="contain"
+            style={styles.logo}
+          />
+          <Image
+            source={require("../assets/gastronoquest-darkgreen.png")}
+            alt="Logo GastronoQuest"
+            resizeMode="contain"
+            style={styles.title}
+          />
+        </View>
+        <View>
+          <CustomInput
+            placeholder="Email"
+            type="email"
+            onChangeText={(value) => setEmail(value)}
+          />
+          <CustomInput
+            placeholder="Mot de passe"
+            password={true}
+            onChangeText={(value) => setPassword(value)}
+          />
+        </View>
+        <View>
+          <CustomButton title="Connexion" onPress={() => handleSubmit()} />
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  screenContainer: {
+    flex: 1,
+  },
+  mainContainer: {
     flex: 1,
     backgroundColor: "#F9F9F9",
     alignItems: "center",
