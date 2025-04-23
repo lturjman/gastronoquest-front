@@ -21,7 +21,7 @@ export const UserSlice = createSlice({
       state.value = action.payload;
     },
     removeUser: (state) => {
-      state.value = { username: null, email: null, token: null };
+      state.value = initialState;
     },
     addFavorite: (state, action) => {
       state.value.favorites.push(action.payload);
@@ -34,6 +34,9 @@ export const UserSlice = createSlice({
     addSavedCo2: (state, action) => {
       state.value.totalSavedCo2 = action.payload;
     },
+    updateUserLevel: (state, action) => {
+      state.value.level = action.payload;
+    }
   },
 });
 
@@ -43,5 +46,6 @@ export const {
   removeFavorite,
   addFavorite,
   addSavedCo2,
+  updateUserLevel
 } = UserSlice.actions;
 export default UserSlice.reducer;

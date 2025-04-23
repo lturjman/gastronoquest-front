@@ -1,5 +1,6 @@
 import { saveGuestQuest } from "../reducers/guest";
 import { addSavedCo2 } from "../reducers/user";
+import { updateUserLevel } from "../reducers/user";
 
 export const handleQuest = async (dispatch, navigation, token, restaurantId, achievedChallenges) => {
   // Transformation de la liste de challenges pour ne garder que les id
@@ -44,6 +45,7 @@ export const handleQuest = async (dispatch, navigation, token, restaurantId, ach
     if (data.result) {
       // Si le fetch est réussi, on ajoute le CO2 économisé dans le store et redirection vers la home
       dispatch(addSavedCo2(data.totalSavedCo2));
+      dispatch(updateUserLevel(data.level));
       return;
     } else {
       throw new Error("Failed to save new quest");
