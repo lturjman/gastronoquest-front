@@ -2,16 +2,22 @@ import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { Check } from "lucide-react-native";
 
+// Composant pour lister les quêtes à réaliser sur la page d'un restaurant
 export default function CheckBox({ options, checkedValues, onChange }) {
+  // Récupération des quêtes cochées dans le composant parent
   let updatedCheckedValues = [...checkedValues];
 
+  // Lorsqu'on appuie sur une checkbox
   const handlePress = (checked, option) => {
+    // Si c'était coché, on retire de la liste
     if (checked) {
       updatedCheckedValues = updatedCheckedValues.filter(
         (checkedValue) => checkedValue._id !== option._id
       );
+      // On retourne la liste actualisée
       return onChange(updatedCheckedValues);
     }
+    // Si pas coché, on ajoute à la liste et on retourne la liste actualisée au parent
     updatedCheckedValues.push(option);
     onChange(updatedCheckedValues);
   };
