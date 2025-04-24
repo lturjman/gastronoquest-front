@@ -2,7 +2,7 @@ import { saveGuestQuest } from "../reducers/guest";
 import { addSavedCo2 } from "../reducers/user";
 import { updateUserLevel } from "../reducers/user";
 
-export const handleQuest = async (dispatch, navigation, token, restaurantId, achievedChallenges) => {
+export const handleQuest = async (dispatch, token, restaurantId, achievedChallenges) => {
   // Transformation de la liste de challenges pour ne garder que les id
   const achievedChallengesId = achievedChallenges.map(
     (achievedChallenge) => achievedChallenge._id
@@ -13,13 +13,11 @@ export const handleQuest = async (dispatch, navigation, token, restaurantId, ach
     console.log("Utilisateur pas connecté");
     const quest = {
       restaurant: restaurantId,
+      date: new Date(),
       achievedChallenges: achievedChallengesId,
-      date: Date.now()
     };
     dispatch(saveGuestQuest(quest));
-    console.log("dispatched");
-    return navigation.navigate("UserScreen", { screen: "EnterScreen" });
-    console.log("did not return");
+    return;
   }
 
   // Si l'utilisateur est connecté

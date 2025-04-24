@@ -18,22 +18,13 @@ import { updateUser } from "../reducers/user.js";
 import { clearGuestData } from "../reducers/guest.js";
 
 const fetchRegister = async (username, email, password, guest) => {
-  console.log(guest);
-
-  if (guest) console.log("guest truthy");
-  if (guest.favorite) console.log("favorite truthy:", guest.favorite);
-  if (guest.quest) console.log("quest truthy:", guest.quest);
-  if (guest.quiz) console.log("quiz truthy:", guest.quiz);
-
-  let reqBody = { username, email, password };
-  if (guest.favorite) reqBody.favorite = guest.favorite;
-  if (guest.quest) reqBody.quest = guest.quest;
-  if (guest.quiz) reqBody.quiz = guest.quiz;
-
-  console.log(reqBody);
-
-  /*
   try {
+    let reqBody = { username, email, password };
+    if (guest.favorite) reqBody.favorite = guest.favorite;
+    if (guest.quest) reqBody.quest = guest.quest;
+    if (guest.quiz) reqBody.quiz = guest.quiz;
+    console.log("body:", reqBody);
+    
     const response = await fetch(
       `${process.env.EXPO_PUBLIC_BACKEND_URL}/users/register`,
       {
@@ -43,12 +34,11 @@ const fetchRegister = async (username, email, password, guest) => {
       }
     );
 
-    const data = await response.json();
-    return data;
+    return await response.json();
+
   } catch (error) {
     console.error(error);
   }
-    */
 };
 
 export default function RegisterScreen({ navigation }) {
@@ -78,19 +68,17 @@ export default function RegisterScreen({ navigation }) {
         "Veuillez saisir un mot de passe contenant au moins 8 caractères, une majuscule, une minuscule et un caractère spécial"
       );
     }
-    /*
+    
     if (newErrors.length > 0) {
       setErrors(newErrors);
       setModalVisible(true);
       return;
     }
-      */
-
-    
+       
     // Appel de la fonction pour fetch vers le back
     fetchRegister(username, email, password, guest).then((response) => {
       if (response.result) {
-        // Envoi des données en réponse dans le store redux
+        // Envoi des données en réponse dans le store Redux
         dispatch(updateUser(response.data));
         dispatch(clearGuestData());
         // Redirection vers la home
