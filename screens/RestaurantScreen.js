@@ -19,12 +19,12 @@ import {
   Euro,
 } from "lucide-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import CustomButton from "../components/ui-kit/CustomButton";
-import ChallengesCheckBox from "../components/ChallengesCheckbox";
 import { useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
+import CustomButton from "../components/ui-kit/CustomButton";
+import ChallengesCheckBox from "../components/ChallengesCheckbox";
 import { fetchGetChallenges } from "../services/fetchGetChallenges";
 import { handleFavorite } from "../services/handleFavorite";
 import { handleQuest } from "../services/handleQuest";
@@ -58,18 +58,14 @@ export default function RestaurantScreen({ navigation }) {
   // Récupération des données utilisateur
   const user = useSelector((state) => state.user.value);
 
-  const isFavorite = user && user.favorites
-    ? user.favorites.some((favorite) => favorite._id === restaurantId)
-    : false;
+  const isFavorite =
+    user && user.favorites
+      ? user.favorites.some((favorite) => favorite._id === restaurantId)
+      : false;
 
   const handleChallenges = async () => {
     try {
-      await handleQuest(
-        dispatch,
-        user.token,
-        restaurantId,
-        selectedChallenges
-      );
+      await handleQuest(dispatch, user.token, restaurantId, selectedChallenges);
       setSelectedChallenges([]);
       console.log("Handled quest");
       if (!user.token || user.token === null) {

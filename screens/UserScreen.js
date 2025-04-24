@@ -1,9 +1,10 @@
 import { StyleSheet, Text, View } from "react-native";
-import CustomButton from "../components/ui-kit/CustomButton";
 import { useDispatch, useSelector } from "react-redux";
-import { removeUser } from "../reducers/user";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { UserRound, Mail, Star } from "lucide-react-native";
+
+import CustomButton from "../components/ui-kit/CustomButton";
+import { removeUser } from "../reducers/user";
 import { clearGuestData } from "../reducers/guest";
 
 export default function UserScreen({ navigation }) {

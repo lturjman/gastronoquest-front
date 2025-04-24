@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
 import CustomButton from "../components/ui-kit/CustomButton";
 
 export default function EnterScreen({ navigation }) {

@@ -7,10 +7,11 @@ import {
 } from "react-native";
 import { ArrowLeft } from "lucide-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import HistoryCard from "../components/HistoryCard";
 import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
+
 import { fetchHistory } from "../services/fetchHistory";
+import HistoryCard from "../components/HistoryCard";
 
 export default function HistoryScreen({ navigation }) {
   const token = useSelector((state) => state.user.value.token);

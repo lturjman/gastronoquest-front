@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector, useDispatch } from "react-redux";
+
 import QuizResult from "../components/QuizResult";
 import QuizQuestion from "../components/QuizQuestion";
 import { handleSubmitQuiz } from "../services/handleSubmitQuiz";
