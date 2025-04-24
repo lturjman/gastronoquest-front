@@ -8,6 +8,7 @@ const CustomInput = ({
   value,
   onChangeText,
   type = "text",
+  autoCapitalize = "sentences",
   password = false,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -26,6 +27,7 @@ const CustomInput = ({
         inputMode={type}
         secureTextEntry={password}
         value={value}
+        autoCapitalize={autoCapitalize}
         onChangeText={onChangeText}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)} // se défocus lorsqu'on clique ailleurs

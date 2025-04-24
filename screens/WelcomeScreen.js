@@ -5,14 +5,12 @@ import {
   View,
   ImageBackground,
   Image,
-  StatusBar,
 } from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
 
 export default function WelcomeScreen({ navigation }) {
   return (
     <View style={{ flex: 1 }}>
-      <StatusBar hidden={true} />
       <ImageBackground
         source={require("../assets/welcomescreen-background.jpg")}
         alt="Photo de restaurant"

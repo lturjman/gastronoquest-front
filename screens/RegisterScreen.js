@@ -119,6 +119,7 @@ export default function RegisterScreen({ navigation }) {
           <CustomInput
             placeholder="Email"
             type="email"
+            autoCapitalize="none"
             onChangeText={(value) => setEmail(value)}
           />
           <CustomInput

@@ -45,11 +45,10 @@ export default function LoginScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [errors, setErrors] = useState([]);
 
-
   // Gérer la demande de connexion
   const handleLogin = () => {
     const newErrors = [];
-    
+
     // Afficher la modale si email invalide
     if (!email || !isValidEmail(email)) {
       newErrors.push("Veuillez saisir un email valide");
@@ -119,6 +118,7 @@ export default function LoginScreen({ navigation }) {
           <CustomInput
             placeholder="Email"
             type="email"
+            autoCapitalize="none"
             onChangeText={(value) => setEmail(value)}
           />
           <CustomInput
