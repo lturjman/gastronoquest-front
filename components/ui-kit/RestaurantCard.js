@@ -15,9 +15,9 @@ export default function RestaurantCard({ restaurant }) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
-  const isFavorite = user.favorites.some(
-    (favorite) => favorite._id === restaurant._id
-  );
+  const isFavorite = user && user.favorites
+    ? user.favorites.some((favorite) => favorite._id === restaurant._id)
+    : false;
 
   const leaves = [];
   for (let i = 0; i < restaurant.score; i++) {
