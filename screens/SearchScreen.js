@@ -135,6 +135,14 @@ export default function SearchScreen() {
     if (selectPriceRangeRef.current) selectPriceRangeRef.current.reset();
   };
 
+  // Mettre à jour la région de la carte
+  const updateMapRegion = (region) => {
+    if (mapRef.current) mapRef.current.animateToRegion(region, ANIMATION_TIME);
+    setTimeout(() => {
+      setMapRegion(region);
+    }, ANIMATION_TIME);
+  };
+
   // Chercher des restaurants
   const fetchResults = async () => {
     // Indication qu'une recherche a été effectuée (fait apparaître le nombre de résultats)
@@ -186,8 +194,7 @@ export default function SearchScreen() {
       }
 
       // Affichage des résultats sur la carte
-      if (mapRef.current) mapRef.current.animateToRegion(region, ANIMATION_TIME);
-      else setMapRegion(region);
+      updateMapRegion(region);
 
       // Fermer la modale SearchFilters
       setFiltersVisible(false);
@@ -238,9 +245,8 @@ export default function SearchScreen() {
           }
 
           // Affichage de la région sur la carte
-          if (mapRef.current) mapRef.current.animateToRegion(region, ANIMATION_TIME);
-          else setMapRegion(region);
-
+          updateMapRegion(region);
+          
         } catch (error) {
           console.error(error);
         }
