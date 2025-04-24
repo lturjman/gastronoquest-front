@@ -37,7 +37,7 @@ export default function HomeCo2Container({ user }) {
               </Text>
               <Text style={{ fontSize: 20, fontWeight: "700" }}>kg</Text>
             </View>
-            <Text style={styles.co2SavedTextInRound}>de CO2 économisés</Text>
+            <Text style={styles.co2SavedTextInRound}>de CO₂ économisés</Text>
           </View>
 
           {/* Icone plante */}
