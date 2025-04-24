@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Check } from "lucide-react-native";
+
 import { formatDate } from "../utils/formatDate";
 
 export default function HistoryCard({

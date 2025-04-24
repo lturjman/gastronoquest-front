@@ -7,9 +7,10 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ArrowLeft } from "lucide-react-native";
+import { useSelector } from "react-redux";
+
 import CustomButton from "../components/ui-kit/CustomButton";
 import RestaurantCard from "../components/ui-kit/RestaurantCard";
-import { useSelector } from "react-redux";
 
 export default function FavoritesScreen({ navigation }) {
   const favorites = useSelector((state) => state.user.value.favorites);

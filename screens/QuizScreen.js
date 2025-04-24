@@ -7,27 +7,14 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Serie from "../components/Serie";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useCallback } from "react";
-import { updateQuiz } from "../reducers/quiz";
-import { fetchGetQuizResults } from "../services/quizResultsServices";
 import { useFocusEffect } from "@react-navigation/native";
 
-// Fonction pour récupérer les quizz depuis le backend
-const fetchQuiz = async () => {
-  try {
-    // Récupération des quiz
-    const response = await fetch(
-      `${process.env.EXPO_PUBLIC_BACKEND_URL}/quizzes`
-    );
-    const data = await response.json();
-
-    return data;
-  } catch (error) {
-    console.error(error);
-  }
-};
+import Serie from "../components/Serie";
+import { updateQuiz } from "../reducers/quiz";
+import { fetchGetQuizResults } from "../services/fetchQuizResult";
+import { fetchQuiz, fetchQuizById } from "../services/fetchQuiz";
 
 // Fonction pour transformer les quizz récupérer et débloquer uniquement le premier quizz
 const getQuizWithoutConnection = async () => {
@@ -91,21 +78,6 @@ const getQuizWithConnection = async (token) => {
     }
     return { _id, title, difficulty, quizNumber, status, score };
   });
-};
-
-// Fonction pour récupérer les données d'un quiz à partir d'un id
-const fetchQuizById = async (quizId) => {
-  try {
-    // Récupération des quizz
-    const response = await fetch(
-      `${process.env.EXPO_PUBLIC_BACKEND_URL}/quiz/${quizId}`
-    );
-    const data = await response.json();
-
-    return data;
-  } catch (error) {
-    console.error(error);
-  }
 };
 
 export default function QuizScreen({ navigation }) {

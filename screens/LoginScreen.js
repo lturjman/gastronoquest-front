@@ -6,34 +6,17 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import { updateUser } from "../reducers/user.js";
+import { isValidEmail } from "../utils/emailValidation.js";
+import { isValidPassword } from "../utils/passwordValidation.js";
+import { fetchLogin } from "../services/fetchUser.js";
 import CustomButton from "../components/ui-kit/CustomButton";
 import CustomInput from "../components/ui-kit/CustomInput";
 import ErrorModal from "../components/ErrorModal.js";
-import { useState } from "react";
-import { isValidEmail } from "../utils/emailValidation.js";
-import { isValidPassword } from "../utils/passwordValidation.js";
-import { useDispatch } from "react-redux";
-import { updateUser } from "../reducers/user.js";
-import { SafeAreaView } from "react-native-safe-area-context";
-
-// Fetch la route login du backend
-const fetchLogin = async (email, password) => {
-  try {
-    const response = await fetch(
-      `${process.env.EXPO_PUBLIC_BACKEND_URL}/users/login`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      }
-    );
-    const data = await response.json();
-    // Retourne le status de la réponse en plus pour ajuster les messages d'erreur en fonction
-    return { status: response.status, data };
-  } catch (error) {
-    console.error(error);
-  }
-};
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();

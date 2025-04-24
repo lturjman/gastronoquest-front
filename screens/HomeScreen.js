@@ -10,11 +10,11 @@ import {
   StatusBar,
 } from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
-import CustomButton from "../components/ui-kit/CustomButton";
 import { useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import HomeCo2Container from "../components/HomeCo2Container";
+import CustomButton from "../components/ui-kit/CustomButton";
 
 const news = [
   {

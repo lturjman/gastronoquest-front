@@ -6,6 +6,7 @@ import {
   ImageBackground,
   Image,
 } from "react-native";
+
 import CustomButton from "../components/ui-kit/CustomButton";
 
 export default function WelcomeScreen({ navigation }) {
