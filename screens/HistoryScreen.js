@@ -17,21 +17,21 @@ export default function HistoryScreen({ navigation }) {
   const [quests, setQuests] = useState([]);
   const hasQuest = quests && quests.length > 0;
 
-  const [currentPage, setCurrentPage] = useState(1);   // État pour la page actuelle
-  const questsPerPage = 3;   // Nombre de quêtes à afficher par Page
-  const scrollViewRef = useRef(null);   // prépare la référence du scrollView pour afficher le haut de la page lors du clic sur le bouton de pagination
+  const [currentPage, setCurrentPage] = useState(1); // État pour la page actuelle
+  const questsPerPage = 3; // Nombre de quêtes à afficher par Page
+  const scrollViewRef = useRef(null); // prépare la référence du scrollView pour afficher le haut de la page lors du clic sur le bouton de pagination
 
   // Pagination : calcul des quêtes à afficher
-  const indexOfLastQuest = currentPage * questsPerPage;   // calcule l'index de la dernière quête de la page actuelle
-  const indexOfFirstQuest = indexOfLastQuest - questsPerPage;   // calcule l'index de la première quête de la page actuelle
-  const currentQuests = quests.slice(indexOfFirstQuest, indexOfLastQuest);   // extrait les quêtes à afficher sur la page actuelle
+  const indexOfLastQuest = currentPage * questsPerPage; // calcule l'index de la dernière quête de la page actuelle
+  const indexOfFirstQuest = indexOfLastQuest - questsPerPage; // calcule l'index de la première quête de la page actuelle
+  const currentQuests = quests.slice(indexOfFirstQuest, indexOfLastQuest); // extrait les quêtes à afficher sur la page actuelle
 
   // Fonctions pour naviguer entre les pages
   const goToNextPage = () => {
     // Passer à la page suivante si la page actuelle n'affiche pas déjà les dernières quêtes
     if (currentPage * questsPerPage < quests.length) {
       setCurrentPage(currentPage + 1);
-      scrollViewRef.current?.scrollTo({ y: 0, animated: true });   // fait défiler la vue vers le haut
+      scrollViewRef.current?.scrollTo({ y: 0, animated: true }); // fait défiler la vue vers le haut
     }
   };
 
@@ -39,20 +39,20 @@ export default function HistoryScreen({ navigation }) {
     // Revenir à la page précédente si la page actuelle n'est pas la première
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
-      scrollViewRef.current?.scrollTo({ y: 0, animated: true });   // fait défiler la vue vers le haut
+      scrollViewRef.current?.scrollTo({ y: 0, animated: true }); // fait défiler la vue vers le haut
     }
   };
 
   // Récupération de l'historique à l'initialisation du composant
   useEffect(() => {
     fetchHistory(token)
-    .then((data) => {
-      if (data.result && data.data) {
-        // Tri des quêtes de la plus récente à la plus ancienne
-        setQuests(data.data.reverse());
-      }
-    })
-    .catch((error) => console.error(error));
+      .then((data) => {
+        if (data.result && data.data) {
+          // Tri des quêtes de la plus récente à la plus ancienne
+          setQuests(data.data.reverse());
+        }
+      })
+      .catch((error) => console.error(error));
   }, []);
 
   return (
