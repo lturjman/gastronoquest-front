@@ -66,14 +66,19 @@ export default function RestaurantScreen({ navigation }) {
     try {
       await handleQuest(
         dispatch,
-        navigation,
         user.token,
         restaurantId,
         selectedChallenges
       );
       setSelectedChallenges([]);
       console.log("Handled quest");
-      navigation.navigate("Home");
+      if (!user.token || user.token === null) {
+        console.log("Redirection vers EnterScreen");
+        navigation.navigate("Enter");
+      } else {
+        console.log("Redirection vers HomeScreen");
+        navigation.navigate("Home");
+      }
     } catch (error) {
       console.error(error);
     }

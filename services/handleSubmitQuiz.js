@@ -16,10 +16,10 @@ export const handleSubmitQuiz = async (
     console.log(quizId, score);
     // Sauvegarde du résultat dans le reducer guest
     const quizResult = {
-      quizId,
+      quiz: quizId,
       score,
       passed,
-      passedAt: Date.now(),
+      passedAt: new Date(),
     };
     dispatch(saveGuestQuiz(quizResult));
     // Redirection vers la page EnterScreen
