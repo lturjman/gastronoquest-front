@@ -185,11 +185,7 @@ export default function App() {
     <Provider store={store}>
       <PersistGate persistor={persistor}>
         <SafeAreaProvider>
-          <StatusBar
-            backgroundColor="transparent"
-            translucent={true}
-            barStyle="dark-content"
-          />
+          <StatusBar backgroundColor="transparent" translucent={true} />
           <NavigationContainer>
             <RootNavigator />
           </NavigationContainer>
