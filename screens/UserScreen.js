@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { removeUser } from "../reducers/user";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { UserRound, Mail, Star } from "lucide-react-native";
+import { clearGuestData } from "../reducers/guest";
 
 export default function UserScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -18,6 +19,7 @@ export default function UserScreen({ navigation }) {
   console.log(user);
 
   const handleLogout = () => {
+    dispatch(clearGuestData()); // Réinitialise le reducer Guest pour éviter des ajouts non souhaités par la suite
     dispatch(removeUser()); // Réinitialise les informations de l'utilisateur
     navigation.navigate("Home"); // Redirige vers l'écran de connexion
   };
