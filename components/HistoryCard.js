@@ -1,8 +1,8 @@
-import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Check } from "lucide-react-native";
+import { formatDate } from "../utils/formatDate";
 
-const HistoryCard = ({ restaurant, achievedChallenges, index, navigation }) => {
+export default function HistoryCard({ restaurant, achievedChallenges, index, date, navigation }) {
   const totalCo2 = (achievedChallenges ?? []).reduce(
     (acc, quest) => acc + (quest.savedCo2 ?? 0),
     0
@@ -24,12 +24,16 @@ const HistoryCard = ({ restaurant, achievedChallenges, index, navigation }) => {
         <View style={styles.imagePlaceholder}>
           <Image
             source={{ uri: restaurant.imageUrl }}
+            alt="Restaurant"
             style={styles.image}
             resizeMode="cover"
           />
         </View>
 
         <View style={styles.info}>
+
+          <Text style={{ fontSize: 14, color: "#37474f" }}>{formatDate(date)}</Text>
+
           <Text style={styles.co2}>
             <Text style={{ fontWeight: "bold", fontSize: 20 }}>
               {totalCo2.toFixed(2)}
@@ -54,13 +58,20 @@ const HistoryCard = ({ restaurant, achievedChallenges, index, navigation }) => {
   );
 };
 
+
+
+
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 1,
-    borderColor: "#cfd8dc",
+    backgroundColor: "#FFFFFF",
     borderRadius: 10,
-    padding: 10,
+    shadowColor: "#000000",
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 3,
     width: "90%",
+    padding: 10,
   },
   header: {
     flexDirection: "row",
@@ -76,7 +87,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "600",
     marginBottom: 10,
-    marginLeft: 8,
+    marginLeft: 3,
     color: "#263238",
   },
   content: {
@@ -95,22 +106,21 @@ const styles = StyleSheet.create({
   info: {
     flex: 1,
     justifyContent: "center",
-    padding: 5,
+    paddingLeft: 10,
     gap: 8,
   },
   co2: {
     fontSize: 16,
     color: "#263238",
-    marginLeft: 10,
   },
   checkItem: {
     flexDirection: "row",
-    margin: 4,
   },
   checkText: {
     marginLeft: 10,
     color: "#37474f",
     fontSize: 14,
+    flexShrink: 1
   },
   check: {
     backgroundColor: "#6ac46a",
@@ -120,6 +130,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     alignItems: "center",
     padding: 2,
+    marginTop: 3,
   },
   nonCheck: {
     backgroundColor: "#e5685c",
@@ -127,8 +138,7 @@ const styles = StyleSheet.create({
     padding: 2,
   },
   messageContainer: {
-    position: "relative",
-    left: "50%",
+    marginLeft: "auto",
   },
   message: {
     fontSize: 18,
@@ -146,5 +156,3 @@ const styles = StyleSheet.create({
     padding: 8,
   },
 });
-
-export default HistoryCard;

@@ -71,6 +71,7 @@ export default function HistoryScreen({ navigation }) {
         contentContainerStyle={{
           alignItems: "center",
           paddingBottom: 20,
+          paddingTop: 2,
         }}
       >
         <View style={styles.cardContainer}>
@@ -88,6 +89,7 @@ export default function HistoryScreen({ navigation }) {
                   key={index}
                   index={index}
                   restaurant={quest.restaurant}
+                  date={quest.date}
                   achievedChallenges={quest.achievedChallenges}
                   navigation={navigation}
                 />
