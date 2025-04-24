@@ -58,9 +58,9 @@ export default function RestaurantScreen({ navigation }) {
   // Récupération des données utilisateur
   const user = useSelector((state) => state.user.value);
 
-  const isFavorite = user.favorites.some(
-    (favorite) => favorite._id === restaurantId
-  );
+  const isFavorite = user && user.favorites
+    ? user.favorites.some((favorite) => favorite._id === restaurantId)
+    : false;
 
   const handleChallenges = async () => {
     try {

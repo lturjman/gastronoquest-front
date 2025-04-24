@@ -4,7 +4,7 @@ import { addFavorite, removeFavorite } from "../reducers/user";
 export const handleFavorite = async (dispatch, navigation, token, restaurant, restaurantId, isFavorite) => {
 
   // Si l'utilisateur n'est pas connecté
-  if (token === null) {
+  if (!token || token === null) {
     console.log("Utilisateur pas connecté");
     dispatch(saveGuestFavorite(restaurantId));
     return navigation.navigate("Enter");

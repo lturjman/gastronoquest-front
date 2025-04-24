@@ -13,6 +13,7 @@ export const handleSubmitQuiz = async (
   // Si l'utilisateur n'est pas connecté
   if (!token || token === null) {
     console.log("Utilisateur pas connecté");
+    console.log(quizId, score);
     // Sauvegarde du résultat dans le reducer guest
     const quizResult = {
       quizId,

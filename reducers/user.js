@@ -21,7 +21,7 @@ export const UserSlice = createSlice({
       state.value = action.payload;
     },
     removeUser: (state) => {
-      state.value = initialState;
+      state.value = initialState.value;
     },
     addFavorite: (state, action) => {
       state.value.favorites.push(action.payload);

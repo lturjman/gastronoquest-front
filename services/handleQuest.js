@@ -9,16 +9,21 @@ export const handleQuest = async (dispatch, navigation, token, restaurantId, ach
   );
 
   // Si l'utilisateur n'est pas connecté
-  if (token === null) {
+  if (!token || token === null) {
+    console.log("Utilisateur pas connecté");
     const quest = {
       restaurant: restaurantId,
-      achievedChallenges: achievedChallengesId
+      achievedChallenges: achievedChallengesId,
+      date: Date.now()
     };
     dispatch(saveGuestQuest(quest));
-    return navigation.navigate("Enter");
+    console.log("dispatched");
+    return navigation.navigate("UserScreen", { screen: "EnterScreen" });
+    console.log("did not return");
   }
 
   // Si l'utilisateur est connecté
+  console.log("Utilisateur connecté");
   try {
     // Envoi des défis
     const response = await fetch(
@@ -46,7 +51,6 @@ export const handleQuest = async (dispatch, navigation, token, restaurantId, ach
       // Si le fetch est réussi, on ajoute le CO2 économisé dans le store et redirection vers la home
       dispatch(addSavedCo2(data.totalSavedCo2));
       dispatch(updateUserLevel(data.level));
-      return;
     } else {
       throw new Error("Failed to save new quest");
     }

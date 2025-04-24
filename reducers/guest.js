@@ -2,9 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   value: {
-    favorite: null,
-    quest: null,
-    quiz: null,
+    favorite: undefined,
+    quest: undefined,
+    quiz: undefined,
   },
 };
 
@@ -22,7 +22,7 @@ export const GuestSlice = createSlice({
       state.value.quiz = action.payload;
     },
     clearGuestData: (state, action) => {
-      state.value = initialState;
+      state.value = initialState.value;
     },
   },
 });
