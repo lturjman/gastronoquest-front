@@ -37,6 +37,11 @@ const { width, height } = Dimensions.get("window");
 export default function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value); // Récupère l'utilisateur depuis Redux
 
+  useEffect(() => {
+    //passe la stylebar en dark
+    StatusBar.setBarStyle("dark-content");
+  }, []);
+
   // Contenu si l'utilisateur n'est pas connecté
   const connectionContainer = (
     <View style={{ width: "90%", gap: 20 }}>
@@ -50,13 +55,8 @@ export default function HomeScreen({ navigation }) {
     </View>
   );
 
-  useEffect(() => {
-    StatusBar.setBarStyle("dark-content");
-  }, []);
-
   return (
     <SafeAreaView style={styles.container}>
-      
       {/* Carrousel d'actus */}
       <View style={styles.carousel}>
         <SwiperFlatList
