@@ -45,7 +45,7 @@ export default function HistoryScreen({ navigation }) {
 
   // Récupération de l'historique à l'initialisation du composant
   useEffect(() => {
-    fetchHistory()
+    fetchHistory(token)
     .then((data) => {
       if (data.result && data.data) {
         // Tri des quêtes de la plus récente à la plus ancienne

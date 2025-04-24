@@ -1,4 +1,4 @@
-export const fetchHistory = async () => {
+export const fetchHistory = async (token) => {
   try {
     const response = await fetch(
       `${process.env.EXPO_PUBLIC_BACKEND_URL}/history`,
