@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
   },
   title: {
     maxWidth: "100%",
-    fontSize: 30,
+    fontSize: 23,
     fontWeight: "bold",
     margin: 10,
     textAlign: "center",

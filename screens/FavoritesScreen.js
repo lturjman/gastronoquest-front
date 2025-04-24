@@ -21,9 +21,9 @@ export default function FavoritesScreen({ navigation }) {
         <TouchableOpacity
           onPress={() => navigation.navigate("User", { screen: "UserScreen" })}
         >
-          <ArrowLeft color={"black"} size={23} />
+          <ArrowLeft color={"black"} size={25} />
         </TouchableOpacity>
-        <Text style={styles.title}> Mes Favoris</Text>
+        <Text style={styles.title}>Mes Favoris</Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   },
   title: {
     maxWidth: "100%",
-    fontSize: 30,
+    fontSize: 23,
     fontWeight: "bold",
     margin: 10,
     textAlign: "center",
