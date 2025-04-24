@@ -100,13 +100,14 @@ export default function RestaurantCard({ restaurant, onPress }) {
 const styles = StyleSheet.create({
   card: {
     zIndex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFFFF",
     borderRadius: 10,
-    shadowColor: "#000",
+    shadowColor: "#000000",
     shadowOpacity: 0.1,
     shadowRadius: 10,
     elevation: 3,
     padding: 20,
+    shadowOffset: { width: 4, height: 4 },
   },
   header: {
     width: "100%",
