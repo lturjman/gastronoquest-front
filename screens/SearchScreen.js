@@ -112,6 +112,10 @@ export default function SearchScreen() {
     setCardVisible(true);
   };
 
+  const hideRestaurantCard = () => {
+    setCardVisible(false);
+  };
+
   // Réinitialiser les filtres de recherche
   const resetFilters = () => {
     setSearchType("restaurant");
@@ -424,7 +428,11 @@ export default function SearchScreen() {
                 </Text>
               ) : (
                 searchResults.map((restaurant, i) => (
-                  <RestaurantCard key={i} restaurant={restaurant} />
+                  <RestaurantCard
+                    key={i}
+                    restaurant={restaurant}
+                    onPress={hideRestaurantCard}
+                  />
                 ))
               )}
             </ScrollView>
@@ -618,7 +626,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     color: "#173e19",
-    fontSize: 15
+    fontSize: 15,
   },
   results: {
     width: "100%",
