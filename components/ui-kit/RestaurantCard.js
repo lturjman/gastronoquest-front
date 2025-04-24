@@ -11,13 +11,14 @@ import { useNavigation } from "@react-navigation/native";
 
 import { handleFavorite } from "../../services/handleFavorite";
 
-export default function RestaurantCard({ restaurant }) {
+export default function RestaurantCard({ restaurant, onPress }) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
-  const isFavorite = user && user.favorites
-    ? user.favorites.some((favorite) => favorite._id === restaurant._id)
-    : false;
+  const isFavorite =
+    user && user.favorites
+      ? user.favorites.some((favorite) => favorite._id === restaurant._id)
+      : false;
 
   const leaves = [];
   for (let i = 0; i < restaurant.score; i++) {
@@ -31,12 +32,13 @@ export default function RestaurantCard({ restaurant }) {
         <View style={styles.header}>
           <TouchableOpacity
             style={{ flexShrink: 1 }}
-            onPress={() =>
+            onPress={() => {
+              onPress;
               navigation.navigate("Search", {
                 screen: "RestaurantScreen",
                 params: { restaurant },
-              })
-            }
+              });
+            }}
           >
             <Text style={styles.name}>{restaurant.name}</Text>
           </TouchableOpacity>
