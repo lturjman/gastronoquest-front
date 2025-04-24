@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,6 +7,7 @@ import {
   Linking,
   TouchableOpacity,
   ImageBackground,
+  StatusBar,
 } from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 import CustomButton from "../components/ui-kit/CustomButton";
@@ -48,6 +49,10 @@ export default function HomeScreen({ navigation }) {
       />
     </View>
   );
+
+  useEffect(() => {
+    StatusBar.setBarStyle("dark-content");
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
