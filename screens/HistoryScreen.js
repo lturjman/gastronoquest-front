@@ -61,7 +61,7 @@ export default function HistoryScreen({ navigation }) {
         <TouchableOpacity
           onPress={() => navigation.navigate("User", { screen: "UserScreen" })}
         >
-          <ArrowLeft color={"black"} size={23} />
+          <ArrowLeft color={"black"} size={25} />
         </TouchableOpacity>
         <Text style={styles.title}>Mon Historique</Text>
       </View>
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   },
   title: {
     maxWidth: "100%",
-    fontSize: 30,
+    fontSize: 23,
     fontWeight: "bold",
     margin: 10,
   },

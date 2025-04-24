@@ -58,18 +58,14 @@ export default function RestaurantScreen({ navigation }) {
   // Récupération des données utilisateur
   const user = useSelector((state) => state.user.value);
 
-  const isFavorite = user && user.favorites
-    ? user.favorites.some((favorite) => favorite._id === restaurantId)
-    : false;
+  const isFavorite =
+    user && user.favorites
+      ? user.favorites.some((favorite) => favorite._id === restaurantId)
+      : false;
 
   const handleChallenges = async () => {
     try {
-      await handleQuest(
-        dispatch,
-        user.token,
-        restaurantId,
-        selectedChallenges
-      );
+      await handleQuest(dispatch, user.token, restaurantId, selectedChallenges);
       setSelectedChallenges([]);
       console.log("Handled quest");
       if (!user.token || user.token === null) {
@@ -160,7 +156,7 @@ export default function RestaurantScreen({ navigation }) {
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <ArrowLeft color="black" size={25} />
           </TouchableOpacity>
-          <Text style={{ fontSize: 23, fontWeight: 500 }}>{name}</Text>
+          <Text style={{ fontSize: 23, fontWeight: "bold" }}>{name}</Text>
         </View>
         <Pressable
           onPress={() =>
