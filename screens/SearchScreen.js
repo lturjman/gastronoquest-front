@@ -32,7 +32,9 @@ import EcotableInfo from "../components/EcotableInfo";
 import SearchInputComponent from "../components/SearchInputComponent";
 import { getMapRegionForRadius } from "../utils/getMapRegionForRadius";
 import { getMapRegionForBounds } from "../utils/getMapRegionForBounds";
-import { getRoute } from "../services/getRoute";
+import { getRoute } from "../utils/getRoute";
+import { fetchRestaurants } from "../services/fetchRestaurants";
+import { fetchRestaurantsAroundUser } from "../services/fetchRestaurantsAroundUser";
 
 const badgesOptions = [
   "Bio",
@@ -83,7 +85,7 @@ const INITIAL_REGION = {
   longitude: 1.888334,
   latitudeDelta: 9.8,
   longitudeDelta: 14.8,
-};
+};   // Vue de la France
 
 export default function SearchScreen() {
   // Affichage et gestion des modales
@@ -114,6 +116,7 @@ export default function SearchScreen() {
     setCardVisible(true);
   };
 
+  // Cacher la RestaurantCard
   const hideRestaurantCard = () => {
     setCardVisible(false);
   };
@@ -132,104 +135,54 @@ export default function SearchScreen() {
     if (selectPriceRangeRef.current) selectPriceRangeRef.current.reset();
   };
 
-  // Recentrer la carte sur la région initiale
-  const resetMapRegion = () => {
-    const region = userLocation
-      ? {
-          latitude: userLocation.latitude,
-          longitude: userLocation.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        }
-      : INITIAL_REGION;
-
-    if (mapRef.current) mapRef.current.animateToRegion(region, ANIMATION_TIME);
-    else setMapRegion(region);
-  };
-
   // Chercher des restaurants
   const fetchResults = async () => {
-    console.log("fetchResults()");
-
-    // Indication qu'une recherche a été effectuée
+    // Indication qu'une recherche a été effectuée (fait apparaître le nombre de résultats)
     startedSearch === false && setStartedSearch(true);
 
     // Réinitialisation des résultats de potentielles recherches précédentes
     setSearchResults([]);
 
     // Return si aucun input et pas de géolocalisation
-    if (searchInput.length === 0 && userLocation === null) {
-      console.log("Return fetchResults : absence d'input et de géolocalisation");
-      return;
-    }
+    if (searchInput.length === 0 && userLocation === null) return;
 
-    // Définition de la route pour le fetch
+    // Définition de la route en fonction des paramètres de recherche
     const route = getRoute(searchInput, searchType, distance);
-    console.log("route:", route);
 
-    // Construction du req.body
-    const reqBody = {
-      input: searchInput.trim(),
-      badges,
-      types,
-      priceRange,
-      distance: distance.replace(" km", ""),
-    };
-    if (route === "geolocation") reqBody.geolocation = userLocation;
-    console.log("body:", reqBody);
-
-    // FETCH BACKEND
     try {
-      const response = await fetch(
-        process.env.EXPO_PUBLIC_BACKEND_URL + "/search/" + route,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(reqBody),
-        }
-      );
-      const data = await response.json();
+      const restaurants = await fetchRestaurants(route, searchInput, distance, badges, types, priceRange);
 
-      // Si aucun résultat
-      if (!data.result) {
-        console.log("Pas de résultats");
-
-        let region;
-        if (route !== "geolocation") {
-          resetMapRegion();
-        } else if (route === "geolocation" && distance !== "Lieu exact" && distance !== "") {
-          const radius = parseInt(distance.replace(" km", ""));
-          region = getMapRegionForRadius(userLocation.latitude, userLocation.longitude, radius);       
-        } else if (route === "geolocation") {
-          region = getMapRegionForRadius(userLocation.latitude, userLocation.longitude, 5);
-        }
-
-        if (mapRef.current) mapRef.current.animateToRegion(region, ANIMATION_TIME);
-        else setMapRegion(region);
-
-        return setFiltersVisible(false);
-      }
-
-      // Si un ou des résultats
-      const { restaurants, result } = data;
-      setSearchResults(restaurants);
+      // Préparation de la région à afficher sur la carte
       let region;
 
-      // Un seul résultat
-      if (result && restaurants.length === 1) {
-        console.log("1 résultat");
-        region = {
-          latitude: restaurants[0].coordinates.latitude,
-          longitude: restaurants[0].coordinates.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        };
-      }
-
-      // Plusieurs résultats
-      if (result && restaurants.length > 1) {
-        console.log("Plusieurs résultats");
-        region = getMapRegionForBounds(restaurants);
+      // Si aucun résultat
+      if (restaurants.length === 0) {
+        if (route !== "geolocation") {
+          // Centrer la carte sur la France
+          region = INITIAL_REGION;
+        } else if (route === "geolocation" && distance !== "Lieu exact" && distance !== "") {
+          // Centrer la carte sur la géolocalisation de l'utilisateur avec le bon radius
+          const radius = parseInt(distance.replace(" km", ""));
+          region = getMapRegionForRadius(userLocation.latitude, userLocation.longitude, radius);     
+        } else if (route === "geolocation") {
+          // Centrer la carte sur la géolocalisation de l'utilisateur (5 km de radius par défaut)
+          region = getMapRegionForRadius(userLocation.latitude, userLocation.longitude, 5);
+        }
+      } else {
+        // Si un ou plusieurs résultats
+        setSearchResults(restaurants);
+        if (restaurants.length === 1) {
+          // Un seul résultat = centrer sur le résultat          
+          region = {
+            latitude: restaurants[0].coordinates.latitude,
+            longitude: restaurants[0].coordinates.longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
+          };
+        } else if (restaurants.length > 1) {
+          // Plusieurs résultats = adopter une vue qui permet de visualiser tous les résultats
+          region = getMapRegionForBounds(restaurants);
+        }
       }
 
       // Affichage des résultats sur la carte
@@ -237,10 +190,10 @@ export default function SearchScreen() {
       else setMapRegion(region);
 
       // Fermer la modale SearchFilters
-      console.log("Fin de fetchResults()");
       setFiltersVisible(false);
+
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -259,28 +212,22 @@ export default function SearchScreen() {
         setUserLocation(location.coords);
 
         // Fetch les restaurants autour de l'utilisateur (5 km de radius)
+        console.log("Envoi de la requête au backend");
         try {
-          console.log("Envoi de la requête au backend");
-          const response = await fetch(
-            process.env.EXPO_PUBLIC_BACKEND_URL + "/search/geolocation",
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ geolocation: location, distance: 5 }),
-            }
-          );
-          const data = await response.json();
+          const restaurants = await fetchRestaurantsAroundUser(location);
 
-          // Affichage de la map en fonction des résultats
+          // Préparation de l'affichage de la carte en fonction des résultats
           let region;
-          if (data.result) {
+
+          if (restaurants.length > 0) {
             // Si restaurants trouvés
             console.log("Restaurants trouvés");
-            setSearchResults(data.restaurants);
+            setSearchResults(restaurants);
             setStartedSearch(true);
+            // Centrer sur l'utilisateur à une hauteur qui permet de voir les résultats
             region = getMapRegionForRadius(location.coords.latitude, location.coords.longitude, 5);
           } else {
-            // Si pas de restaurants trouvés
+            // Si pas de restaurants trouvés = centrer étroitement sur l'utilisateur
             console.log("Pas de restaurants trouvés");
             region = {
               latitude: location.coords.latitude,
@@ -290,10 +237,10 @@ export default function SearchScreen() {
             };
           }
 
-          // Affichage de la carte
+          // Affichage de la région sur la carte
           if (mapRef.current) mapRef.current.animateToRegion(region, ANIMATION_TIME);
           else setMapRegion(region);
-          
+
         } catch (error) {
           console.error(error);
         }
