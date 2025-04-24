@@ -118,6 +118,7 @@ export default function LoginScreen({ navigation }) {
           <CustomInput
             placeholder="Email"
             type="email"
+            autoCapitalize="none"
             onChangeText={(value) => setEmail(value)}
           />
           <CustomInput

@@ -5,7 +5,6 @@ import {
   View,
   ImageBackground,
   Image,
-  StatusBar,
 } from "react-native";
 import CustomButton from "../components/ui-kit/CustomButton";
 
