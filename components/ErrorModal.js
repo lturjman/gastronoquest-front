@@ -1,5 +1,4 @@
 import React from "react";
-
 import { View, Text, StyleSheet, Modal } from "react-native";
 
 import CustomButton from "./ui-kit/CustomButton";

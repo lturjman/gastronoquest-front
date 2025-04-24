@@ -1,9 +1,10 @@
 import { View, Text, StyleSheet } from "react-native";
-import QuestionResultModal from "./QuestionResultModal";
-import ProgressBar from "./ui-kit/ProgressBar";
 import { useDispatch } from "react-redux";
-import { badAnswer, goodAnswer } from "../reducers/quiz";
 import { useState } from "react";
+
+import { badAnswer, goodAnswer } from "../reducers/quiz";
+import ProgressBar from "./ui-kit/ProgressBar";
+import QuestionResultModal from "./QuestionResultModal";
 import CustomButton from "../components/ui-kit/CustomButton";
 import QuizButton from "../components/QuizButton";
 

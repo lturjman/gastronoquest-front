@@ -1,12 +1,6 @@
 import React from "react";
-import { StyleSheet, Text, View, Dimensions } from "react-native";
-
-import { Animated } from "react-native";
-import CustomButton from "../components/ui-kit/CustomButton";
-
+import { StyleSheet, Text, View, Animated } from "react-native";
 import { useEffect, useRef } from "react";
-
-const { width, height } = Dimensions.get("window");
 
 export default function HomeCo2Container({ user }) {
   const progress = useRef(new Animated.Value(0)).current; // Animation du niveau de progression

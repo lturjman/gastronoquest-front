@@ -1,7 +1,8 @@
 import { View, Text, StyleSheet } from "react-native";
+import LottieView from "lottie-react-native";
+
 import QuizResultChart from "./QuizResultChart";
 import CustomButton from "./ui-kit/CustomButton";
-import LottieView from "lottie-react-native";
 
 // Composant pour afficher les résultats du quizz
 export default function QuizResult({

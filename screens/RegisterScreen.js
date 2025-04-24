@@ -7,39 +7,17 @@ import {
   Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
 import CustomButton from "../components/ui-kit/CustomButton";
 import CustomInput from "../components/ui-kit/CustomInput";
 import ErrorModal from "../components/ErrorModal.js";
-import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { isValidEmail } from "../utils/emailValidation.js";
 import { isValidPassword } from "../utils/passwordValidation.js";
 import { updateUser } from "../reducers/user.js";
 import { clearGuestData } from "../reducers/guest.js";
-
-const fetchRegister = async (username, email, password, guest) => {
-  try {
-    let reqBody = { username, email, password };
-    if (guest.favorite) reqBody.favorite = guest.favorite;
-    if (guest.quest) reqBody.quest = guest.quest;
-    if (guest.quiz) reqBody.quiz = guest.quiz;
-    console.log("body:", reqBody);
-    
-    const response = await fetch(
-      `${process.env.EXPO_PUBLIC_BACKEND_URL}/users/register`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(reqBody),
-      }
-    );
-
-    return await response.json();
-
-  } catch (error) {
-    console.error(error);
-  }
-};
+import { fetchRegister } from "../services/fetchUser.js";
 
 export default function RegisterScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -68,13 +46,13 @@ export default function RegisterScreen({ navigation }) {
         "Veuillez saisir un mot de passe contenant au moins 8 caractères, une majuscule, une minuscule et un caractère spécial"
       );
     }
-    
+
     if (newErrors.length > 0) {
       setErrors(newErrors);
       setModalVisible(true);
       return;
     }
-       
+
     // Appel de la fonction pour fetch vers le back
     fetchRegister(username, email, password, guest).then((response) => {
       if (response.result) {
@@ -87,7 +65,6 @@ export default function RegisterScreen({ navigation }) {
         setErrors(["Cet email est déjà utilisé"]);
         setModalVisible(true);
       }
-
     });
   };
 

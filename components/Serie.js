@@ -1,7 +1,5 @@
 import React from "react";
-
 import { View, Text, StyleSheet, Pressable } from "react-native";
-
 import { Lock, ArrowRight } from "lucide-react-native";
 
 // Liste des styles variables en fonction du status du quizz
