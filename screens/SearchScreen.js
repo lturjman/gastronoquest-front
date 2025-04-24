@@ -418,7 +418,7 @@ export default function SearchScreen() {
                 gap: 20,
               }}
             >
-              {searchResults.length === 0 ? (
+              {startedSearch === false ? (
                 <Text style={styles.noSearchMessage}>
                   Aucune recherche n'a encore été effectuée
                 </Text>
@@ -618,6 +618,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     color: "#173e19",
+    fontSize: 15
   },
   results: {
     width: "100%",
