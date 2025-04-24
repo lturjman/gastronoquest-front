@@ -51,8 +51,8 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      
       {/* Carrousel d'actus */}
-
       <View style={styles.carousel}>
         <SwiperFlatList
           autoplay
@@ -104,7 +104,6 @@ export default function HomeScreen({ navigation }) {
       </View>
 
       {/* Progression ou connexion selon état utilisateur */}
-
       <View style={styles.progressCard}>
         {user.token ? <HomeCo2Container user={user} /> : connectionContainer}
       </View>

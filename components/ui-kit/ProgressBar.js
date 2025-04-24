@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 
 // Composant barre de progression affichée dans le quizz
-function ProgressBar({ currentNumber, total }) {
+export default function ProgressBar({ currentNumber, total }) {
   const steps = [];
 
   for (let i = 1; i <= total; i++) {
@@ -33,5 +33,3 @@ const styles = StyleSheet.create({
     width: "10%",
   },
 });
-
-export default ProgressBar;
