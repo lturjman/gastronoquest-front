@@ -5,13 +5,14 @@ import {
   View,
   ImageBackground,
   Image,
+  StatusBar,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from "../components/ui-kit/CustomButton";
 
 export default function WelcomeScreen({ navigation }) {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
+      <StatusBar hidden={true} />
       <ImageBackground
         source={require("../assets/welcomescreen-background.jpg")}
         alt="Photo de restaurant"
@@ -50,7 +51,7 @@ export default function WelcomeScreen({ navigation }) {
           </View>
         </View>
       </ImageBackground>
-    </SafeAreaView>
+    </View>
   );
 }
 
