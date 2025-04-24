@@ -2,7 +2,13 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Check } from "lucide-react-native";
 import { formatDate } from "../utils/formatDate";
 
-export default function HistoryCard({ restaurant, achievedChallenges, index, date, navigation }) {
+export default function HistoryCard({
+  restaurant,
+  achievedChallenges,
+  index,
+  date,
+  navigation,
+}) {
   const totalCo2 = (achievedChallenges ?? []).reduce(
     (acc, quest) => acc + (quest.savedCo2 ?? 0),
     0
@@ -13,7 +19,10 @@ export default function HistoryCard({ restaurant, achievedChallenges, index, dat
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate("RestaurantScreen", { restaurant })
+            navigation.navigate("Search", {
+              screen: "RestaurantScreen",
+              params: { restaurant: restaurant },
+            })
           }
         >
           <Text style={styles.title}>{restaurant.name}</Text>
@@ -31,8 +40,9 @@ export default function HistoryCard({ restaurant, achievedChallenges, index, dat
         </View>
 
         <View style={styles.info}>
-
-          <Text style={{ fontSize: 14, color: "#37474f" }}>{formatDate(date)}</Text>
+          <Text style={{ fontSize: 14, color: "#37474f" }}>
+            {formatDate(date)}
+          </Text>
 
           <Text style={styles.co2}>
             <Text style={{ fontWeight: "bold", fontSize: 20 }}>
@@ -56,10 +66,7 @@ export default function HistoryCard({ restaurant, achievedChallenges, index, dat
       </View>
     </View>
   );
-};
-
-
-
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -120,7 +127,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     color: "#37474f",
     fontSize: 14,
-    flexShrink: 1
+    flexShrink: 1,
   },
   check: {
     backgroundColor: "#6ac46a",
