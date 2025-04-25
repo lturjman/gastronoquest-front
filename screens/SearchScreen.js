@@ -85,20 +85,20 @@ const INITIAL_REGION = {
   longitude: 1.888334,
   latitudeDelta: 9.8,
   longitudeDelta: 14.8,
-};   // Vue de la France
+}; // Vue de la France
 
 export default function SearchScreen() {
   // Affichage et gestion des modales
   const [view, setView] = useState("map");
   const [mapRegion, setMapRegion] = useState(INITIAL_REGION);
   const [userLocation, setUserLocation] = useState(null);
-  const [startedSearch, setStartedSearch] = useState(false);
+  const [startedSearch, setStartedSearch] = useState(false); // Pour conditionner l'affichage du nombre de résultat uniquement si la recherche à commencé
   const [filtersVisible, setFiltersVisible] = useState(false);
   const [cardVisible, setCardVisible] = useState(false);
-  const [infoVisible, setInfoVisible] = useState(false);
-  const selectDistanceRef = useRef(null);
-  const selectPriceRangeRef = useRef(null);
-  const mapRef = useRef(null);
+  const [infoVisible, setInfoVisible] = useState(false); // Modale écotable
+  const selectDistanceRef = useRef(null); //SelectDown distance
+  const selectPriceRangeRef = useRef(null); // Selectdown price
+  const mapRef = useRef(null); // changer la région de la carte
 
   // Gestion de la recherche
   const [searchType, setSearchType] = useState("restaurant");
@@ -136,8 +136,10 @@ export default function SearchScreen() {
   };
 
   // Mettre à jour la région de la carte
+  //mapRef.current --> si la carte est focus
   const updateMapRegion = (region) => {
     if (mapRef.current) mapRef.current.animateToRegion(region, ANIMATION_TIME);
+    //Timeout pour laisser le temps à l'animation de se faire avant de changer le state
     setTimeout(() => {
       setMapRegion(region);
     }, ANIMATION_TIME);
@@ -151,6 +153,7 @@ export default function SearchScreen() {
     // Réinitialisation des résultats de potentielles recherches précédentes
     setSearchResults([]);
 
+    // Si on a rien mis dans l'input, ça lance une recherche par geoloc
     // Return si aucun input et pas de géolocalisation
     if (searchInput.length === 0 && userLocation === null) return;
 
@@ -158,7 +161,14 @@ export default function SearchScreen() {
     const route = getRoute(searchInput, searchType, distance);
 
     try {
-      const restaurants = await fetchRestaurants(route, searchInput, distance, badges, types, priceRange);
+      const restaurants = await fetchRestaurants(
+        route,
+        searchInput,
+        distance,
+        badges,
+        types,
+        priceRange
+      );
 
       // Préparation de la région à afficher sur la carte
       let region;
@@ -168,19 +178,31 @@ export default function SearchScreen() {
         if (route !== "geolocation") {
           // Centrer la carte sur la France
           region = INITIAL_REGION;
-        } else if (route === "geolocation" && distance !== "Lieu exact" && distance !== "") {
+        } else if (
+          route === "geolocation" &&
+          distance !== "Lieu exact" &&
+          distance !== ""
+        ) {
           // Centrer la carte sur la géolocalisation de l'utilisateur avec le bon radius
           const radius = parseInt(distance.replace(" km", ""));
-          region = getMapRegionForRadius(userLocation.latitude, userLocation.longitude, radius);     
+          region = getMapRegionForRadius(
+            userLocation.latitude,
+            userLocation.longitude,
+            radius
+          );
         } else if (route === "geolocation") {
           // Centrer la carte sur la géolocalisation de l'utilisateur (5 km de radius par défaut)
-          region = getMapRegionForRadius(userLocation.latitude, userLocation.longitude, 5);
+          region = getMapRegionForRadius(
+            userLocation.latitude,
+            userLocation.longitude,
+            5
+          );
         }
       } else {
         // Si un ou plusieurs résultats
         setSearchResults(restaurants);
         if (restaurants.length === 1) {
-          // Un seul résultat = centrer sur le résultat          
+          // Un seul résultat = centrer sur le résultat
           region = {
             latitude: restaurants[0].coordinates.latitude,
             longitude: restaurants[0].coordinates.longitude,
@@ -198,7 +220,6 @@ export default function SearchScreen() {
 
       // Fermer la modale SearchFilters
       setFiltersVisible(false);
-
     } catch (error) {
       console.error(error);
     }
@@ -212,6 +233,7 @@ export default function SearchScreen() {
   useEffect(() => {
     (async () => {
       console.log("Initiation du composant SearchScreen");
+      // récupération geoloc et permission
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status === "granted") {
         const location = await Location.getCurrentPositionAsync({});
@@ -232,7 +254,11 @@ export default function SearchScreen() {
             setSearchResults(restaurants);
             setStartedSearch(true);
             // Centrer sur l'utilisateur à une hauteur qui permet de voir les résultats
-            region = getMapRegionForRadius(location.coords.latitude, location.coords.longitude, 5);
+            region = getMapRegionForRadius(
+              location.coords.latitude,
+              location.coords.longitude,
+              5
+            );
           } else {
             // Si pas de restaurants trouvés = centrer étroitement sur l'utilisateur
             console.log("Pas de restaurants trouvés");
@@ -246,13 +272,13 @@ export default function SearchScreen() {
 
           // Affichage de la région sur la carte
           updateMapRegion(region);
-          
         } catch (error) {
           console.error(error);
         }
       }
     })();
 
+    // Enlever la carte restaurant lorsqu'on est plus sur la map
     return () => {
       setCardVisible(false);
     };
@@ -321,6 +347,8 @@ export default function SearchScreen() {
 
         <View style={styles.results}>
           {/* Map */}
+          {/* Region et non initialRegion pour dynamiser */}
+          {/* Ref pour éviter le re-render à chaque changement d'option */}
           {view === "map" && (
             <MapView ref={mapRef} style={{ flex: 1 }} region={mapRegion}>
               {searchResults.map((restaurant, i) => (
@@ -329,6 +357,7 @@ export default function SearchScreen() {
                   coordinate={restaurant.coordinates}
                   onPress={() => displayRestaurantCard(restaurant)}
                 >
+                  {/* Permet de masquer la popover par défaut sur les markers */}
                   <Callout tooltip>
                     <>{/* Pour iOS */}</>
                   </Callout>
